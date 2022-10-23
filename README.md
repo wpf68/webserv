@@ -14,6 +14,7 @@ Tuto :
 https://github.com/solaldunckel/webserv
 http://vidalc.chez.com/lf/socket.html
 https://www.youtube.com/watch?v=s3o5tixMFho
+http://vidalc.chez.com/lf/socket.html
 
 Socket :
 https://www.youtube.com/watch?v=kwzzxsyz620
@@ -21,6 +22,9 @@ https://www.youtube.com/watch?v=WAT5XySetCI
 
 Serveur WEB
 https://www.youtube.com/playlist?list=PLjwdMgw5TTLUnvhOKLcpCG8ORQsfE7uB4
+
+ref : 
+http://vidalc.chez.com/lf/socket.html
 
 Lancer les projets dans un navigateur avec localhost:8000  ou autre port ou 127.0.0.1 vérifier les .conf de chaque projets
 
