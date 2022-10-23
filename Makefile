@@ -39,8 +39,7 @@ BLUE	=	\033[1,34m
 GREY	=	\033[1,37m
 ROSE	=	\033[1,35m
 
-present:
-	clear
+
 
 $(OBJS_DIR)%.o : %.cpp
 	@mkdir -p $(OBJS_DIR)
@@ -52,6 +51,9 @@ $(OBJS_DIR)%.o : %.cpp
 all: $(NAME)
 	@echo "$(CYANE)----------done------------$(RESET)"
 
+present:
+	clear
+	
 $(NAME): $(SRCS) $(OBJECTS_PREFIXED)
 	@$(CC) -o $(NAME) $(OBJECTS_PREFIXED) $(FLAGS)
 
