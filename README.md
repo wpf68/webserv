@@ -26,6 +26,11 @@ https://www.youtube.com/playlist?list=PLjwdMgw5TTLUnvhOKLcpCG8ORQsfE7uB4
 ref : 
 http://vidalc.chez.com/lf/socket.html
 
+
+telnet : 
+https://web.maths.unsw.edu.au/~lafaye/CCM/utile/telnet.htm
+
+
 Lancer les projets dans un navigateur avec localhost:8000  ou autre port ou 127.0.0.1 vérifier les .conf de chaque projets
 
 
