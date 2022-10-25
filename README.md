@@ -32,6 +32,18 @@ telnet :
 https://web.maths.unsw.edu.au/~lafaye/CCM/utile/telnet.htm
 
 
+Nginx - Apache
+
+https://www.youtube.com/watch?v=mJ6_ZxLSyHw
+
+https://www.youtube.com/watch?v=pWIclKb-dtg
+
+https://www.youtube.com/watch?v=SqE5uUbBU78
+
+
+
+
+
 Lancer les projets dans un navigateur avec localhost:8000  ou autre port ou 127.0.0.1 vérifier les .conf de chaque projets
 
 
