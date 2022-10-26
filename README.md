@@ -13,6 +13,7 @@ https://api.zippopotam.us/FR/68110
 Tuto :
 https://github.com/solaldunckel/webserv
 https://www.youtube.com/watch?v=s3o5tixMFho
+http://www.bien-programmer.fr/reseaux.php
 
 Socket :
 https://www.youtube.com/watch?v=kwzzxsyz620
