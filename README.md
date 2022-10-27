@@ -43,6 +43,20 @@ https://www.youtube.com/watch?v=pWIclKb-dtg
 
 https://www.youtube.com/watch?v=SqE5uUbBU78
 
+Protocole HTTP :
+
+https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol
+
+https://www.youtube.com/watch?v=gKxKWwikP_c    //  port par défault 80  // curl http://127.0.0.1:8003  // curl -I   (i majuscule)
+
+https://www.youtube.com/watch?v=sz3gXm5v_G0    // extension Postman dans Chrome 
+
+https://www.youtube.com/watch?v=B-3TGySiSLo     // les Méthodes
+
+
+
+
+
 
 
 
