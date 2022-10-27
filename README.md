@@ -1,4 +1,6 @@
 # webserv
+Team : Wilhelm - Maxime - Pascal
+
 vidéos :
 https://www.youtube.com/watch?v=je9iCRcdJnc
 https://www.youtube.com/watch?v=lh3MGxP3Rl8
