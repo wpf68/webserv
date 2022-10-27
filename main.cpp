@@ -84,7 +84,8 @@ int     main()
     int len, bytes_sent;
     
     len = strlen("Beej était là!");
-    bytes_sent = send(new_fd, "Beej était là!", len, 0);
+   // bytes_sent = send(new_fd, "HTTP/1.1 200 OK\r\n\r\nHello", 25, 0);  // envoi sur téléchargement
+    bytes_sent = send(new_fd, "HTTP/1.1 200 OK\rContent-Length:23\rServer: webserv/1.0.0\r\n\nSalut Maxime et Wilhelm", 86, 0);
 
 
 
@@ -94,7 +95,7 @@ int     main()
 
 
     shutdown (new_fd, 2);
-    shutdown (fd, 2);
+    close (fd);
 
     return (0);
 }
