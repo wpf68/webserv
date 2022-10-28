@@ -54,8 +54,8 @@ https://www.youtube.com/watch?v=sz3gXm5v_G0    // extension Postman dans Chrome
 https://www.youtube.com/watch?v=B-3TGySiSLo     // les Méthodes
 
 
-
-
+CGI :
+https://supersonique-studio.com/2000/12/introduction-au-cgi-common-gateway-interface/
 
 
 
