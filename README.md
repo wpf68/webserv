@@ -31,6 +31,7 @@ http://vidalc.chez.com/lf/socket.html
 https://www.notion.so/Documentation-Webserv-320727979ffd4176a7dd5ba41aaadf46 (lobbyra)
 
 
+
 telnet : 
 https://web.maths.unsw.edu.au/~lafaye/CCM/utile/telnet.htm
 
@@ -57,6 +58,9 @@ https://www.youtube.com/watch?v=B-3TGySiSLo     // les Méthodes
 CGI :
 https://supersonique-studio.com/2000/12/introduction-au-cgi-common-gateway-interface/
 
+Cours programmation réseau en C++
+
+https://bousk.developpez.com/cours/reseau-c++/
 
 
 
