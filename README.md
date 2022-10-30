@@ -60,7 +60,7 @@ https://supersonique-studio.com/2000/12/introduction-au-cgi-common-gateway-inter
 
 Cours programmation réseau en C++
 
-https://bousk.developpez.com/cours/reseau-c++/
+https://bousk.developpez.com/cours/reseau-c++/TCP/01-premiers-pas/
 
 https://developer.mozilla.org/fr/docs/Web/HTTP
 
