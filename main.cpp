@@ -58,7 +58,7 @@ int main()
 
 	// infos client :
 	int					new_fd;
-	struct sockaddr		their_addr; // Informations d'adresse du client 
+	struct sockaddr		their_addr = {0}; // Informations d'adresse du client 
 	socklen_t			sin_size;
 
 	// send to client
@@ -73,14 +73,16 @@ int main()
 
 	server.sin_port = htons(MY_PORT);
 	server.sin_family = AF_INET;
+	// INADDR_ANY  ==> toutes les sources sont acceptés 127.x.x.x 
 	server.sin_addr.s_addr = INADDR_ANY;  //server.sin_addr.s_addr = htonl(INADDR_ANY); // server.sin_addr.s_addr = inet_addr(MY_IP);
 	bzero(&(server.sin_zero), 8);
 
-	result = bind(fd_socket, (struct sockaddr *)&server, sizeof(struct sockaddr));
+	result = bind(fd_socket, (struct sockaddr *)&server, sizeof(struct sockaddr));  // voir les liens entre bind et connect  !!!!!!
 	if (result == -1)
 		ft_error("Error : bind");
 
-	result = listen(fd_socket, NB_CONNECT);
+	//result = listen(fd_socket, NB_CONNECT);
+	result = listen(fd_socket, SOMAXCONN); // choix par le système du nbr de connexions appropriés
 	if (result == -1)
 		ft_error("Error : listen");
 
@@ -94,6 +96,8 @@ int main()
 	if (new_fd == -1)
 		ft_error("Error : accept");
 	std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
+//	char buff[INET6_ADDRSTRLEN] = {0};
+//	std::cout << (inet_ntop(their_addr.sin_family, (void*)&(their_addr.sin_addr), buff, INET6_ADDRSTRLEN)) << std::endl;
 
 
 	// -------------   reception des infos envoyés par le client  -----------------------
@@ -105,13 +109,22 @@ int main()
 
 
 	//  A formater correctement  //
-	bytes_sent = send(new_fd, "HTTP/1.1 200 OK\rContent-Length:23\rServer: webserv/1.0.0\r\n\nSalut Maxime et Wilhelm", 86, 0);
+	bytes_sent = send(new_fd, "HTTP/1.1 200 OK\rContent-Length:24\rServer: webserv/1.0.0\r\n\nSalut Maxime et Wilhelm-", 87, 0);
+	if (bytes_sent == -1)
+		ft_error("Error : send");
+
+	//  Deuxième envoi silmultané *************   ignoré !!!!!!!!!!!!!!!!!!!!//
+	bytes_sent = send(new_fd, "Salut Maxime et Wilhelm2", 24, 0);
+	if (bytes_sent == -1)
+		ft_error("Error : send");
 
 	// -------------   reception des infos envoyés par le client après send ==> pas de nouvelles infos !!!  -----------------------
 	char	buffer[1024] = { 0 };
 //	int		iLastRecievedBufferLen = 0;
 
 	iLastRecievedBufferLen = recv(new_fd, buffer, 1023, 0);
+	if (iLastRecievedBufferLen == -1)
+		ft_error("Error : revc");
 	std::cout << WHITE "\nBuffer Client : \n" CYANE << buffer << NONE << std::endl;
 
 	result = shutdown (new_fd, 2);
