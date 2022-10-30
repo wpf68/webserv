@@ -62,6 +62,8 @@ Cours programmation réseau en C++
 
 https://bousk.developpez.com/cours/reseau-c++/
 
+https://developer.mozilla.org/fr/docs/Web/HTTP
+
 
 
 
