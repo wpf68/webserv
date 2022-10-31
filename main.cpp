@@ -37,10 +37,61 @@
 #include <cstring>
 #include <arpa/inet.h>
 #include <fcntl.h>
+#include <fstream>
 
 #define MY_PORT 8003
 #define MY_IP "127.0.0.1"
 #define NB_CONNECT 10
+
+void    ft_error(std::string msg)
+{
+	std::cout << RED << msg << NONE << std::endl;
+	exit (1);
+}
+
+std::string ft_read_file(std::string path)
+{
+	char		c;
+	std::string	file;
+
+	file = "";
+	std::ifstream my_flux(path);
+	if (!my_flux)
+		ft_error("Error : open file");
+
+	while (my_flux.get(c))
+	{
+		std::cout << c;
+		file += c;
+	}
+	std::cout << "\n******************************\n" << std::endl;
+
+	my_flux.close();
+	return (file);
+}
+
+std::string ft_created_send(std::string path)
+{
+	std::string	create_send;
+	std::string	file;
+
+	file = ft_read_file(path);
+
+	//"HTTP/1.1 200 OK\rContent-Length:24\rServer: webserv/1.0.0\r\n\nSalut Maxime et Wilhelm-"
+	create_send = "HTTP/1.1 200 OK\r\n";
+	create_send += "Content-Length: " + std::to_string(file.size()) + "\r\n";
+//	create_send += "Content-Length:" + std::to_string(24) + "\r\n";
+	create_send += "Content-Location: /\r\n";
+	create_send += "Content-Type: text/html\r\n";
+	create_send += "Date: Mon, 31 Oct 2022 17:15:12 GMT\r\n";
+	create_send += "Server: webserv/42\r\n\n";
+//	create_send += "Salut Maxime et Wilhelm-";
+	create_send += file + "\r\n";
+	std::cout << create_send << std::endl;
+
+
+	return (create_send);
+}
 
 void	ft_adresse_IP(struct sockaddr_in &their_addr)
 {
@@ -50,19 +101,18 @@ void	ft_adresse_IP(struct sockaddr_in &their_addr)
 	std::cout << GREEN "  Port : " WHITE << ntohs(their_addr.sin_port) << NONE << std::endl;
 }
 
-void    ft_error(std::string msg)
-{
-	std::cout << RED << msg << NONE << std::endl;
-	exit (1);
-}
+
 
 int main()
 {
+	//std::cout << ft_read_file("HTML/index.html");
+	
+	//return (0);
 	// infos server
 	int					fd_socket;
 	struct sockaddr_in  server;
 	int					result;
-
+	std::string			create_send;
 	
 
 	// send to client
@@ -95,6 +145,8 @@ int main()
 
 	std::cout << YELLOW "Server demarre sur le port " WHITE << ntohs(server.sin_port) << NONE << std::endl;
 
+//	create_send = ft_created_send("HTML/test.html");
+	create_send = ft_created_send("HTML/index.html");
 
 	// infos client :
 	for (;;)
@@ -119,13 +171,23 @@ int main()
 
 
 		//  A formater correctement  //
-		bytes_sent = send(new_fd, "HTTP/1.1 200 OK\rContent-Length:24\rServer: webserv/1.0.0\r\n\nSalut Maxime et Wilhelm-", 87, 0);
+		//bytes_sent = send(new_fd, buffer1, iLastRecievedBufferLen, 0);
+
+	//	create_send = ft_created_send("HTML/index.html");
+		bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); // passer 2h à pour trouver .cstr() !!!!!!!!!!!!
+
+	//	bytes_sent = send(new_fd, "HTTP/1.1 200 OK\rContent-Length:24\rServer: webserv/1.0.0\r\n\nSalut Maxime et Wilhelm-", 87, 0);
 		if (bytes_sent == -1)
 			ft_error("Error : send");
+
 		result = shutdown (new_fd, 2);
-			if (result == -1)
-				ft_error("Error : shutdown");
-			std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
+		if (result == -1)
+			ft_error("Error : shutdown");
+		std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
+		result = close(new_fd);
+		if (result == -1)
+			ft_error("Error : close socket");
+		std::cout << GREEN "Close fd_socket" NONE << std::endl;
 	}
 
 
