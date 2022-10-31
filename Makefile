@@ -66,7 +66,7 @@ fclean: clean
 
 re: fclean all
 
-test:	all
+test:	re
 	./${NAME}
 
 linux:	all

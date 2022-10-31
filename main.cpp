@@ -42,6 +42,13 @@
 #define MY_IP "127.0.0.1"
 #define NB_CONNECT 10
 
+void	ft_adresse_IP(struct sockaddr_in &their_addr)
+{
+	char buff[INET6_ADDRSTRLEN] = {0};
+
+	std::cout << GREEN "Adresse IP : " WHITE << (inet_ntop(their_addr.sin_family, (void*)&(their_addr.sin_addr), buff, INET6_ADDRSTRLEN)) << NONE ;
+	std::cout << GREEN "  Port : " WHITE << ntohs(their_addr.sin_port) << NONE << std::endl;
+}
 
 void    ft_error(std::string msg)
 {
@@ -56,10 +63,7 @@ int main()
 	struct sockaddr_in  server;
 	int					result;
 
-	// infos client :
-	int					new_fd;
-	struct sockaddr		their_addr = {0}; // Informations d'adresse du client 
-	socklen_t			sin_size;
+	
 
 	// send to client
 	int	len;
@@ -76,6 +80,7 @@ int main()
 	// INADDR_ANY  ==> toutes les sources sont acceptés 127.x.x.x 
 	server.sin_addr.s_addr = INADDR_ANY;  //server.sin_addr.s_addr = htonl(INADDR_ANY); // server.sin_addr.s_addr = inet_addr(MY_IP);
 	bzero(&(server.sin_zero), 8);
+	std::cout << GREEN "Port : " WHITE << ntohs(server.sin_port) << NONE << std::endl;  // test
 
 	result = bind(fd_socket, (struct sockaddr *)&server, sizeof(struct sockaddr));  // voir les liens entre bind et connect  !!!!!!
 	if (result == -1)
@@ -88,50 +93,57 @@ int main()
 
 	//fcntl(fd_socket, F_SETFL, O_NONBLOCK); // non bloquant -- je pense que cela va permettre de parcourrir toute une liste de port en l'intégrant dans une bloucle
 
-	std::cout << YELLOW "Server demarre sur le port " WHITE << MY_PORT << NONE << std::endl;
+	std::cout << YELLOW "Server demarre sur le port " WHITE << ntohs(server.sin_port) << NONE << std::endl;
 
 
-	sin_size = sizeof(struct sockaddr_in);
-	new_fd = accept(fd_socket, &their_addr, &sin_size);
-	if (new_fd == -1)
-		ft_error("Error : accept");
-	std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
-//	char buff[INET6_ADDRSTRLEN] = {0};
-//	std::cout << (inet_ntop(their_addr.sin_family, (void*)&(their_addr.sin_addr), buff, INET6_ADDRSTRLEN)) << std::endl;
+	// infos client :
+	for (;;)
+	{
+		int					new_fd;
+		struct sockaddr_in	their_addr = {0}; // Informations d'adresse du client 
+		socklen_t			sin_size;
+		sin_size = sizeof(struct sockaddr_in);
+		new_fd = accept(fd_socket, (struct sockaddr *)&their_addr, &sin_size);
+		if (new_fd == -1)
+			ft_error("Error : accept");
+		std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
+
+		ft_adresse_IP(their_addr);
+
+		// -------------   reception des infos envoyés par le client  -----------------------
+		char	buffer1[1024] = { 0 };
+		int		iLastRecievedBufferLen = 0;
+
+		iLastRecievedBufferLen = recv(new_fd, buffer1, 1023, 0);
+		std::cout << WHITE "\nBuffer1 Client : \n" CYANE << buffer1 << NONE << std::endl;
 
 
-	// -------------   reception des infos envoyés par le client  -----------------------
-	char	buffer1[1024] = { 0 };
-	int		iLastRecievedBufferLen = 0;
+		//  A formater correctement  //
+		bytes_sent = send(new_fd, "HTTP/1.1 200 OK\rContent-Length:24\rServer: webserv/1.0.0\r\n\nSalut Maxime et Wilhelm-", 87, 0);
+		if (bytes_sent == -1)
+			ft_error("Error : send");
+		result = shutdown (new_fd, 2);
+			if (result == -1)
+				ft_error("Error : shutdown");
+			std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
+	}
 
-	iLastRecievedBufferLen = recv(new_fd, buffer1, 1023, 0);
-	std::cout << WHITE "\nBuffer1 Client : \n" CYANE << buffer1 << NONE << std::endl;
-
-
-	//  A formater correctement  //
-	bytes_sent = send(new_fd, "HTTP/1.1 200 OK\rContent-Length:24\rServer: webserv/1.0.0\r\n\nSalut Maxime et Wilhelm-", 87, 0);
-	if (bytes_sent == -1)
-		ft_error("Error : send");
 
 	//  Deuxième envoi silmultané *************   ignoré !!!!!!!!!!!!!!!!!!!!//
-	bytes_sent = send(new_fd, "Salut Maxime et Wilhelm2", 24, 0);
-	if (bytes_sent == -1)
-		ft_error("Error : send");
+//	bytes_sent = send(new_fd, "Salut Maxime et Wilhelm2", 24, 0);
+//	if (bytes_sent == -1)
+//		ft_error("Error : send");
 
 	// -------------   reception des infos envoyés par le client après send ==> pas de nouvelles infos !!!  -----------------------
-	char	buffer[1024] = { 0 };
+//	char	buffer[1024] = { 0 };
 //	int		iLastRecievedBufferLen = 0;
 
-	iLastRecievedBufferLen = recv(new_fd, buffer, 1023, 0);
-	if (iLastRecievedBufferLen == -1)
-		ft_error("Error : revc");
-	std::cout << WHITE "\nBuffer Client : \n" CYANE << buffer << NONE << std::endl;
+//	iLastRecievedBufferLen = recv(new_fd, buffer, 1023, 0);
+//	if (iLastRecievedBufferLen == -1)
+//		ft_error("Error : revc");
+//	std::cout << WHITE "\nBuffer Client : \n" CYANE << buffer << NONE << std::endl;
 
-	result = shutdown (new_fd, 2);
-	if (result == -1)
-		ft_error("Error : shutdown");
-	std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
-
+	
 	result = close(fd_socket);
 	if (result == -1)
 		ft_error("Error : close socket");
