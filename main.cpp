@@ -145,8 +145,14 @@ int main()
 
 	std::cout << YELLOW "Server demarre sur le port " WHITE << ntohs(server.sin_port) << NONE << std::endl;
 
-//	create_send = ft_created_send("HTML/test.html");
-	create_send = ft_created_send("HTML/index.html");
+//	create_send = ft_created_send("HTML/site_2/test.html");
+//	create_send = ft_created_send("HTML/site_1/index.html");
+
+		
+	
+
+
+
 
 	// infos client :
 	for (;;)
@@ -172,8 +178,9 @@ int main()
 
 		//  A formater correctement  //
 		//bytes_sent = send(new_fd, buffer1, iLastRecievedBufferLen, 0);
+	//	create_send = ft_created_send("HTML/site_2/test.html");
+		create_send = ft_created_send("HTML/site_1/index.html");
 
-	//	create_send = ft_created_send("HTML/index.html");
 		bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); // passer 2h à pour trouver .cstr() !!!!!!!!!!!!
 
 	//	bytes_sent = send(new_fd, "HTTP/1.1 200 OK\rContent-Length:24\rServer: webserv/1.0.0\r\n\nSalut Maxime et Wilhelm-", 87, 0);
@@ -213,6 +220,19 @@ int main()
 	return (0);
 }
 
+
+/*   ***** Animation wait   *********     */
+/*
+	std::string	dot[3] = {".  ", ".. ", "..."};
+	int			n = 0;
+	for(;;)
+	{
+		std::cout << "\rWaiting on a connection" << dot[n++] << std::flush;
+		if (n == 3)
+			n = 0;
+
+	}
+*/
 
 
 /*         *********    donne IP adresse d'un Host name   **********    */
