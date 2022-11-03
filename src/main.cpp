@@ -67,10 +67,10 @@ std::string ft_read_file(std::string path)
 
 	while (my_flux.get(c))
 	{
-		std::cout << c;
+//		std::cout << c;
 		file += c;
 	}
-	std::cout << "\n******************************\n" << std::endl;
+//	std::cout << "\n******************************\n" << std::endl;
 
 	my_flux.close();
 	return (file);
@@ -92,8 +92,10 @@ std::string ft_created_send(std::string &path)
 	create_send += "Date: Mon, 31 Oct 2022 17:15:12 GMT\r\n";
 	create_send += "Server: webserv/42\r\n\n";
 //	create_send += "Salut Maxime et Wilhelm-";
-	create_send += file + "\r\n";
+
 	std::cout << create_send << std::endl;
+	create_send += file + "\r\n";
+	
 
 
 	return (create_send);
