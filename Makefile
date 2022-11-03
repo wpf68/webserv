@@ -14,7 +14,7 @@
 
 NAME		=	webserv
 
-SRCS		= 	main.cpp
+SRCS		= 	src/main.cpp src/request.cpp 
 	
 OBJS				= $(SRCS:.cpp=.o)
 OBJS_DIR			= objs/
@@ -43,6 +43,7 @@ ROSE	=	\033[1,35m
 
 $(OBJS_DIR)%.o : %.cpp
 	@mkdir -p $(OBJS_DIR)
+	@mkdir -p $(OBJS_DIR)src
 	$(CC) $(CC_FLAGS) -c $< -o $@
 #	@printf	"\033[2K\r${BLU}[BUILD]${RST} '$<' $(END)"
 #	@mkdir -p $(OBJS_DIR)srcsi

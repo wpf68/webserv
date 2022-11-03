@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "webserv.h"
+
+/*
 # ifndef COLOR
 #  define COLOR
 #  define CLEAR		"\x1B[2J\x1B[H"
@@ -42,6 +45,9 @@
 #define MY_PORT 8003
 #define MY_IP "127.0.0.1"
 #define NB_CONNECT 10
+#define SIZE_RECV  424242
+
+*/
 
 void    ft_error(std::string msg)
 {
@@ -70,7 +76,7 @@ std::string ft_read_file(std::string path)
 	return (file);
 }
 
-std::string ft_created_send(std::string path)
+std::string ft_created_send(std::string &path)
 {
 	std::string	create_send;
 	std::string	file;
@@ -169,17 +175,29 @@ int main()
 		ft_adresse_IP(their_addr);
 
 		// -------------   reception des infos envoyés par le client  -----------------------
-		char	buffer1[1024] = { 0 };
+		char	buffer1[SIZE_RECV] = { 0 };
 		int		iLastRecievedBufferLen = 0;
+		std::string	path_request;
 
-		iLastRecievedBufferLen = recv(new_fd, buffer1, 1023, 0);
+		iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
 		std::cout << WHITE "\nBuffer1 Client : \n" CYANE << buffer1 << NONE << std::endl;
+		path_request = get_path(buffer1);
+
+		std::cout << RED "PATH Request Client : " YELLOW << path_request << NONE "\n" << std::endl;
 
 
 		//  A formater correctement  //
 		//bytes_sent = send(new_fd, buffer1, iLastRecievedBufferLen, 0);
 	//	create_send = ft_created_send("HTML/site_2/test.html");
-		create_send = ft_created_send("HTML/site_1/index.html");
+		std::string	path_serve_for_client;
+		path_serve_for_client = "HTML/site_1";
+		if (path_request == "/")
+			path_serve_for_client += "/index.html";
+		else
+			path_serve_for_client += path_request;
+
+		std::cout << RED "PATH Reponse Server : " YELLOW << path_serve_for_client << NONE "\n" << std::endl;
+		create_send = ft_created_send(path_serve_for_client);
 
 		bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); // passer 2h à pour trouver .cstr() !!!!!!!!!!!!
 
