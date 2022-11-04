@@ -47,6 +47,30 @@
 #define NB_CONNECT 10
 #define SIZE_RECV  424242
 
-std::string get_path(std::string buffer);
+typedef struct s_parsing
+{
+    // client
+    std::string client_get_post;
+    std::string client_path;
+    std::string sec_fetch_dest;
+    std::string buffer;
+
+    // serveur
+    std::string status;
+    std::string content_type;
+
+}   t_parsing;
+
+
+void	ft_adresse_IP(struct sockaddr_in &their_addr);
+void    ft_error(std::string msg, t_parsing *datas);
+
+std::string get_reponse_space(std::string &buffer, std::string &request);
+std::string get_reponse_end_line(std::string &buffer, std::string &request);
+std::string get_reponse_image_end_line(std::string &buffer, std::string &request);
+
+std::string ft_created_reponse(t_parsing *datas);
+
+
 
 #endif

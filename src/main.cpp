@@ -49,57 +49,15 @@
 
 */
 
-void    ft_error(std::string msg)
+void    ft_error(std::string msg, t_parsing *datas)
 {
+	(void) datas;
 	std::cout << RED << msg << NONE << std::endl;
 	exit (1);
 }
 
-std::string ft_read_file(std::string path)
-{
-	char		c;
-	std::string	file;
-
-	file = "";
-	std::ifstream my_flux(path);
-	if (!my_flux)
-		ft_error("Error : open file");
-
-	while (my_flux.get(c))
-	{
-//		std::cout << c;
-		file += c;
-	}
-//	std::cout << "\n******************************\n" << std::endl;
-
-	my_flux.close();
-	return (file);
-}
-
-std::string ft_created_send(std::string &path)
-{
-	std::string	create_send;
-	std::string	file;
-
-	file = ft_read_file(path);
-
-	//"HTTP/1.1 200 OK\rContent-Length:24\rServer: webserv/1.0.0\r\n\nSalut Maxime et Wilhelm-"
-	create_send = "HTTP/1.1 200 OK\r\n";
-	create_send += "Content-Length: " + std::to_string(file.size()) + "\r\n";
-//	create_send += "Content-Length:" + std::to_string(24) + "\r\n";
-	create_send += "Content-Location: /\r\n";
-	create_send += "Content-Type: text/html\r\n";
-	create_send += "Date: Mon, 31 Oct 2022 17:15:12 GMT\r\n";
-	create_send += "Server: webserv/42\r\n\n";
-//	create_send += "Salut Maxime et Wilhelm-";
-
-	std::cout << create_send << std::endl;
-	create_send += file + "\r\n";
-	
 
 
-	return (create_send);
-}
 
 void	ft_adresse_IP(struct sockaddr_in &their_addr)
 {
@@ -109,6 +67,15 @@ void	ft_adresse_IP(struct sockaddr_in &their_addr)
 	std::cout << GREEN "  Port : " WHITE << ntohs(their_addr.sin_port) << NONE << std::endl;
 }
 
+void	ft_init(t_parsing *datas)
+{
+	datas->client_get_post = "";
+	datas->client_path = "";
+	datas->sec_fetch_dest = "";
+
+	datas->content_type = "";
+	datas->status = "200";
+}
 
 
 int main()
@@ -121,16 +88,17 @@ int main()
 	struct sockaddr_in  server;
 	int					result;
 	std::string			create_send;
+	t_parsing			datas;
 	
 
 	// send to client
 	int	len;
 	int	bytes_sent;
 
-
+	ft_init(&datas);
 	fd_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); // mettre 0 pour IPPROTO_TCP !
 	if (fd_socket == -1)
-		ft_error("Error : socket");
+		ft_error("Error : socket", &datas);
 	std::cout << YELLOW "socket OK :: fd_socket = " WHITE << fd_socket << NONE << std::endl;
 
 	server.sin_port = htons(MY_PORT);
@@ -142,100 +110,50 @@ int main()
 
 	result = bind(fd_socket, (struct sockaddr *)&server, sizeof(struct sockaddr));  // voir les liens entre bind et connect  !!!!!!
 	if (result == -1)
-		ft_error("Error : bind");
+		ft_error("Error : bind", &datas);
 
-	//result = listen(fd_socket, NB_CONNECT);
+
 	result = listen(fd_socket, SOMAXCONN); // choix par le système du nbr de connexions appropriés
 	if (result == -1)
-		ft_error("Error : listen");
+		ft_error("Error : listen", &datas);
 
 	//fcntl(fd_socket, F_SETFL, O_NONBLOCK); // non bloquant -- je pense que cela va permettre de parcourrir toute une liste de port en l'intégrant dans une bloucle
 
 	std::cout << YELLOW "Server demarre sur le port " WHITE << ntohs(server.sin_port) << NONE << std::endl;
 
-//	create_send = ft_created_send("HTML/site_2/test.html");
-//	create_send = ft_created_send("HTML/site_1/index.html");
-
-		
-	
-
-
-
-
-	// infos client :
 	for (;;)
 	{
 		int					new_fd;
-		struct sockaddr_in	their_addr = {0}; // Informations d'adresse du client 
+		struct sockaddr_in	their_addr = {0};
 		socklen_t			sin_size;
 		sin_size = sizeof(struct sockaddr_in);
 		new_fd = accept(fd_socket, (struct sockaddr *)&their_addr, &sin_size);
 		if (new_fd == -1)
-			ft_error("Error : accept");
+			ft_error("Error : accept", &datas);
 		std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
 
 		ft_adresse_IP(their_addr);
-
-		// -------------   reception des infos envoyés par le client  -----------------------
 		char	buffer1[SIZE_RECV] = { 0 };
 		int		iLastRecievedBufferLen = 0;
-		std::string	path_request;
-
 		iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
-		std::cout << WHITE "\nBuffer1 Client : \n" CYANE << buffer1 << NONE << std::endl;
-		path_request = get_path(buffer1);
-
-		std::cout << RED "PATH Request Client : " YELLOW << path_request << NONE "\n" << std::endl;
-
-
-		//  A formater correctement  //
-		//bytes_sent = send(new_fd, buffer1, iLastRecievedBufferLen, 0);
-	//	create_send = ft_created_send("HTML/site_2/test.html");
-		std::string	path_serve_for_client;
-		path_serve_for_client = "HTML/site_1";
-		if (path_request == "/")
-			path_serve_for_client += "/index.html";
-		else
-			path_serve_for_client += path_request;
-
-		std::cout << RED "PATH Reponse Server : " YELLOW << path_serve_for_client << NONE "\n" << std::endl;
-		create_send = ft_created_send(path_serve_for_client);
-
-		bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); // passer 2h à pour trouver .cstr() !!!!!!!!!!!!
-
-	//	bytes_sent = send(new_fd, "HTTP/1.1 200 OK\rContent-Length:24\rServer: webserv/1.0.0\r\n\nSalut Maxime et Wilhelm-", 87, 0);
+		datas.buffer = buffer1;
+		std::cout << WHITE "\nBuffer1 Client : \n" CYANE << datas.buffer << NONE << std::endl;
+		create_send = ft_created_reponse(&datas);  ////-----------------------------------------------
+		bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); 
 		if (bytes_sent == -1)
-			ft_error("Error : send");
-
+			ft_error("Error : send", &datas);
 		result = shutdown (new_fd, 2);
 		if (result == -1)
-			ft_error("Error : shutdown");
+			ft_error("Error : shutdown", &datas);
 		std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
 		result = close(new_fd);
 		if (result == -1)
-			ft_error("Error : close socket");
-		std::cout << GREEN "Close fd_socket" NONE << std::endl;
-	}
-
-
-	//  Deuxième envoi silmultané *************   ignoré !!!!!!!!!!!!!!!!!!!!//
-//	bytes_sent = send(new_fd, "Salut Maxime et Wilhelm2", 24, 0);
-//	if (bytes_sent == -1)
-//		ft_error("Error : send");
-
-	// -------------   reception des infos envoyés par le client après send ==> pas de nouvelles infos !!!  -----------------------
-//	char	buffer[1024] = { 0 };
-//	int		iLastRecievedBufferLen = 0;
-
-//	iLastRecievedBufferLen = recv(new_fd, buffer, 1023, 0);
-//	if (iLastRecievedBufferLen == -1)
-//		ft_error("Error : revc");
-//	std::cout << WHITE "\nBuffer Client : \n" CYANE << buffer << NONE << std::endl;
-
-	
+			ft_error("Error : close new_fd", &datas);
+		std::cout << GREEN "Close new_fd" NONE << std::endl;
+	}	
 	result = close(fd_socket);
 	if (result == -1)
-		ft_error("Error : close socket");
+		ft_error("Error : close socket", &datas);
 	std::cout << GREEN "Close fd_socket" NONE << std::endl;
 	return (0);
 }
