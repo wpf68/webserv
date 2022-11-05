@@ -74,7 +74,9 @@ void	ft_init(t_parsing *datas)
 	datas->sec_fetch_dest = "";
 
 	datas->content_type = "";
-	datas->status = "200";
+	datas->status = "200 webser42_OK :)";
+	datas->file_500 = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"./index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\">This page is temporarily unavailable</h1>\n</body>\n</html>";
+	datas->list_request_received = "";
 }
 
 
@@ -140,6 +142,7 @@ int main()
 		std::cout << WHITE "\nBuffer1 Client : \n" CYANE << datas.buffer << NONE << std::endl;
 		create_send = ft_created_reponse(&datas);  ////-----------------------------------------------
 		bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); 
+		datas.status = "200 webser42_OK :)";
 		if (bytes_sent == -1)
 			ft_error("Error : send", &datas);
 		result = shutdown (new_fd, 2);

@@ -58,6 +58,8 @@ typedef struct s_parsing
     // serveur
     std::string status;
     std::string content_type;
+    std::string file_500;
+    std::string list_request_received;
 
 }   t_parsing;
 

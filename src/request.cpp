@@ -61,8 +61,8 @@ std::string get_reponse_image_end_line(std::string &buffer, std::string &request
 	std::size_t		len_end;
 	
 	len_begin = buffer.find(request);
-	len_end = buffer.find("\r", len_begin + request.size() + 1);
-	reponse.assign(buffer, len_begin + request.size(), len_end - (len_begin + request.size() + 1));
+	len_end = buffer.size();
+	reponse.assign(buffer, len_begin + request.size(), len_end);
 	std::cout << GREEN << "begin : " << len_begin << " end : " << len_end << NONE << std::endl;
 
 	return (reponse);
