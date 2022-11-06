@@ -41,6 +41,7 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <fstream>
+#include <signal.h>
 
 #define MY_PORT 8003
 #define MY_IP "127.0.0.1"
