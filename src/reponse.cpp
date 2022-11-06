@@ -111,6 +111,8 @@ static void ft_type_image(t_parsing *datas)
 		datas->content_type = "Content-Type: image/png\r\n";
 	else if (type_image == "pdf")
 		datas->content_type = "Content-Type: application/pdf\r\n";
+	else if (type_image == "mp4")
+		datas->content_type = "Content-Type: video/mp4\r\n";
 	else
 		datas->content_type = "Content-Type: \r\n";
 
@@ -122,7 +124,7 @@ static void ft_test_content_type(t_parsing *datas)
 
 	if (datas->sec_fetch_dest == "document")
 		datas->content_type = "Content-Type: text/html; charset=UTF-8\r\n";
-	else if (datas->sec_fetch_dest == "image")
+	else if (datas->sec_fetch_dest == "image" || datas->sec_fetch_dest == "iframe" || datas->sec_fetch_dest == "video")
 		ft_type_image(datas);
 	else
 		datas->content_type = "Content-Type: \r\n";
