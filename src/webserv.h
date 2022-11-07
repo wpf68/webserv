@@ -46,7 +46,7 @@
 #define MY_PORT 8003
 #define MY_IP "127.0.0.1"
 #define NB_CONNECT 10
-#define SIZE_RECV  424242
+#define SIZE_RECV  42424
 
 typedef struct s_parsing
 {

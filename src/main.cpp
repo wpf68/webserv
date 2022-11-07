@@ -96,11 +96,22 @@ int main()
 	//fcntl(fd_socket, F_SETFL, O_NONBLOCK); // non bloquant -- je pense que cela va permettre de parcourrir toute une liste de port en l'intégrant dans une bloucle
 
 	std::cout << YELLOW "Server demarre sur le port " WHITE << ntohs(server.sin_port) << NONE << std::endl;
+	char	buffer1[SIZE_RECV] = { 0 };
+	int		iLastRecievedBufferLen = 0;
+	int					new_fd;
+	struct sockaddr_in	their_addr = {0};
 
 	for (;;)
 	{
-		int					new_fd;
-		struct sockaddr_in	their_addr = {0};
+		iLastRecievedBufferLen = 0;
+		for (int i = 0; i < SIZE_RECV; i++)
+			buffer1[i] = 0;
+
+		their_addr.sin_port = 0;
+		their_addr.sin_family = 0;	
+		their_addr.sin_addr.s_addr = 0;
+		bzero(&(their_addr.sin_zero), 8);
+		
 
 		signal(SIGINT, ft_exit);
 		socklen_t			sin_size;
@@ -111,13 +122,17 @@ int main()
 		std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
 
 		ft_adresse_IP(their_addr);
-		char	buffer1[SIZE_RECV] = { 0 };
-		int		iLastRecievedBufferLen = 0;
+		
 		iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
 		datas.buffer = buffer1;
 		std::cout << WHITE "\nBuffer1 Client : \n" CYANE << datas.buffer << NONE << std::endl;
-		create_send = ft_created_reponse(&datas);  ////-----------------------------------------------
-		bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); 
+		//std::cout << WHITE "\nBuffer1 Client : \n" CYANE << buffer1 << NONE << std::endl;
+		if (!datas.buffer.empty())
+		{
+			create_send = ft_created_reponse(&datas);  ////-----------------------------------------------
+			bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); 
+		}
+		
 		datas.status = "200 webser42_OK :)";
 		if (bytes_sent == -1)
 			ft_error("Error : send", &datas);
