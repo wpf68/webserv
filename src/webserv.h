@@ -42,6 +42,7 @@
 #include <fcntl.h>
 #include <fstream>
 #include <signal.h>
+#include <ctime>
 
 #define MY_PORT 8003
 #define MY_IP "127.0.0.1"
@@ -55,6 +56,7 @@ typedef struct s_parsing
     std::string client_path;
     std::string sec_fetch_dest;
     std::string buffer;
+    std::string path_request;
 
     // serveur
     std::string status;

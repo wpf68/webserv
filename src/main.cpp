@@ -124,7 +124,7 @@ int main()
 		ft_adresse_IP(their_addr);
 		
 		iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
-		datas.buffer = buffer1;
+		datas.buffer = std::string(buffer1);
 		std::cout << WHITE "\nBuffer1 Client : \n" CYANE << datas.buffer << NONE << std::endl;
 		//std::cout << WHITE "\nBuffer1 Client : \n" CYANE << buffer1 << NONE << std::endl;
 		if (!datas.buffer.empty())
