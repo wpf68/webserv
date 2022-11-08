@@ -131,14 +131,16 @@ int main()
 		{
 			create_send = ft_created_reponse(&datas);  ////-----------------------------------------------
 			bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); 
+			result = shutdown (new_fd, 2);
+			if (result == -1)
+				ft_error("Error : shutdown", &datas);
+
 		}
 		
 		datas.status = "200 webser42_OK :)";
 		if (bytes_sent == -1)
 			ft_error("Error : send", &datas);
-		result = shutdown (new_fd, 2);
-		if (result == -1)
-			ft_error("Error : shutdown", &datas);
+		
 		std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
 		result = close(new_fd);
 		if (result == -1)
