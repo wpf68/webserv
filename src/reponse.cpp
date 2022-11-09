@@ -30,7 +30,8 @@ static std::string ft_read_file(t_parsing *datas)
 		//     datas->status = "500";
 		//     return (datas->file_500);
 		// }
-		return (file);
+		datas->list_request_received = "";
+		return (datas->file_404);
 	}
 	while (my_flux.get(c))
 		file += c;
@@ -38,11 +39,13 @@ static std::string ft_read_file(t_parsing *datas)
 	return (file);
 }
 
-static void ft_test_request_exist(t_parsing *datas, std::string &path_request)
+static int ft_test_request_exist(t_parsing *datas, std::string &path_request)
 {
 	std::size_t	position_request;
 	std::string type;
+	int			status;
 
+	status = 0;
 	
 	std::cout << WHITE "***********  TEST REQUEST EXIST *****************" NONE << std::endl;
 	std::cout << "New request : " << path_request << std::endl;
@@ -53,11 +56,21 @@ static void ft_test_request_exist(t_parsing *datas, std::string &path_request)
 	type = ".";
 	type = get_reponse_image_end_line(datas->client_path, type);
 	std::cout << RED "type : " YELLOW << type << NONE "\n" << std::endl;
+
+
+
+
+
+
+
+
+
 	if (type == "html")
 	{
 		if (datas->list_request_received == path_request)  // request already recieve
 		{
-			datas->status = "304 webserv_42_already sent :)";
+			datas->status = "204 webserv_42_already sent :)";
+			status = 1;
 		}
 		else
 		{
@@ -69,6 +82,7 @@ static void ft_test_request_exist(t_parsing *datas, std::string &path_request)
 	std::cout << "Status : " << datas->status << std::endl;
 	std::cout << "New list request : " << datas->list_request_received << std::endl;
 	std::cout << WHITE "*************************************************" NONE << std::endl;
+	return (status);
 }
 
 static std::string ft_created_body_reponse(t_parsing *datas)
@@ -90,7 +104,8 @@ static std::string ft_created_body_reponse(t_parsing *datas)
 	std::cout << RED "PATH Reponse Server : " YELLOW << datas->client_path << NONE "\n" << std::endl;
 
 	// test request deja demandé ou non
-	ft_test_request_exist(datas, datas->client_path);
+	if (ft_test_request_exist(datas, datas->client_path))
+		return ("");
 
 
 	file = ft_read_file(datas);
