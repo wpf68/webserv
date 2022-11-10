@@ -40,7 +40,7 @@ void	ft_init(t_parsing *datas)
 
 	datas->content_type = "";
 	datas->status = "200 webser42_OK :)";
-	datas->file_500 = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\">This page is temporarily unavailable</h1>\n</body>\n</html>";
+	datas->file_500 = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\">This page is temporarily unavailable - 500 - </h1>\n</body>\n</html>";
 	datas->file_404 = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\"> ******   404    ****** </h1>\n</body>\n</html>";
 
 	datas->list_request_received = "";
@@ -85,6 +85,8 @@ int main()
 	server.sin_addr.s_addr = INADDR_ANY;  //server.sin_addr.s_addr = htonl(INADDR_ANY); // server.sin_addr.s_addr = inet_addr(MY_IP);
 	bzero(&(server.sin_zero), 8);
 	std::cout << GREEN "Port : " WHITE << ntohs(server.sin_port) << NONE << std::endl;  // test
+
+
 
 	result = bind(fd_socket, (struct sockaddr *)&server, sizeof(struct sockaddr));  // voir les liens entre bind et connect  !!!!!!
 	if (result == -1)
@@ -132,6 +134,8 @@ int main()
 		if (!datas.buffer.empty())
 		{
 			create_send = ft_created_reponse(&datas);  ////-----------------------------------------------
+			
+			
 			bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); 
 			result = shutdown (new_fd, 2);
 			if (result == -1)

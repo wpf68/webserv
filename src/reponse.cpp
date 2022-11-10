@@ -18,6 +18,17 @@ static std::string ft_read_file(t_parsing *datas)
 	std::string	file;
 
 	file = "";
+
+	// ---  test pour page 500
+	if (datas->client_path == "HTML/site_1/500.html")
+	{
+		datas->list_request_received = "";
+		datas->status = "500 webser42_error_server :(";
+			return (datas->file_500);
+
+	}
+	std::cout << "------- datas->client_path : " << datas->client_path << " --------" << std::endl;
+	//datas->client_path = "HTML/404.html";
 	std::ifstream my_flux(datas->client_path);
 	if (!my_flux)
 	{
@@ -30,8 +41,19 @@ static std::string ft_read_file(t_parsing *datas)
 		//     datas->status = "500";
 		//     return (datas->file_500);
 		// }
+		datas->client_path = "HTML/404.html";
 		datas->list_request_received = "";
-		return (datas->file_404);
+		std::ifstream my_flux2(datas->client_path);
+		if (!my_flux2)
+		{
+			datas->status = "500 webser42_error_server :(";
+			return (datas->file_500);
+		}
+		while (my_flux2.get(c))
+		file += c;
+		my_flux2.close();
+		return (file);
+		
 	}
 	while (my_flux.get(c))
 		file += c;
