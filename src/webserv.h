@@ -44,7 +44,12 @@
 #include <signal.h>
 #include <ctime>
 
+// pour multi client :
+#include <sys/time.h>
+#include <sys/select.h>
+
 #define MY_PORT 8003
+#define MY_PORT2 8002  //  test multi clients
 #define MY_IP "127.0.0.1"
 #define NB_CONNECT 10
 #define SIZE_RECV  104424

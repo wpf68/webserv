@@ -87,14 +87,14 @@ static int ft_test_request_exist(t_parsing *datas, std::string &path_request)
 
 
 
-	if (type == "html")
+	if (type == "html")   //  test 204 en pause pour les test multi port
 	{
-		if (datas->list_request_received == path_request)  // request already recieve
-		{
-			datas->status = "204 webserv_42_already sent :)";
-			status = 1;
-		}
-		else
+							// if (datas->list_request_received == path_request)  // request already recieve
+							// {
+							// 	datas->status = "204 webserv_42_already sent :)";
+							// 	status = 1;
+							// }
+							//else
 		{
 			datas->list_request_received = path_request;
 		}

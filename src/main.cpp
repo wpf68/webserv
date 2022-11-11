@@ -58,15 +58,35 @@ static void	ft_exit(int var)
 
 int main()
 {
+	std::string	dot[4] = {".  ", ".. ", "...", "...."};
+	int			n_anim = 0;
+
+
+
 	//std::cout << ft_read_file("HTML/index.html");
 	
 	//return (0);
 	// infos server
 	int					fd_socket;
+	int					fd_socket2;  // test multi clients
 	struct sockaddr_in  server;
+	struct sockaddr_in  server2;  //  test multi clients
+
 	int					result;
 	std::string			create_send;
 	t_parsing			datas;
+
+	// multi clients  -------------------------------
+	struct timeval		timeout;
+	fd_set 				readfds;
+
+
+	timeout.tv_sec = 2;
+	timeout.tv_usec = 0;
+	FD_ZERO(&readfds);
+
+
+	// --------------------------------------------------------
 	
 
 	// send to client
@@ -79,6 +99,16 @@ int main()
 		ft_error("Error : socket", &datas);
 	std::cout << YELLOW "socket OK :: fd_socket = " WHITE << fd_socket << NONE << std::endl;
 
+			//  ----  test multi clients
+			fd_socket2 = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); // mettre 0 pour IPPROTO_TCP !
+			if (fd_socket2 == -1)
+				ft_error("Error : socket2", &datas);
+			std::cout << YELLOW "socket OK :: fd_socket2 = " WHITE << fd_socket2 << NONE << std::endl;
+
+
+	FD_SET(fd_socket, &readfds);  // multi clients
+	FD_SET(fd_socket2, &readfds);  // multi clients
+
 	server.sin_port = htons(MY_PORT);
 	server.sin_family = AF_INET;
 	// INADDR_ANY  ==> toutes les sources sont acceptés 127.x.x.x 
@@ -86,16 +116,33 @@ int main()
 	bzero(&(server.sin_zero), 8);
 	std::cout << GREEN "Port : " WHITE << ntohs(server.sin_port) << NONE << std::endl;  // test
 
+			server2.sin_port = htons(MY_PORT2);
+			server2.sin_family = AF_INET;
+			// INADDR_ANY  ==> toutes les sources sont acceptés 127.x.x.x 
+			server2.sin_addr.s_addr = INADDR_ANY;  //server.sin_addr.s_addr = htonl(INADDR_ANY); // server.sin_addr.s_addr = inet_addr(MY_IP);
+			bzero(&(server2.sin_zero), 8);
+			std::cout << GREEN "Port : " WHITE << ntohs(server2.sin_port) << NONE << std::endl;  // test
+
 
 
 	result = bind(fd_socket, (struct sockaddr *)&server, sizeof(struct sockaddr));  // voir les liens entre bind et connect  !!!!!!
 	if (result == -1)
 		ft_error("Error : bind", &datas);
 
+			result = bind(fd_socket2, (struct sockaddr *)&server2, sizeof(struct sockaddr));  // voir les liens entre bind et connect  !!!!!!
+			if (result == -1)
+				ft_error("Error : bind2", &datas);
 
-	result = listen(fd_socket, SOMAXCONN); // choix par le système du nbr de connexions appropriés
+//	result = listen(fd_socket, SOMAXCONN); // choix par le système du nbr de connexions appropriés
+	result = listen(fd_socket, 10); // choix par le système du nbr de connexions appropriés
 	if (result == -1)
 		ft_error("Error : listen", &datas);
+
+			result = listen(fd_socket2, 10); // choix par le système du nbr de connexions appropriés
+			if (result == -1)
+				ft_error("Error : listen", &datas);
+
+
 
 	//fcntl(fd_socket, F_SETFL, O_NONBLOCK); // non bloquant -- je pense que cela va permettre de parcourrir toute une liste de port en l'intégrant dans une bloucle
 
@@ -120,38 +167,153 @@ int main()
 		signal(SIGINT, ft_exit);
 		socklen_t			sin_size;
 		sin_size = sizeof(struct sockaddr_in);
-		new_fd = accept(fd_socket, (struct sockaddr *)&their_addr, &sin_size);
-		if (new_fd == -1)
-			ft_error("Error : accept", &datas);
-		std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
 
-		ft_adresse_IP(their_addr);
+
+		//		while (result == 0)
+				{
+					timeout.tv_sec = 1;   //  3h pour comprendre que select remetté cela à 0 ....... !!!!!!!!!!!!
+					timeout.tv_usec = 0;
+
+					FD_ZERO(&readfds);
+			//		FD_CLR(fd_socket2, &readfds);
+					FD_SET(fd_socket2, &readfds);  // multi clients
+			//		FD_CLR(fd_socket, &readfds);
+					FD_SET(fd_socket, &readfds);  // multi clients
+					std::cout << "\rWaiting on a connection " << dot[n_anim++] << std::flush;
+					if (n_anim == 4)
+						n_anim = 0;
+					result = select(5, &readfds, NULL, NULL, &timeout);
+				}
+					  // ---------------------
+
+
+					if (result)
+					{
+						if (FD_ISSET(fd_socket, &readfds))   //---------------------------
+						{
+							std::cout << GREEN "Port select : " WHITE << ntohs(server.sin_port) << NONE << std::endl;  // test
+							new_fd = accept(fd_socket, (struct sockaddr *)&their_addr, &sin_size);
+							//FD_CLR(fd_socket, &readfds);
+							//close (fd_socket);
+
+							if (new_fd == -1)
+								ft_error("Error : accept", &datas);
+							std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
+
+							ft_adresse_IP(their_addr);
+							
+							iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
+							datas.buffer = std::string(buffer1);
+							std::cout << WHITE "\nBuffer1 Client : \n" CYANE << datas.buffer << NONE << std::endl;
+							if (!datas.buffer.empty())
+							{
+								create_send = ft_created_reponse(&datas);  ////-----------------------------------------------
+								
+								
+								bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); 
+								result = shutdown (new_fd, 2);
+								if (result == -1)
+									ft_error("Error : shutdown", &datas);
+
+							}
+							
+							datas.status = "200 webser42_OK :)";
+							if (bytes_sent == -1)
+								ft_error("Error : send", &datas);
+							
+							std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
+							result = close(new_fd);
+							if (result == -1)
+								ft_error("Error : close new_fd", &datas);
+							std::cout << GREEN "Close new_fd" NONE << std::endl;
+						}
+							
+						else if (FD_ISSET(fd_socket2, &readfds))   //---------------------------
+						{
+							std::cout << GREEN "Port select : " WHITE << ntohs(server2.sin_port) << NONE << std::endl;  // test
+							new_fd = accept(fd_socket2, (struct sockaddr *)&their_addr, &sin_size);
+							if (new_fd == -1)
+								ft_error("Error : accept", &datas);
+							std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
+
+							ft_adresse_IP(their_addr);
+							
+							iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
+							datas.buffer = std::string(buffer1);
+							std::cout << WHITE "\nBuffer1 Client : \n" CYANE << datas.buffer << NONE << std::endl;
+							if (!datas.buffer.empty())
+							{
+								create_send = ft_created_reponse(&datas);  ////-----------------------------------------------
+								
+								
+								bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); 
+								result = shutdown (new_fd, 2);
+								if (result == -1)
+									ft_error("Error : shutdown", &datas);
+
+							}
+							
+							datas.status = "200 webser42_OK :)";
+							if (bytes_sent == -1)
+								ft_error("Error : send", &datas);
+							
+							std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
+							result = close(new_fd);
+							if (result == -1)
+								ft_error("Error : close new_fd", &datas);
+							std::cout << GREEN "Close new_fd" NONE << std::endl;
+						}
+
+
+
+
+					}
+
+			// 		FD_ZERO(&readfds);
+			// //		FD_CLR(fd_socket2, &readfds);
+			// 		FD_SET(fd_socket2, &readfds);  // multi clients
+			// //		FD_CLR(fd_socket, &readfds);
+			// 		FD_SET(fd_socket, &readfds);  // multi clients
+			// 		std::cout << "\rWaiting on a connection" << dot[n++] << std::flush;
+			// 		if (n == 3)
+			// 			n = 0;
+						
+				//	else
+				//		std::cout << "Select NO ++++++++++++++++++" << std::endl;
+
+					
+
+		// new_fd = accept(fd_socket, (struct sockaddr *)&their_addr, &sin_size);
+		// if (new_fd == -1)
+		// 	ft_error("Error : accept", &datas);
+		// std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
+
+		// ft_adresse_IP(their_addr);
 		
-		iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
-		datas.buffer = std::string(buffer1);
-		std::cout << WHITE "\nBuffer1 Client : \n" CYANE << datas.buffer << NONE << std::endl;
-		//std::cout << WHITE "\nBuffer1 Client : \n" CYANE << buffer1 << NONE << std::endl;
-		if (!datas.buffer.empty())
-		{
-			create_send = ft_created_reponse(&datas);  ////-----------------------------------------------
+		// iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
+		// datas.buffer = std::string(buffer1);
+		// std::cout << WHITE "\nBuffer1 Client : \n" CYANE << datas.buffer << NONE << std::endl;
+		// if (!datas.buffer.empty())
+		// {
+		// 	create_send = ft_created_reponse(&datas);  ////-----------------------------------------------
 			
 			
-			bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); 
-			result = shutdown (new_fd, 2);
-			if (result == -1)
-				ft_error("Error : shutdown", &datas);
+		// 	bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); 
+		// 	result = shutdown (new_fd, 2);
+		// 	if (result == -1)
+		// 		ft_error("Error : shutdown", &datas);
 
-		}
+		// }
 		
-		datas.status = "200 webser42_OK :)";
-		if (bytes_sent == -1)
-			ft_error("Error : send", &datas);
+		// datas.status = "200 webser42_OK :)";
+		// if (bytes_sent == -1)
+		// 	ft_error("Error : send", &datas);
 		
-		std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
-		result = close(new_fd);
-		if (result == -1)
-			ft_error("Error : close new_fd", &datas);
-		std::cout << GREEN "Close new_fd" NONE << std::endl;
+		// std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
+		// result = close(new_fd);
+		// if (result == -1)
+		// 	ft_error("Error : close new_fd", &datas);
+		// std::cout << GREEN "Close new_fd" NONE << std::endl;
 	}	
 	result = close(fd_socket);
 	if (result == -1)
