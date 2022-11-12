@@ -47,6 +47,7 @@
 // pour multi client :
 #include <sys/time.h>
 #include <sys/select.h>
+#include <vector>
 
 #define MY_PORT 8003
 #define MY_PORT2 8002  //  test multi clients
@@ -54,7 +55,7 @@
 #define NB_CONNECT 10
 #define SIZE_RECV  104424
 
-typedef struct s_parsing
+typedef struct s_client
 {
     // client
     std::string client_get_post;
@@ -70,17 +71,45 @@ typedef struct s_parsing
     std::string file_404;
     std::string list_request_received;
 
+    int					fd_socket;
+    struct sockaddr_in  server;
+    std::string			create_send;
+
+
+}   t_client;
+
+typedef struct s_server
+{
+    std::vector<t_client>  clients;
+    int nb_server;
+
+
+
+}   t_server;
+
+typedef struct s_parsing
+{
+    std::vector<int>            my_port; 
+    std::vector<std::string>    my_ip;
+    std::vector<std::string>    name_server;
+    std::vector<std::string>    root;
+    std::vector<std::string>    location;
+    std::vector<std::string>    methods;
+    std::vector<std::string>    cgi_extension;
+    std::vector<std::string>    cgi_bin;
+
+    int                         nb_server; 
 }   t_parsing;
 
 
 void	ft_adresse_IP(struct sockaddr_in &their_addr);
-void    ft_error(std::string msg, t_parsing *datas);
+void    ft_error(std::string msg, t_client *datas);
 
 std::string get_reponse_space(std::string &buffer, std::string &request);
 std::string get_reponse_end_line(std::string &buffer, std::string &request);
 std::string get_reponse_image_end_line(std::string &buffer, std::string &request);
 
-std::string ft_created_reponse(t_parsing *datas);
+std::string ft_created_reponse(t_client *datas);
 
 
 

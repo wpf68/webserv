@@ -14,7 +14,7 @@
 
 
 
-void    ft_error(std::string msg, t_parsing *datas)
+void    ft_error(std::string msg, t_client *datas)
 {
 	(void) datas;
 	std::cout << RED << msg << NONE << std::endl;
@@ -32,8 +32,11 @@ void	ft_adresse_IP(struct sockaddr_in &their_addr)
 	std::cout << GREEN "  Port : " WHITE << ntohs(their_addr.sin_port) << NONE << std::endl;
 }
 
-void	ft_init(t_parsing *datas)
+void	ft_init(t_client *datas, t_server *firefox)
 {
+	int	result;
+
+	//firefox->clients.at(0).fd_socket = 54321;
 	datas->client_get_post = "";
 	datas->client_path = "";
 	datas->sec_fetch_dest = "";
@@ -44,6 +47,28 @@ void	ft_init(t_parsing *datas)
 	datas->file_404 = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\"> ******   404    ****** </h1>\n</body>\n</html>";
 
 	datas->list_request_received = "";
+	
+	datas->fd_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); // mettre 0 pour IPPROTO_TCP !
+	if (datas->fd_socket == -1)
+		ft_error("Error : socket", datas);
+	std::cout << YELLOW "socket OK :: fd_socket = " WHITE << datas->fd_socket << NONE << std::endl;
+
+	datas->server.sin_port = htons(MY_PORT);
+	datas->server.sin_family = AF_INET;
+	// INADDR_ANY  ==> toutes les sources sont acceptés 127.x.x.x 
+	datas->server.sin_addr.s_addr = INADDR_ANY;  //server.sin_addr.s_addr = htonl(INADDR_ANY); // server.sin_addr.s_addr = inet_addr(MY_IP);
+	bzero(&(datas->server.sin_zero), 8);
+	std::cout << GREEN "Port : " WHITE << ntohs(datas->server.sin_port) << NONE << std::endl;  // test
+
+	result = bind(datas->fd_socket, (struct sockaddr *)&(datas->server), sizeof(struct sockaddr));  // voir les liens entre bind et connect  !!!!!!
+	if (result == -1)
+		ft_error("Error : bind", datas);
+
+	result = listen(datas->fd_socket, SOMAXCONN); // choix par le système du nbr de connexions appropriés
+	if (result == -1)
+		ft_error("Error : listen", datas);
+
+	std::cout << YELLOW "Server demarre sur le port " WHITE << ntohs(datas->server.sin_port) << NONE << std::endl;
 }
 
 static void	ft_exit(int var)
@@ -55,98 +80,38 @@ static void	ft_exit(int var)
 	exit (0);
 }
 
-
-int main()
+static void	ft_parsing(t_parsing *parsing, std::string *conf)
 {
+	(void)conf;
+
+	parsing->nb_server = 1;
+}
+
+int main(int argc, char **argv)
+{
+	(void)argc;
+	(void)argv;
+
 	std::string	dot[4] = {".  ", ".. ", "...", "...."};
 	int			n_anim = 0;
-
-
-
-	//std::cout << ft_read_file("HTML/index.html");
-	
-	//return (0);
-	// infos server
-	int					fd_socket;
-	int					fd_socket2;  // test multi clients
-	struct sockaddr_in  server;
-	struct sockaddr_in  server2;  //  test multi clients
-
-	int					result;
-	std::string			create_send;
-	t_parsing			datas;
-
-	// multi clients  -------------------------------
+	int			result;
+	int			len;
+	int			bytes_sent;
 	struct timeval		timeout;
 	fd_set 				readfds;
 
+	std::string	conf = "default.conf";  // pour test, à get de argv
 
-	timeout.tv_sec = 2;
-	timeout.tv_usec = 0;
-	FD_ZERO(&readfds);
+	t_server	firefox;
+	t_parsing	parsing;
 
+	ft_parsing(&parsing, &conf);
+	firefox.nb_server = parsing.nb_server;
 
-	// --------------------------------------------------------
 	
-
-	// send to client
-	int	len;
-	int	bytes_sent;
-
-	ft_init(&datas);
-	fd_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); // mettre 0 pour IPPROTO_TCP !
-	if (fd_socket == -1)
-		ft_error("Error : socket", &datas);
-	std::cout << YELLOW "socket OK :: fd_socket = " WHITE << fd_socket << NONE << std::endl;
-
-			//  ----  test multi clients
-			fd_socket2 = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); // mettre 0 pour IPPROTO_TCP !
-			if (fd_socket2 == -1)
-				ft_error("Error : socket2", &datas);
-			std::cout << YELLOW "socket OK :: fd_socket2 = " WHITE << fd_socket2 << NONE << std::endl;
-
-
-	FD_SET(fd_socket, &readfds);  // multi clients
-	FD_SET(fd_socket2, &readfds);  // multi clients
-
-	server.sin_port = htons(MY_PORT);
-	server.sin_family = AF_INET;
-	// INADDR_ANY  ==> toutes les sources sont acceptés 127.x.x.x 
-	server.sin_addr.s_addr = INADDR_ANY;  //server.sin_addr.s_addr = htonl(INADDR_ANY); // server.sin_addr.s_addr = inet_addr(MY_IP);
-	bzero(&(server.sin_zero), 8);
-	std::cout << GREEN "Port : " WHITE << ntohs(server.sin_port) << NONE << std::endl;  // test
-
-			server2.sin_port = htons(MY_PORT2);
-			server2.sin_family = AF_INET;
-			// INADDR_ANY  ==> toutes les sources sont acceptés 127.x.x.x 
-			server2.sin_addr.s_addr = INADDR_ANY;  //server.sin_addr.s_addr = htonl(INADDR_ANY); // server.sin_addr.s_addr = inet_addr(MY_IP);
-			bzero(&(server2.sin_zero), 8);
-			std::cout << GREEN "Port : " WHITE << ntohs(server2.sin_port) << NONE << std::endl;  // test
-
-
-
-	result = bind(fd_socket, (struct sockaddr *)&server, sizeof(struct sockaddr));  // voir les liens entre bind et connect  !!!!!!
-	if (result == -1)
-		ft_error("Error : bind", &datas);
-
-			result = bind(fd_socket2, (struct sockaddr *)&server2, sizeof(struct sockaddr));  // voir les liens entre bind et connect  !!!!!!
-			if (result == -1)
-				ft_error("Error : bind2", &datas);
-
-//	result = listen(fd_socket, SOMAXCONN); // choix par le système du nbr de connexions appropriés
-	result = listen(fd_socket, 10); // choix par le système du nbr de connexions appropriés
-	if (result == -1)
-		ft_error("Error : listen", &datas);
-
-			result = listen(fd_socket2, 10); // choix par le système du nbr de connexions appropriés
-			if (result == -1)
-				ft_error("Error : listen", &datas);
-
-
-
-	//fcntl(fd_socket, F_SETFL, O_NONBLOCK); // non bloquant -- je pense que cela va permettre de parcourrir toute une liste de port en l'intégrant dans une bloucle
-
-	std::cout << YELLOW "Server demarre sur le port " WHITE << ntohs(server.sin_port) << NONE << std::endl;
+	t_client	datas;
+	ft_init(&datas, &firefox);
+	
 	char	buffer1[SIZE_RECV] = { 0 };
 	int		iLastRecievedBufferLen = 0;
 	int					new_fd;
@@ -175,166 +140,68 @@ int main()
 					timeout.tv_usec = 0;
 
 					FD_ZERO(&readfds);
-			//		FD_CLR(fd_socket2, &readfds);
-					FD_SET(fd_socket2, &readfds);  // multi clients
-			//		FD_CLR(fd_socket, &readfds);
-					FD_SET(fd_socket, &readfds);  // multi clients
+					for (int i = 0; i < firefox.nb_server; i++)
+						FD_SET(datas.fd_socket, &readfds);  // multi clients
 					std::cout << "\rWaiting on a connection " << dot[n_anim++] << std::flush;
 					if (n_anim == 4)
 						n_anim = 0;
-					result = select(5, &readfds, NULL, NULL, &timeout);
+					result = select(firefox.nb_server + 3, &readfds, NULL, NULL, &timeout);
 				}
-					  // ---------------------
-
 
 					if (result)
 					{
-						if (FD_ISSET(fd_socket, &readfds))   //---------------------------
+						for (int i = 0; i < firefox.nb_server; i++)
 						{
-							std::cout << GREEN "Port select : " WHITE << ntohs(server.sin_port) << NONE << std::endl;  // test
-							new_fd = accept(fd_socket, (struct sockaddr *)&their_addr, &sin_size);
-							//FD_CLR(fd_socket, &readfds);
-							//close (fd_socket);
-
-							if (new_fd == -1)
-								ft_error("Error : accept", &datas);
-							std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
-
-							ft_adresse_IP(their_addr);
-							
-							iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
-							datas.buffer = std::string(buffer1);
-							std::cout << WHITE "\nBuffer1 Client : \n" CYANE << datas.buffer << NONE << std::endl;
-							if (!datas.buffer.empty())
+							if (FD_ISSET(datas.fd_socket, &readfds))   //---------------------------
 							{
-								create_send = ft_created_reponse(&datas);  ////-----------------------------------------------
+								std::cout << GREEN "Port select : " WHITE << ntohs(datas.server.sin_port) << NONE << std::endl;  // test
+								new_fd = accept(datas.fd_socket, (struct sockaddr *)&their_addr, &sin_size);
+								if (new_fd == -1)
+									ft_error("Error : accept", &datas);
+								std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
+
+								ft_adresse_IP(their_addr);
 								
+								iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
+								datas.buffer = std::string(buffer1);
+								std::cout << WHITE "\nBuffer1 Client : \n" CYANE << datas.buffer << NONE << std::endl;
+								if (!datas.buffer.empty())
+								{
+									datas.create_send = ft_created_reponse(&datas);  ////-----------------------------------------------							
+									bytes_sent = send(new_fd, datas.create_send.c_str(), datas.create_send.size(), 0); 
+									result = shutdown (new_fd, 2);
+									if (result == -1)
+										ft_error("Error : shutdown", &datas);
+
+								}
 								
-								bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); 
-								result = shutdown (new_fd, 2);
+								datas.status = "200 webser42_OK :)";
+								if (bytes_sent == -1)
+									ft_error("Error : send", &datas);
+								
+								std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
+								result = close(new_fd);
 								if (result == -1)
-									ft_error("Error : shutdown", &datas);
-
+									ft_error("Error : close new_fd", &datas);
+								std::cout << GREEN "Close new_fd" NONE << std::endl;
 							}
-							
-							datas.status = "200 webser42_OK :)";
-							if (bytes_sent == -1)
-								ft_error("Error : send", &datas);
-							
-							std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
-							result = close(new_fd);
-							if (result == -1)
-								ft_error("Error : close new_fd", &datas);
-							std::cout << GREEN "Close new_fd" NONE << std::endl;
 						}
-							
-						else if (FD_ISSET(fd_socket2, &readfds))   //---------------------------
-						{
-							std::cout << GREEN "Port select : " WHITE << ntohs(server2.sin_port) << NONE << std::endl;  // test
-							new_fd = accept(fd_socket2, (struct sockaddr *)&their_addr, &sin_size);
-							if (new_fd == -1)
-								ft_error("Error : accept", &datas);
-							std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
-
-							ft_adresse_IP(their_addr);
-							
-							iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
-							datas.buffer = std::string(buffer1);
-							std::cout << WHITE "\nBuffer1 Client : \n" CYANE << datas.buffer << NONE << std::endl;
-							if (!datas.buffer.empty())
-							{
-								create_send = ft_created_reponse(&datas);  ////-----------------------------------------------
-								
-								
-								bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); 
-								result = shutdown (new_fd, 2);
-								if (result == -1)
-									ft_error("Error : shutdown", &datas);
-
-							}
-							
-							datas.status = "200 webser42_OK :)";
-							if (bytes_sent == -1)
-								ft_error("Error : send", &datas);
-							
-							std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
-							result = close(new_fd);
-							if (result == -1)
-								ft_error("Error : close new_fd", &datas);
-							std::cout << GREEN "Close new_fd" NONE << std::endl;
-						}
-
-
-
-
 					}
+							
 
-			// 		FD_ZERO(&readfds);
-			// //		FD_CLR(fd_socket2, &readfds);
-			// 		FD_SET(fd_socket2, &readfds);  // multi clients
-			// //		FD_CLR(fd_socket, &readfds);
-			// 		FD_SET(fd_socket, &readfds);  // multi clients
-			// 		std::cout << "\rWaiting on a connection" << dot[n++] << std::flush;
-			// 		if (n == 3)
-			// 			n = 0;
-						
-				//	else
-				//		std::cout << "Select NO ++++++++++++++++++" << std::endl;
-
-					
-
-		// new_fd = accept(fd_socket, (struct sockaddr *)&their_addr, &sin_size);
-		// if (new_fd == -1)
-		// 	ft_error("Error : accept", &datas);
-		// std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
-
-		// ft_adresse_IP(their_addr);
-		
-		// iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
-		// datas.buffer = std::string(buffer1);
-		// std::cout << WHITE "\nBuffer1 Client : \n" CYANE << datas.buffer << NONE << std::endl;
-		// if (!datas.buffer.empty())
-		// {
-		// 	create_send = ft_created_reponse(&datas);  ////-----------------------------------------------
-			
-			
-		// 	bytes_sent = send(new_fd, create_send.c_str(), create_send.size(), 0); 
-		// 	result = shutdown (new_fd, 2);
-		// 	if (result == -1)
-		// 		ft_error("Error : shutdown", &datas);
-
-		// }
-		
-		// datas.status = "200 webser42_OK :)";
-		// if (bytes_sent == -1)
-		// 	ft_error("Error : send", &datas);
-		
-		// std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
-		// result = close(new_fd);
-		// if (result == -1)
-		// 	ft_error("Error : close new_fd", &datas);
-		// std::cout << GREEN "Close new_fd" NONE << std::endl;
 	}	
-	result = close(fd_socket);
-	if (result == -1)
-		ft_error("Error : close socket", &datas);
-	std::cout << GREEN "Close fd_socket" NONE << std::endl;
-	return (0);
-}
-
-
-/*   ***** Animation wait   *********     */
-/*
-	std::string	dot[3] = {".  ", ".. ", "..."};
-	int			n = 0;
-	for(;;)
+	// boucle à prévoir ------------------------
+	for (int i = 0; i < firefox.nb_server; i++)
 	{
-		std::cout << "\rWaiting on a connection" << dot[n++] << std::flush;
-		if (n == 3)
-			n = 0;
+		result = close(datas.fd_socket);
+		if (result == -1)
+			ft_error("Error : close socket", &datas);
+		std::cout << GREEN "Close fd_socket" NONE << std::endl;
 
 	}
-*/
+		
+	return (0);
+}
 
 
 /*         *********    donne IP adresse d'un Host name   **********    */

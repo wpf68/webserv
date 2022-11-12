@@ -12,7 +12,7 @@
 
 #include "webserv.h"
 
-static std::string ft_read_file(t_parsing *datas)
+static std::string ft_read_file(t_client *datas)
 {
 	char		c;
 	std::string	file;
@@ -61,7 +61,7 @@ static std::string ft_read_file(t_parsing *datas)
 	return (file);
 }
 
-static int ft_test_request_exist(t_parsing *datas, std::string &path_request)
+static int ft_test_request_exist(t_client *datas, std::string &path_request)
 {
 	std::size_t	position_request;
 	std::string type;
@@ -107,7 +107,7 @@ static int ft_test_request_exist(t_parsing *datas, std::string &path_request)
 	return (status);
 }
 
-static std::string ft_created_body_reponse(t_parsing *datas)
+static std::string ft_created_body_reponse(t_client *datas)
 {
 	std::string	file;    
 //	std::string	path_request;
@@ -134,7 +134,7 @@ static std::string ft_created_body_reponse(t_parsing *datas)
 	return (file);
 }
 
-static void ft_type_image(t_parsing *datas)
+static void ft_type_image(t_client *datas)
 {
 	std::string type_image;
 
@@ -157,7 +157,7 @@ static void ft_type_image(t_parsing *datas)
 
 }
 
-static void ft_test_content_type(t_parsing *datas)
+static void ft_test_content_type(t_client *datas)
 {
 	std::string reponse;
 
@@ -169,7 +169,7 @@ static void ft_test_content_type(t_parsing *datas)
 		datas->content_type = "Content-Type: \r\n";
 }
 
-static void  ft_get_content_type (t_parsing *datas)
+static void  ft_get_content_type (t_client *datas)
 {
   //  std::string content_type;
 
@@ -193,7 +193,7 @@ static std::string	ft_date(void)
 	return (std::string(buffer));
 }
 
-std::string ft_created_reponse(t_parsing *datas)
+std::string ft_created_reponse(t_client *datas)
 {
 	std::string	create_send;
 	std::string	body_reponse;
