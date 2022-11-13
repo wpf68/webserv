@@ -32,43 +32,92 @@ void	ft_adresse_IP(struct sockaddr_in &their_addr)
 	std::cout << GREEN "  Port : " WHITE << ntohs(their_addr.sin_port) << NONE << std::endl;
 }
 
-void	ft_init(t_client *datas, t_server *firefox)
+// void	ft_init(t_client *datas, t_server *firefox)
+// {
+// 	int	result;
+
+// 	//firefox->clients.at(0).fd_socket = 54321;
+// 	datas->client_get_post = "";
+// 	datas->client_path = "";
+// 	datas->sec_fetch_dest = "";
+
+// 	datas->content_type = "";
+// 	datas->status = "200 webser42_OK :)";
+// 	datas->file_500 = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\">This page is temporarily unavailable - 500 - </h1>\n</body>\n</html>";
+// 	datas->file_404 = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\"> ******   404    ****** </h1>\n</body>\n</html>";
+
+// 	datas->list_request_received = "";
+	
+// 	datas->fd_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); // mettre 0 pour IPPROTO_TCP !
+// 	if (datas->fd_socket == -1)
+// 		ft_error("Error : socket", datas);
+// 	std::cout << YELLOW "socket OK :: fd_socket = " WHITE << datas->fd_socket << NONE << std::endl;
+
+// 	datas->server.sin_port = htons(MY_PORT);
+// 	datas->server.sin_family = AF_INET;
+// 	// INADDR_ANY  ==> toutes les sources sont acceptés 127.x.x.x 
+// 	datas->server.sin_addr.s_addr = INADDR_ANY;  //server.sin_addr.s_addr = htonl(INADDR_ANY); // server.sin_addr.s_addr = inet_addr(MY_IP);
+// 	bzero(&(datas->server.sin_zero), 8);
+// 	std::cout << GREEN "Port : " WHITE << ntohs(datas->server.sin_port) << NONE << std::endl;  // test
+
+// 	result = bind(datas->fd_socket, (struct sockaddr *)&(datas->server), sizeof(struct sockaddr));  // voir les liens entre bind et connect  !!!!!!
+// 	if (result == -1)
+// 		ft_error("Error : bind", datas);
+
+// 	result = listen(datas->fd_socket, SOMAXCONN); // choix par le système du nbr de connexions appropriés
+// 	if (result == -1)
+// 		ft_error("Error : listen", datas);
+
+// 	std::cout << YELLOW "Server demarre sur le port " WHITE << ntohs(datas->server.sin_port) << NONE << std::endl;
+//}
+
+t_client	ft_init_firefox(int i, t_server *firefox)
 {
 	int	result;
+	t_client	datas;
 
 	//firefox->clients.at(0).fd_socket = 54321;
-	datas->client_get_post = "";
-	datas->client_path = "";
-	datas->sec_fetch_dest = "";
+	datas.client_get_post = "";
+	datas.client_path = "";
+	datas.sec_fetch_dest = "";
 
-	datas->content_type = "";
-	datas->status = "200 webser42_OK :)";
-	datas->file_500 = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\">This page is temporarily unavailable - 500 - </h1>\n</body>\n</html>";
-	datas->file_404 = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\"> ******   404    ****** </h1>\n</body>\n</html>";
+	datas.content_type = "";
+	datas.status = "200 webser42_OK :)";
+	datas.file_500 = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\">This page is temporarily unavailable - 500 - </h1>\n</body>\n</html>";
+	datas.file_404 = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\"> ******   404    ****** </h1>\n</body>\n</html>";
 
-	datas->list_request_received = "";
+	datas.list_request_received = "";
 	
-	datas->fd_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); // mettre 0 pour IPPROTO_TCP !
-	if (datas->fd_socket == -1)
-		ft_error("Error : socket", datas);
-	std::cout << YELLOW "socket OK :: fd_socket = " WHITE << datas->fd_socket << NONE << std::endl;
+//	if (i == 0)
+	{
+		datas.fd_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); // mettre 0 pour IPPROTO_TCP !
+		if (datas.fd_socket == -1)
+			ft_error("Error : socket", &datas);
+		std::cout << YELLOW "socket OK :: fd_socket = " WHITE << datas.fd_socket << NONE << std::endl;
+	}
+//	else
+//		datas.fd_socket = firefox->clients[0].fd_socket;
 
-	datas->server.sin_port = htons(MY_PORT);
-	datas->server.sin_family = AF_INET;
+		
+
+	datas.server.sin_port = htons(MY_PORT + i);
+	datas.server.sin_family = AF_INET;
 	// INADDR_ANY  ==> toutes les sources sont acceptés 127.x.x.x 
-	datas->server.sin_addr.s_addr = INADDR_ANY;  //server.sin_addr.s_addr = htonl(INADDR_ANY); // server.sin_addr.s_addr = inet_addr(MY_IP);
-	bzero(&(datas->server.sin_zero), 8);
-	std::cout << GREEN "Port : " WHITE << ntohs(datas->server.sin_port) << NONE << std::endl;  // test
+	datas.server.sin_addr.s_addr = INADDR_ANY;  //server.sin_addr.s_addr = htonl(INADDR_ANY); // server.sin_addr.s_addr = inet_addr(MY_IP);
+	bzero(&(datas.server.sin_zero), 8);
+	std::cout << GREEN "Port : " WHITE << ntohs(datas.server.sin_port) << NONE << std::endl;  // test
 
-	result = bind(datas->fd_socket, (struct sockaddr *)&(datas->server), sizeof(struct sockaddr));  // voir les liens entre bind et connect  !!!!!!
+	result = bind(datas.fd_socket, (struct sockaddr *)&(datas.server), sizeof(struct sockaddr));  // voir les liens entre bind et connect  !!!!!!
 	if (result == -1)
-		ft_error("Error : bind", datas);
+		ft_error("Error : bind", &datas);
 
-	result = listen(datas->fd_socket, SOMAXCONN); // choix par le système du nbr de connexions appropriés
+	result = listen(datas.fd_socket, SOMAXCONN); // choix par le système du nbr de connexions appropriés
 	if (result == -1)
-		ft_error("Error : listen", datas);
+		ft_error("Error : listen", &datas);
 
-	std::cout << YELLOW "Server demarre sur le port " WHITE << ntohs(datas->server.sin_port) << NONE << std::endl;
+	std::cout << YELLOW "Server demarre sur le port " WHITE << ntohs(datas.server.sin_port) << NONE << std::endl;
+
+	return (datas);
 }
 
 static void	ft_exit(int var)
@@ -84,7 +133,7 @@ static void	ft_parsing(t_parsing *parsing, std::string *conf)
 {
 	(void)conf;
 
-	parsing->nb_server = 1;
+	parsing->nb_server = 3;
 }
 
 int main(int argc, char **argv)
@@ -105,12 +154,17 @@ int main(int argc, char **argv)
 	t_server	firefox;
 	t_parsing	parsing;
 
+	
+
 	ft_parsing(&parsing, &conf);
 	firefox.nb_server = parsing.nb_server;
 
+	for (int i = 0; i < firefox.nb_server; i++)
+		firefox.clients.push_back(ft_init_firefox(i, &firefox));
+	std::cout << GREEN "Nb de clients dans firefox : " << firefox.clients.size() << NONE << std::endl;
 	
-	t_client	datas;
-	ft_init(&datas, &firefox);
+//	t_client	datas;
+	//ft_init(&datas, &firefox);
 	
 	char	buffer1[SIZE_RECV] = { 0 };
 	int		iLastRecievedBufferLen = 0;
@@ -141,7 +195,7 @@ int main(int argc, char **argv)
 
 					FD_ZERO(&readfds);
 					for (int i = 0; i < firefox.nb_server; i++)
-						FD_SET(datas.fd_socket, &readfds);  // multi clients
+						FD_SET(firefox.clients[i].fd_socket, &readfds);  // multi clients
 					std::cout << "\rWaiting on a connection " << dot[n_anim++] << std::flush;
 					if (n_anim == 4)
 						n_anim = 0;
@@ -152,37 +206,37 @@ int main(int argc, char **argv)
 					{
 						for (int i = 0; i < firefox.nb_server; i++)
 						{
-							if (FD_ISSET(datas.fd_socket, &readfds))   //---------------------------
+							if (FD_ISSET(firefox.clients[i].fd_socket, &readfds))   //---------------------------
 							{
-								std::cout << GREEN "Port select : " WHITE << ntohs(datas.server.sin_port) << NONE << std::endl;  // test
-								new_fd = accept(datas.fd_socket, (struct sockaddr *)&their_addr, &sin_size);
+								std::cout << GREEN "Port select : " WHITE << ntohs(firefox.clients[i].server.sin_port) << NONE << std::endl;  // test
+								new_fd = accept(firefox.clients[i].fd_socket, (struct sockaddr *)&their_addr, &sin_size);
 								if (new_fd == -1)
-									ft_error("Error : accept", &datas);
+									ft_error("Error : accept", &firefox.clients[i]);
 								std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
 
 								ft_adresse_IP(their_addr);
 								
 								iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
-								datas.buffer = std::string(buffer1);
-								std::cout << WHITE "\nBuffer1 Client : \n" CYANE << datas.buffer << NONE << std::endl;
-								if (!datas.buffer.empty())
+								firefox.clients[i].buffer = std::string(buffer1);
+								std::cout << WHITE "\nBuffer1 Client : \n" CYANE << firefox.clients[i].buffer << NONE << std::endl;
+								if (!firefox.clients[i].buffer.empty())
 								{
-									datas.create_send = ft_created_reponse(&datas);  ////-----------------------------------------------							
-									bytes_sent = send(new_fd, datas.create_send.c_str(), datas.create_send.size(), 0); 
+									firefox.clients[i].create_send = ft_created_reponse(&firefox.clients[i]);  ////-----------------------------------------------							
+									bytes_sent = send(new_fd, firefox.clients[i].create_send.c_str(), firefox.clients[i].create_send.size(), 0); 
 									result = shutdown (new_fd, 2);
 									if (result == -1)
-										ft_error("Error : shutdown", &datas);
+										ft_error("Error : shutdown", &firefox.clients[i]);
 
 								}
 								
-								datas.status = "200 webser42_OK :)";
+								firefox.clients[i].status = "200 webser42_OK :)";
 								if (bytes_sent == -1)
-									ft_error("Error : send", &datas);
+									ft_error("Error : send", &firefox.clients[i]);
 								
 								std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
 								result = close(new_fd);
 								if (result == -1)
-									ft_error("Error : close new_fd", &datas);
+									ft_error("Error : close new_fd", &firefox.clients[i]);
 								std::cout << GREEN "Close new_fd" NONE << std::endl;
 							}
 						}
@@ -193,9 +247,9 @@ int main(int argc, char **argv)
 	// boucle à prévoir ------------------------
 	for (int i = 0; i < firefox.nb_server; i++)
 	{
-		result = close(datas.fd_socket);
+		result = close(firefox.clients[i].fd_socket);
 		if (result == -1)
-			ft_error("Error : close socket", &datas);
+			ft_error("Error : close socket", &firefox.clients[i]);
 		std::cout << GREEN "Close fd_socket" NONE << std::endl;
 
 	}
