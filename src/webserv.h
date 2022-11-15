@@ -57,31 +57,37 @@
 
 typedef struct s_client
 {
-    // client
-    std::string client_get_post;
-    std::string client_path;
-    std::string sec_fetch_dest;
-    std::string buffer;
-    std::string path_request;
+	// client
+	std::string client_get_post;
+	std::string client_path;
+	std::string sec_fetch_dest;
+	std::string buffer;
+	std::string path_request;
 
-    // serveur
-    std::string status;
-    std::string content_type;
-    std::string file_500;
-    std::string file_404;
-    std::string list_request_received;
+	// serveur
+	std::string status;
+	std::string content_type;
+	std::string file_500;
+	std::string name_server;
+	std::string list_request_received;
+	std::string	root;
+	std::string location;
 
-    int					fd_socket;
-    struct sockaddr_in  server;
-    std::string			create_send;
+	int					fd_socket;
+	
+	std::string			create_send;
+
+	// parsing
+	std::string 		file_404;
+	struct sockaddr_in  server;
 
 
 }   t_client;
 
 typedef struct s_server
 {
-    std::vector<t_client>  clients;
-    int nb_server;
+	std::vector<t_client>  clients;
+	int nb_server;
 
 
 
@@ -89,16 +95,19 @@ typedef struct s_server
 
 typedef struct s_parsing
 {
-    std::vector<int>            my_port; 
-    std::vector<std::string>    my_ip;
-    std::vector<std::string>    name_server;
-    std::vector<std::string>    root;
-    std::vector<std::string>    location;
-    std::vector<std::string>    methods;
-    std::vector<std::string>    cgi_extension;
-    std::vector<std::string>    cgi_bin;
+	std::vector<std::string>	file_404;
+	std::vector<int>            my_port;
+	std::vector<std::string>    my_ip;
+	std::vector<std::string>    name_server;
+	std::vector<std::string>    root;
+	std::vector<std::string>    location;
+	
+	
+	std::vector<std::string>    methods;
+	std::vector<std::string>    cgi_extension;
+	std::vector<std::string>    cgi_bin;
 
-    int                         nb_server; 
+	int                         nb_server; 
 }   t_parsing;
 
 

@@ -20,28 +20,19 @@ static std::string ft_read_file(t_client *datas)
 	file = "";
 
 	// ---  test pour page 500
-	if (datas->client_path == "HTML/site_1/500.html")
+	if (datas->client_path == datas->root + datas->location + "/500.html")
 	{
 		datas->list_request_received = "";
 		datas->status = "500 webser42_error_server :(";
 			return (datas->file_500);
 
 	}
-	std::cout << "------- datas->client_path : " << datas->client_path << " --------" << std::endl;
-	//datas->client_path = "HTML/404.html";
+	std::cout << "--- datas->client_path : " << datas->client_path << std::endl;
 	std::ifstream my_flux(datas->client_path);
 	if (!my_flux)
 	{
-		//ft_error("Error : open file", datas);
 		datas->status = "404 webser42_error_page :(";
-		// datas->client_path = "HTML/site_1/404.html";
-		// std::ifstream my_flux("HTML/site_1/404.html");
-		// if (!my_flux)
-		// {
-		//     datas->status = "500";
-		//     return (datas->file_500);
-		// }
-		datas->client_path = "HTML/404.html";
+		datas->client_path = datas->file_404;
 		datas->list_request_received = "";
 		std::ifstream my_flux2(datas->client_path);
 		if (!my_flux2)
@@ -53,7 +44,6 @@ static std::string ft_read_file(t_client *datas)
 		file += c;
 		my_flux2.close();
 		return (file);
-		
 	}
 	while (my_flux.get(c))
 		file += c;
@@ -69,9 +59,10 @@ static int ft_test_request_exist(t_client *datas, std::string &path_request)
 
 	status = 0;
 	
-	std::cout << WHITE "***********  TEST REQUEST EXIST *****************" NONE << std::endl;
+	std::cout << WHITE "*******  TEST REQUEST EXIST *******" NONE << std::endl;
 	std::cout << "New request : " << path_request << std::endl;
-	std::cout << "List request already : " << datas->list_request_received << std::endl;
+	std::cout << "List request already : " << datas->list_request_received \
+			<< std::endl;
 
 
 
@@ -80,56 +71,39 @@ static int ft_test_request_exist(t_client *datas, std::string &path_request)
 	std::cout << RED "type : " YELLOW << type << NONE "\n" << std::endl;
 
 
-
-
-
-
-
-
-
-	if (type == "html")   //  test 204 en pause pour les test multi port
+	if (type == "html")
 	{
-							// if (datas->list_request_received == path_request)  // request already recieve
-							// {
-							// 	datas->status = "204 webserv_42_already sent :)";
-							// 	status = 1;
-							// }
-							//else
+		if (datas->list_request_received == path_request) 
 		{
-			datas->list_request_received = path_request;
+			datas->status = "204 webserv_42_already sent :)";
+			status = 1;
 		}
+		else
+			datas->list_request_received = path_request;
 	}
-
-
 	std::cout << "Status : " << datas->status << std::endl;
 	std::cout << "New list request : " << datas->list_request_received << std::endl;
-	std::cout << WHITE "*************************************************" NONE << std::endl;
+	std::cout << WHITE "************************************" NONE << std::endl;
 	return (status);
 }
 
 static std::string ft_created_body_reponse(t_client *datas)
 {
 	std::string	file;    
-//	std::string	path_request;
 
 	datas->path_request = "GET";
 	datas->path_request = get_reponse_space(datas->buffer, datas->path_request);
-	
-	
-
-	std::cout << RED "PATH Request Client : " YELLOW << datas->path_request << NONE "\n" << std::endl;
-	datas->client_path = "HTML/site_1";
+	std::cout << RED "PATH Request Client : " YELLOW << datas->path_request \
+			<< NONE "\n" << std::endl;
+	datas->client_path = datas->root + datas->location;
 	if (datas->path_request == "/")
 		datas->client_path += "/index.html";
 	else
 		datas->client_path += datas->path_request;
-	std::cout << RED "PATH Reponse Server : " YELLOW << datas->client_path << NONE "\n" << std::endl;
-
-	// test request deja demandé ou non
+	std::cout << RED "PATH Reponse Server : " YELLOW << datas->client_path \
+			<< NONE "\n" << std::endl;
 	if (ft_test_request_exist(datas, datas->client_path))
 		return ("");
-
-
 	file = ft_read_file(datas);
 	return (file);
 }
@@ -154,7 +128,6 @@ static void ft_type_image(t_client *datas)
 		datas->content_type = "Content-Type: image/x-icon\r\n";
 	else
 		datas->content_type = "Content-Type: \r\n";
-
 }
 
 static void ft_test_content_type(t_client *datas)
@@ -163,7 +136,8 @@ static void ft_test_content_type(t_client *datas)
 
 	if (datas->sec_fetch_dest == "document")
 		datas->content_type = "Content-Type: text/html; charset=UTF-8\r\n";
-	else if (datas->sec_fetch_dest == "image" || datas->sec_fetch_dest == "iframe" || datas->sec_fetch_dest == "video")
+	else if (datas->sec_fetch_dest == "image" || datas->sec_fetch_dest == "iframe" 
+			|| datas->sec_fetch_dest == "video")
 		ft_type_image(datas);
 	else
 		datas->content_type = "Content-Type: \r\n";
@@ -171,12 +145,10 @@ static void ft_test_content_type(t_client *datas)
 
 static void  ft_get_content_type (t_client *datas)
 {
-  //  std::string content_type;
-
 	datas->content_type = "Sec-Fetch-Dest:";
 	datas->sec_fetch_dest = get_reponse_end_line(datas->buffer, datas->content_type);
-   // content_type += "\r\n";
-	std::cout << RED "Sec-Fetch-Dest Client : " YELLOW << datas->sec_fetch_dest << NONE "\n" << std::endl;
+	std::cout << RED "Sec-Fetch-Dest Client : " YELLOW << datas->sec_fetch_dest \
+			<< NONE "\n" << std::endl;
 	ft_test_content_type(datas);
 }
 
@@ -187,8 +159,8 @@ static std::string	ft_date(void)
   	char buffer [80];
 
 	time (&rawtime);
- 	timeinfo = localtime (&rawtime);
-	strftime (buffer,80,"Date: %a, %d %b %Y %H:%M:%S GMT",timeinfo);
+	timeinfo = gmtime (&rawtime);
+	strftime (buffer,80,"Date: %a, %d %b %Y %H:%M:%S %Z",timeinfo);
 
 	return (std::string(buffer));
 }
@@ -205,16 +177,11 @@ std::string ft_created_reponse(t_client *datas)
 	create_send += "Content-Location: " + datas->path_request +"\r\n";
 	ft_get_content_type(datas);
 	create_send += datas->content_type;
-//	create_send += "Date: Mon, 31 Oct 2022 17:15:12 GMT\r\n";
 	create_send += ft_date() + "\r\n";
-	create_send += "Server: webserv/42\r\n\n";
-
-
+	create_send += "Server: " + datas->name_server + "\r\n\n";
 	std::cout << create_send << std::endl;
 	create_send += body_reponse + "\r\n";
 	
-
-
 	return (create_send);
 }
 
