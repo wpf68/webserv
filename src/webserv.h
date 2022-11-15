@@ -73,9 +73,8 @@ typedef struct s_client
 	std::string	root;
 	std::string location;
 
-	int					fd_socket;
-	
-	std::string			create_send;
+	int			fd_socket;
+	std::string	create_send;
 
 	// parsing
 	std::string 		file_404;
