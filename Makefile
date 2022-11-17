@@ -14,7 +14,8 @@
 
 NAME		=	webserv
 
-SRCS		= 	src/main.cpp src/request.cpp src/reponse.cpp
+SRCS		= 	src/main.cpp src/request.cpp src/reponse.cpp \
+				src/ft_formulaire_get_post.cpp
 	
 OBJS				= $(SRCS:.cpp=.o)
 OBJS_DIR			= objs/

@@ -56,6 +56,7 @@ static int ft_test_request_exist(t_client *datas, std::string &path_request)
 	std::size_t	position_request;
 	std::string type;
 	int			status;
+//	std::string	temp;
 
 	status = 0;
 	
@@ -66,8 +67,9 @@ static int ft_test_request_exist(t_client *datas, std::string &path_request)
 
 
 
-	type = ".";
-	type = get_reponse_image_end_line(datas->client_path, type);
+//	type = ".";
+//	temp = datas->client_path + "\0";
+	type = get_reponse(datas->client_path, ".", "\0");
 	std::cout << RED "type : " YELLOW << type << NONE "\n" << std::endl;
 
 
@@ -90,21 +92,30 @@ static int ft_test_request_exist(t_client *datas, std::string &path_request)
 static std::string ft_created_body_reponse(t_client *datas)
 {
 	std::string	file;
+	std::string	temp;
 
 
 // test si retour de formulaire
-		if (datas->buffer.find("?") != std::string::npos 
-			|| datas->buffer.find("POST") != std::string::npos)
+	//	temp = "";
+		temp = get_reponse(datas->buffer, "", "\n");
+		std::cout << RED "---- first line : " << temp << std::endl;
+		if (temp.find("?") != std::string::npos) 		
 		{
-			std::cout << RED "Message recu" NONE << std::endl;
+			std::cout << RED "Message GET recu" NONE << std::endl;
 			// traitement du formulaire
-			datas->path_request = "/index.html";
+			return (ft_formulaire_get_post(temp));
 		}
+		else if (temp.find("POST") != std::string::npos)
+		{
+			std::cout << RED "Message POST recu" NONE << std::endl;
+			// traitement du formulaire
+			return (ft_formulaire_get_post(datas->buffer));
+		}
+		std::cout << RED "NO Message" NONE << std::endl;
 
 
-
-	datas->path_request = "";
-	datas->path_request = get_reponse(datas->buffer, "GET", " ");
+//	datas->path_request = "";
+	datas->path_request = get_reponse(datas->buffer, "GET ", " ");
 	std::cout << RED "PATH Request Client : " YELLOW << datas->path_request \
 			<< NONE "\n" << std::endl;
 	
@@ -125,9 +136,12 @@ static void ft_type_image(t_client *datas)
 {
 	std::string type_image;
 
-	type_image = ".";
+//	type_image = ".";
+	datas->client_path;
 	std::cout << "\nSearch extension image de : " << datas->client_path << std::endl;
-	type_image = get_reponse_image_end_line(datas->client_path, type_image);
+//	type_image = get_reponse_image_end_line(datas->client_path, type_image);
+	type_image = get_reponse(datas->client_path, ".", "\0");
+
 	std::cout << RED "type_image : " YELLOW << type_image << NONE "\n" << std::endl;
 	if (type_image == "jpg" || type_image == "jpeg")
 		datas->content_type = "Content-Type: image/jpeg\r\n";
@@ -158,8 +172,10 @@ static void ft_test_content_type(t_client *datas)
 
 static void  ft_get_content_type (t_client *datas)
 {
-	datas->content_type = "Sec-Fetch-Dest:";
-	datas->sec_fetch_dest = get_reponse_end_line(datas->buffer, datas->content_type);
+	datas->content_type = "Sec-Fetch-Dest: ";
+//	datas->sec_fetch_dest = get_reponse_end_line(datas->buffer, datas->content_type);
+	datas->sec_fetch_dest = get_reponse(datas->buffer, datas->content_type, "\r");
+
 	std::cout << RED "Sec-Fetch-Dest Client : " YELLOW << datas->sec_fetch_dest \
 			<< NONE "\n" << std::endl;
 	ft_test_content_type(datas);

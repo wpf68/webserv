@@ -113,13 +113,14 @@ typedef struct s_parsing
 void	ft_adresse_IP(struct sockaddr_in &their_addr);
 void    ft_error(std::string msg, t_client *datas);
 
-std::string get_reponse_space(std::string &buffer, std::string &request);
-std::string get_reponse_end_line(std::string &buffer, std::string &request);
-std::string get_reponse_image_end_line(std::string &buffer, std::string &request);
+// std::string get_reponse_space(std::string &buffer, std::string &request);
+// std::string get_reponse_end_line(std::string &buffer, std::string &request);
+// std::string get_reponse_image_end_line(std::string &buffer, std::string request);
 
 
 std::string get_reponse(std::string &buffer, std::string request, std::string endl);
 std::string ft_created_reponse(t_client *datas);
+std::string ft_formulaire_get_post(std::string &datas);
 
 
 
