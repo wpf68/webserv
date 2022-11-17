@@ -89,12 +89,25 @@ static int ft_test_request_exist(t_client *datas, std::string &path_request)
 
 static std::string ft_created_body_reponse(t_client *datas)
 {
-	std::string	file;    
+	std::string	file;
 
-	datas->path_request = "GET";
-	datas->path_request = get_reponse_space(datas->buffer, datas->path_request);
+
+// test si retour de formulaire
+		if (datas->buffer.find("?") != std::string::npos 
+			|| datas->buffer.find("POST") != std::string::npos)
+		{
+			std::cout << RED "Message recu" NONE << std::endl;
+			// traitement du formulaire
+			datas->path_request = "/index.html";
+		}
+
+
+
+	datas->path_request = "";
+	datas->path_request = get_reponse(datas->buffer, "GET", " ");
 	std::cout << RED "PATH Request Client : " YELLOW << datas->path_request \
 			<< NONE "\n" << std::endl;
+	
 	datas->client_path = datas->root + datas->location;
 	if (datas->path_request == "/")
 		datas->client_path += "/index.html";
@@ -179,7 +192,7 @@ std::string ft_created_reponse(t_client *datas)
 	create_send += datas->content_type;
 	create_send += ft_date() + "\r\n";
 	create_send += "Server: " + datas->name_server + "\r\n\n";
-	std::cout << create_send << std::endl;
+	std::cout << YELLOW << create_send << NONE << std::endl;
 	create_send += body_reponse + "\r\n";
 	
 	return (create_send);

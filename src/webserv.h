@@ -117,6 +117,8 @@ std::string get_reponse_space(std::string &buffer, std::string &request);
 std::string get_reponse_end_line(std::string &buffer, std::string &request);
 std::string get_reponse_image_end_line(std::string &buffer, std::string &request);
 
+
+std::string get_reponse(std::string &buffer, std::string request, std::string endl);
 std::string ft_created_reponse(t_client *datas);
 
 
