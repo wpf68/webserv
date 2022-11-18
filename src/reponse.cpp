@@ -161,6 +161,10 @@ static void ft_type_image(t_client *datas)
 		datas->content_type = "Content-Type: video/mp4\r\n";
 	else if (type_image == "ico")
 		datas->content_type = "Content-Type: image/x-icon\r\n";
+	else if (type_image == "gif")
+		datas->content_type = "Content-Type: image/gif\r\n";
+	else if (type_image == "css")
+		datas->content_type = "Content-Type: text/css\r\n";
 	else
 		datas->content_type = "Content-Type: \r\n";
 }
