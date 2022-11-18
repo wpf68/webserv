@@ -38,6 +38,7 @@
 #include <netinet/ip.h>
 #include <iostream>
 #include <cstring>
+#include <string>
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <fstream>
@@ -72,6 +73,7 @@ typedef struct s_client
 	std::string list_request_received;
 	std::string	root;
 	std::string location;
+	std::vector<std::string>	repertory;
 
 	int			fd_socket;
 	std::string	create_send;
@@ -120,8 +122,10 @@ void    ft_error(std::string msg, t_client *datas);
 
 std::string get_reponse(std::string &buffer, std::string request, std::string endl);
 std::string ft_created_reponse(t_client *datas);
-std::string ft_formulaire_get_post(std::string &datas);
-
+std::string ft_formulaire_get_post(std::string &temp, t_client *datas);
+std::string ft_read_file(t_client *datas);
+std::string  ft_parsing_form(std::string temp, t_client *datas);
+int ft_test_request_exist(t_client *datas, std::string &path_request);
 
 
 #endif

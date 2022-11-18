@@ -12,7 +12,7 @@
 
 #include "webserv.h"
 
-static std::string ft_read_file(t_client *datas)
+std::string ft_read_file(t_client *datas)
 {
 	char		c;
 	std::string	file;
@@ -51,7 +51,7 @@ static std::string ft_read_file(t_client *datas)
 	return (file);
 }
 
-static int ft_test_request_exist(t_client *datas, std::string &path_request)
+int ft_test_request_exist(t_client *datas, std::string &path_request)
 {
 	std::size_t	position_request;
 	std::string type;
@@ -103,15 +103,23 @@ static std::string ft_created_body_reponse(t_client *datas)
 		{
 			std::cout << RED "Message GET recu" NONE << std::endl;
 			// traitement du formulaire
-			return (ft_formulaire_get_post(temp));
+			return (ft_formulaire_get_post(temp, datas));
 		}
 		else if (temp.find("POST") != std::string::npos)
 		{
 			std::cout << RED "Message POST recu" NONE << std::endl;
 			// traitement du formulaire
-			return (ft_formulaire_get_post(datas->buffer));
+			return (ft_formulaire_get_post(datas->buffer, datas));
 		}
 		std::cout << RED "NO Message" NONE << std::endl;
+// test demande d'affichage de datas mot clef __repertory__.html
+	if (temp.find("__repertory__.html") != std::string::npos)
+	{
+		datas->path_request = "/repertory.html";
+    	datas->status = "200 server form";
+		ft_test_request_exist(datas, datas->path_request);
+		return (ft_parsing_form("", datas));
+	}
 
 
 //	datas->path_request = "";

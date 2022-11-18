@@ -56,6 +56,7 @@ t_client	ft_init_firefox(int i, t_parsing *parsing)
 	std::cout << YELLOW "socket OK :: fd_socket = " WHITE << datas.fd_socket \
 			<< NONE << std::endl;
 	datas.create_send = "";
+	datas.repertory.clear();
 
 // ****************************************************************************
 //              Variables récupéraient du parsing t_parsing	parsing;
