@@ -49,6 +49,7 @@
 #include <sys/time.h>
 #include <sys/select.h>
 #include <vector>
+#include <sstream>
 
 #define MY_PORT 8003
 #define MY_PORT2 8002  //  test multi clients
@@ -74,6 +75,7 @@ typedef struct s_client
 	std::string	root;
 	std::string location;
 	std::vector<std::string>	repertory;
+	int			nb_cookie;
 
 	int			fd_socket;
 	std::string	create_send;

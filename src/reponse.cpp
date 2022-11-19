@@ -206,6 +206,23 @@ static std::string	ft_date(void)
 	return (std::string(buffer));
 }
 
+static void	ft_get_cookie(t_client *datas)
+{
+	std::string	val;
+
+	if (datas->buffer.find("Cookie") == std::string::npos)
+	{
+		datas->nb_cookie = 1;
+		return;
+	}
+	val = get_reponse(datas->buffer, "Cookie: Welcome to ", " ");
+	std::istringstream iss(val);
+	iss >> datas->nb_cookie;
+	datas->nb_cookie += 1;
+
+
+}
+
 std::string ft_created_reponse(t_client *datas)
 {
 	std::string	create_send;
@@ -216,6 +233,9 @@ std::string ft_created_reponse(t_client *datas)
 	create_send = "HTTP/1.1 " + datas->status + "\r\n";
 	create_send += "Content-Length: " + std::to_string(body_reponse.size()) + "\r\n";
 	create_send += "Content-Location: " + datas->path_request +"\r\n";
+	// cookies
+	ft_get_cookie(datas);
+	create_send += "Set-Cookie: Welcome to " + std::to_string(datas->nb_cookie) + " visite(s)\r\n";  // x à chercher dans l'ancienne valeur
 	ft_get_content_type(datas);
 	create_send += datas->content_type;
 	create_send += ft_date() + "\r\n";

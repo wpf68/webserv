@@ -57,6 +57,7 @@ t_client	ft_init_firefox(int i, t_parsing *parsing)
 			<< NONE << std::endl;
 	datas.create_send = "";
 	datas.repertory.clear();
+	datas.nb_cookie = 0;
 
 // ****************************************************************************
 //              Variables récupéraient du parsing t_parsing	parsing;
