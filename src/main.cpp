@@ -12,7 +12,8 @@
 
 #include "webserv.h"
 
-t_server	firefox;
+t_server				firefox;
+std::string		test_Sec_Fetch_Dest;
 
 void    ft_error(std::string msg, t_client *datas)
 {
@@ -103,8 +104,8 @@ static void	ft_exit(int var)
 		result = close(firefox.clients.at(i).fd_socket);
 		if (result == -1)
 			ft_error("Error : close socket", &firefox.clients.at(i));
-		std::cout << GREEN "Close fd_socket : " \
-				<< firefox.clients.at(i).fd_socket << NONE << std::endl;
+		std::cout << GREEN "Close fd_socket : " 
+			<< firefox.clients.at(i).fd_socket << NONE << std::endl;
 	}
 	std::cout << "\b\b  " << std::endl;
 	std::cout << RED << "Exit to CTRL-C" << NONE << std::endl;
@@ -132,12 +133,13 @@ int main(int argc, char **argv)
 	struct timeval		timeout;
 	fd_set 				readfds;
 
+	test_Sec_Fetch_Dest = "audio-audioworklet-document-embed-empty-font-frame-iframe-image-";
+	test_Sec_Fetch_Dest += "manifest-object-paintworklet-report-script-serviceworker-";
+	test_Sec_Fetch_Dest += "sharedworker-style-track-video-worker-xslt";
+
 	std::string	conf = "default.conf";  // pour test, à get de argv
-
-//	t_server	firefox;
-	t_parsing	parsing;
-
 	
+	t_parsing	parsing;
 
 	ft_parsing(&parsing, &conf);
 	firefox.nb_server = parsing.nb_server;
@@ -146,9 +148,6 @@ int main(int argc, char **argv)
 		firefox.clients.push_back(ft_init_firefox(i, &parsing));
 	std::cout << GREEN "Nb de clients dans firefox : " \
 			<< firefox.clients.size() << NONE << std::endl;
-	
-//	t_client	datas;
-	//ft_init(&datas, &firefox);
 	
 	char	buffer1[SIZE_RECV] = { 0 };
 	int		iLastRecievedBufferLen = 0;

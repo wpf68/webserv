@@ -15,7 +15,8 @@
 NAME		=	webserv
 
 SRCS		= 	src/main.cpp src/request.cpp src/reponse.cpp \
-				src/ft_formulaire_get_post.cpp
+				src/ft_formulaire_get_post.cpp \
+				src/created_body_reponse.cpp
 	
 OBJS				= $(SRCS:.cpp=.o)
 OBJS_DIR			= objs/
@@ -45,13 +46,18 @@ ROSE	=	\033[1,35m
 $(OBJS_DIR)%.o : %.cpp
 	@mkdir -p $(OBJS_DIR)
 	@mkdir -p $(OBJS_DIR)src
-	$(CC) $(CC_FLAGS) -c $< -o $@
+	@printf "\033[0;33mGenerating webserv objects... %-38.38s\r" $@
+	@$(CC) $(CC_FLAGS) -c $< -o $@
+	
 #	@printf	"\033[2K\r${BLU}[BUILD]${RST} '$<' $(END)"
 #	@mkdir -p $(OBJS_DIR)srcsi
 
 #all: present $(NAME)
 all: $(NAME)
-	@echo "$(CYANE)----------done------------$(RESET)"
+	@echo "\033[0m"
+	@echo "\033[0m"
+	@echo "$(CYANE)----------done------------  Enjoy :)$(RESET)"
+	@echo "\033[0m"
 
 present:
 	clear
@@ -60,11 +66,15 @@ $(NAME): $(SRCS) $(OBJECTS_PREFIXED)
 	@$(CC) -o $(NAME) $(OBJECTS_PREFIXED) $(FLAGS)
 
 clean:
-	rm -rf $(OBJS_DIR)
+	@echo "\033[0m"
 	@echo "$(GREEN)Cleaned$(RESET)"
+	@rm -rf $(OBJS_DIR)
+	
+	
 
 fclean: clean
-	rm -rf $(NAME)
+	@echo "\033[0;31mDeleting executable..."
+	@rm -rf $(NAME)
 
 re: fclean all
 

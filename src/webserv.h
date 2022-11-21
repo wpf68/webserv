@@ -89,11 +89,8 @@ typedef struct s_client
 
 typedef struct s_server
 {
-	std::vector<t_client>  clients;
-	int nb_server;
-
-
-
+	std::vector<t_client>	clients;
+	int 					nb_server;
 }   t_server;
 
 typedef struct s_parsing
@@ -113,6 +110,8 @@ typedef struct s_parsing
 	int                         nb_server; 
 }   t_parsing;
 
+// std::string	test_Sec_Fetch_Dest;
+// t_server	firefox;
 
 void	ft_adresse_IP(struct sockaddr_in &their_addr);
 void    ft_error(std::string msg, t_client *datas);
@@ -126,8 +125,9 @@ std::string get_reponse(std::string &buffer, std::string request, std::string en
 std::string ft_created_reponse(t_client *datas);
 std::string ft_formulaire_get_post(std::string &temp, t_client *datas);
 std::string ft_read_file(t_client *datas);
-std::string  ft_parsing_form(std::string temp, t_client *datas);
-int ft_test_request_exist(t_client *datas, std::string &path_request);
+std::string ft_parsing_form(std::string temp, t_client *datas);
+int 		ft_test_request_exist(t_client *datas, std::string &path_request);
+std::string ft_created_body_reponse(t_client *datas);
 
 
 #endif

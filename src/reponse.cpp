@@ -12,67 +12,21 @@
 
 #include "webserv.h"
 
-std::string ft_read_file(t_client *datas)
-{
-	char		c;
-	std::string	file;
-
-	file = "";
-
-	// ---  test pour page 500
-	if (datas->client_path == datas->root + datas->location + "/500.html")
-	{
-		datas->list_request_received = "";
-		datas->status = "500 webser42_error_server :(";
-			return (datas->file_500);
-
-	}
-	std::cout << "--- datas->client_path : " << datas->client_path << std::endl;
-	std::ifstream my_flux(datas->client_path);
-	if (!my_flux)
-	{
-		datas->status = "404 webser42_error_page :(";
-		datas->client_path = datas->file_404;
-		datas->list_request_received = "";
-		std::ifstream my_flux2(datas->client_path);
-		if (!my_flux2)
-		{
-			datas->status = "500 webser42_error_server :(";
-			return (datas->file_500);
-		}
-		while (my_flux2.get(c))
-		file += c;
-		my_flux2.close();
-		return (file);
-	}
-	while (my_flux.get(c))
-		file += c;
-	my_flux.close();
-	return (file);
-}
+extern std::string		test_Sec_Fetch_Dest;
 
 int ft_test_request_exist(t_client *datas, std::string &path_request)
 {
 	std::size_t	position_request;
 	std::string type;
 	int			status;
-//	std::string	temp;
 
-	status = 0;
-	
+	status = 0;	
 	std::cout << WHITE "*******  TEST REQUEST EXIST *******" NONE << std::endl;
 	std::cout << "New request : " << path_request << std::endl;
 	std::cout << "List request already : " << datas->list_request_received \
 			<< std::endl;
-
-
-
-//	type = ".";
-//	temp = datas->client_path + "\0";
 	type = get_reponse(datas->client_path, ".", "\0");
 	std::cout << RED "type : " YELLOW << type << NONE "\n" << std::endl;
-
-
 	if (type == "html")
 	{
 		if (datas->list_request_received == path_request) 
@@ -89,58 +43,7 @@ int ft_test_request_exist(t_client *datas, std::string &path_request)
 	return (status);
 }
 
-static std::string ft_created_body_reponse(t_client *datas)
-{
-	std::string	file;
-	std::string	temp;
-
-
-// test si retour de formulaire
-	//	temp = "";
-		temp = get_reponse(datas->buffer, "", "\n");
-		std::cout << RED "---- first line : " << temp << std::endl;
-		if (temp.find("?") != std::string::npos) 		
-		{
-			std::cout << RED "Message GET recu" NONE << std::endl;
-			// traitement du formulaire
-			return (ft_formulaire_get_post(temp, datas));
-		}
-		else if (temp.find("POST") != std::string::npos)
-		{
-			std::cout << RED "Message POST recu" NONE << std::endl;
-			// traitement du formulaire
-			return (ft_formulaire_get_post(datas->buffer, datas));
-		}
-		std::cout << RED "NO Message" NONE << std::endl;
-// test demande d'affichage de datas mot clef __repertory__.html
-	if (temp.find("__repertory__.html") != std::string::npos)
-	{
-		datas->path_request = "/repertory.html";
-    	datas->status = "200 server form";
-		ft_test_request_exist(datas, datas->path_request);
-		return (ft_parsing_form("", datas));
-	}
-
-
-//	datas->path_request = "";
-	datas->path_request = get_reponse(datas->buffer, "GET ", " ");
-	std::cout << RED "PATH Request Client : " YELLOW << datas->path_request \
-			<< NONE "\n" << std::endl;
-	
-	datas->client_path = datas->root + datas->location;
-	if (datas->path_request == "/")
-		datas->client_path += "/index.html";
-	else
-		datas->client_path += datas->path_request;
-	std::cout << RED "PATH Reponse Server : " YELLOW << datas->client_path \
-			<< NONE "\n" << std::endl;
-	if (ft_test_request_exist(datas, datas->client_path))
-		return ("");
-	file = ft_read_file(datas);
-	return (file);
-}
-
-static void ft_type_image(t_client *datas)
+static void ft_type_content_type(t_client *datas)
 {
 	std::string type_image;
 
@@ -165,21 +68,29 @@ static void ft_type_image(t_client *datas)
 		datas->content_type = "Content-Type: image/gif\r\n";
 	else if (type_image == "css")
 		datas->content_type = "Content-Type: text/css\r\n";
+	else if (type_image == "html" || type_image == "htm")
+		datas->content_type = "Content-Type: text/html; charset=UTF-8\r\n";
 	else
 		datas->content_type = "Content-Type: \r\n";
 }
 
 static void ft_test_content_type(t_client *datas)
 {
-	std::string reponse;
+	std::string temp;
 
-	if (datas->sec_fetch_dest == "document")
-		datas->content_type = "Content-Type: text/html; charset=UTF-8\r\n";
-	else if (datas->sec_fetch_dest == "image" || datas->sec_fetch_dest == "iframe" 
-			|| datas->sec_fetch_dest == "video")
-		ft_type_image(datas);
+	// test sec_fetch_dest Protocole HTTP
+	temp = datas->sec_fetch_dest + "-";
+	if (test_Sec_Fetch_Dest.find(temp) != std::string::npos)
+	{
+		std::cout << GREEN "Request " << datas->sec_fetch_dest << " accepted" NONE << std::endl;
+		ft_type_content_type(datas);
+	}
 	else
+	{
+		std::cout << RED "Request " << datas->sec_fetch_dest << " no Protocol !!!" NONE << std::endl;
 		datas->content_type = "Content-Type: \r\n";
+	}
+		
 }
 
 static void  ft_get_content_type (t_client *datas)
@@ -219,8 +130,6 @@ static void	ft_get_cookie(t_client *datas)
 	std::istringstream iss(val);
 	iss >> datas->nb_cookie;
 	datas->nb_cookie += 1;
-
-
 }
 
 std::string ft_created_reponse(t_client *datas)
