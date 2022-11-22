@@ -12,8 +12,9 @@
 
 #include "webserv.h"
 
-t_server				firefox;
-std::string		test_Sec_Fetch_Dest;
+t_server							firefox;
+std::string							test_Sec_Fetch_Dest;
+std::map<std::string, std::string>	var_content_type;
 
 void    ft_error(std::string msg, t_client *datas)
 {
@@ -136,6 +137,17 @@ int main(int argc, char **argv)
 	test_Sec_Fetch_Dest = "audio-audioworklet-document-embed-empty-font-frame-iframe-image-";
 	test_Sec_Fetch_Dest += "manifest-object-paintworklet-report-script-serviceworker-";
 	test_Sec_Fetch_Dest += "sharedworker-style-track-video-worker-xslt";
+	ft_init_content_type();
+
+	// Verify values
+	for (std::map<std::string, std::string>::iterator itt = var_content_type.begin(); itt != var_content_type.end(); itt++)
+		std::cout << GREEN << itt->first << " : " YELLOW << itt->second << NONE << std::endl;
+	std::cout << GREEN "\ntest_Sec_Fetch_Dest : " YELLOW << test_Sec_Fetch_Dest << "\n" NONE << std::endl;
+
+	// std::map<std::string, std::string>::iterator	itt;
+	// itt = var_content_type.find("3gp");
+	// std::cout << "3gp = " << itt->second << std::endl;	
+	//-------------------
 
 	std::string	conf = "default.conf";  // pour test, à get de argv
 	
@@ -146,7 +158,7 @@ int main(int argc, char **argv)
 
 	for (int i = 0; i < firefox.nb_server; i++)
 		firefox.clients.push_back(ft_init_firefox(i, &parsing));
-	std::cout << GREEN "Nb de clients dans firefox : " \
+	std::cout << GREEN "\nNb de clients dans firefox : " \
 			<< firefox.clients.size() << NONE << std::endl;
 	
 	char	buffer1[SIZE_RECV] = { 0 };

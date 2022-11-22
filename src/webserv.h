@@ -44,6 +44,7 @@
 #include <fstream>
 #include <signal.h>
 #include <ctime>
+#include <map>
 
 // pour multi client :
 #include <sys/time.h>
@@ -128,6 +129,6 @@ std::string ft_read_file(t_client *datas);
 std::string ft_parsing_form(std::string temp, t_client *datas);
 int 		ft_test_request_exist(t_client *datas, std::string &path_request);
 std::string ft_created_body_reponse(t_client *datas);
-
+void		ft_init_content_type(void);
 
 #endif

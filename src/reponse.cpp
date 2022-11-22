@@ -12,7 +12,8 @@
 
 #include "webserv.h"
 
-extern std::string		test_Sec_Fetch_Dest;
+extern std::string							test_Sec_Fetch_Dest;
+extern std::map<std::string, std::string>	var_content_type;
 
 int ft_test_request_exist(t_client *datas, std::string &path_request)
 {
@@ -53,25 +54,44 @@ static void ft_type_content_type(t_client *datas)
 //	type_image = get_reponse_image_end_line(datas->client_path, type_image);
 	type_image = get_reponse(datas->client_path, ".", "\0");
 
+
+
+//----------------  trouver la pair  ---------------------------
+
 	std::cout << RED "type_image : " YELLOW << type_image << NONE "\n" << std::endl;
-	if (type_image == "jpg" || type_image == "jpeg")
-		datas->content_type = "Content-Type: image/jpeg\r\n";
-	else if (type_image == "png")
-		datas->content_type = "Content-Type: image/png\r\n";
-	else if (type_image == "pdf")
-		datas->content_type = "Content-Type: application/pdf\r\n";
-	else if (type_image == "mp4")
-		datas->content_type = "Content-Type: video/mp4\r\n";
-	else if (type_image == "ico")
-		datas->content_type = "Content-Type: image/x-icon\r\n";
-	else if (type_image == "gif")
-		datas->content_type = "Content-Type: image/gif\r\n";
-	else if (type_image == "css")
-		datas->content_type = "Content-Type: text/css\r\n";
-	else if (type_image == "html" || type_image == "htm")
-		datas->content_type = "Content-Type: text/html; charset=UTF-8\r\n";
-	else
-		datas->content_type = "Content-Type: \r\n";
+
+	// chercher dans une Map :
+	// std::map<std::string, std::string>::iterator	itt;
+	// itt = var_content_type.find(type_image);
+	// std::cout << GREEN << type_image << " :: " << itt->second << NONE << std::endl;	
+ 
+	// mieux :: (https://www.youtube.com/watch?v=KiB0vRi2wlc&t=3s)  unordered_map  peu être plus rapide ...
+	std::string&	secound = var_content_type[type_image];
+	datas->content_type = "Content-Type: " + secound + "\r\n";
+//	std::cout << GREEN "--- Map --- : " << type_image << " :: " << secound << NONE << std::endl;	
+	
+
+
+
+// 	std::cout << RED "type_image : " YELLOW << type_image << NONE "\n" << std::endl;
+// 	if (type_image == "jpg" || type_image == "jpeg")
+// 		datas->content_type = "Content-Type: image/jpeg\r\n";
+// 	else if (type_image == "png")
+// 		datas->content_type = "Content-Type: image/png\r\n";
+// 	else if (type_image == "pdf")
+// 		datas->content_type = "Content-Type: application/pdf\r\n";
+// 	else if (type_image == "mp4")
+// 		datas->content_type = "Content-Type: video/mp4\r\n";
+// 	else if (type_image == "ico")
+// 		datas->content_type = "Content-Type: image/x-icon\r\n";
+// 	else if (type_image == "gif")
+// 		datas->content_type = "Content-Type: image/gif\r\n";
+// 	else if (type_image == "css")
+// 		datas->content_type = "Content-Type: text/css\r\n";
+// 	else if (type_image == "html" || type_image == "htm")
+// 		datas->content_type = "Content-Type: text/html; charset=UTF-8\r\n";
+// 	else
+// 		datas->content_type = "Content-Type: \r\n";
 }
 
 static void ft_test_content_type(t_client *datas)

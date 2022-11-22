@@ -16,7 +16,8 @@ NAME		=	webserv
 
 SRCS		= 	src/main.cpp src/request.cpp src/reponse.cpp \
 				src/ft_formulaire_get_post.cpp \
-				src/created_body_reponse.cpp
+				src/created_body_reponse.cpp \
+				src/init_content_type.cpp
 	
 OBJS				= $(SRCS:.cpp=.o)
 OBJS_DIR			= objs/
