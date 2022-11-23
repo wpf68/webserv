@@ -6,7 +6,7 @@
 #    By: pwolff <pwolff@student.42mulhouse.fr>>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/23 11:26:41 by pwolff            #+#    #+#              #
-#    Updated: 2022/10/23 11:26:41 by pwolff           ###   ########.fr        #
+#    Updated: 2022/11/22 21:09:00 by wilhelmfermey    ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,8 @@ NAME		=	webserv
 SRCS		= 	src/main.cpp src/request.cpp src/reponse.cpp \
 				src/ft_formulaire_get_post.cpp \
 				src/created_body_reponse.cpp \
-				src/init_content_type.cpp
+				src/init_content_type.cpp \
+				src/parsing1.cpp src/parsing2.cpp src/parsing3.cpp
 	
 OBJS				= $(SRCS:.cpp=.o)
 OBJS_DIR			= objs/

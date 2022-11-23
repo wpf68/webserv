@@ -49,7 +49,7 @@ static void ft_type_content_type(t_client *datas)
 	std::string type_image;
 
 //	type_image = ".";
-	datas->client_path;
+//	datas->client_path;
 	std::cout << "\nSearch extension image de : " << datas->client_path << std::endl;
 //	type_image = get_reponse_image_end_line(datas->client_path, type_image);
 	type_image = get_reponse(datas->client_path, ".", "\0");

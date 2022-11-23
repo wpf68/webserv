@@ -6,7 +6,7 @@
 /*   By: pwolff <pwolff@student.42mulhouse.fr>>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 09:40:49 by pwolff            #+#    #+#             */
-/*   Updated: 2022/11/03 09:40:49 by pwolff           ###   ########.fr       */
+/*   Updated: 2022/11/22 21:05:52 by wilhelmfermey    ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,16 @@
 #include <signal.h>
 #include <ctime>
 #include <map>
+#include <algorithm>
+#include <sys/wait.h>
+
 
 // pour multi client :
 #include <sys/time.h>
 #include <sys/select.h>
 #include <vector>
 #include <sstream>
+
 
 #define MY_PORT 8003
 #define MY_PORT2 8002  //  test multi clients
@@ -93,7 +97,7 @@ typedef struct s_server
 	std::vector<t_client>	clients;
 	int 					nb_server;
 }   t_server;
-
+/*
 typedef struct s_parsing
 {
 	std::vector<std::string>	file_404;
@@ -109,7 +113,34 @@ typedef struct s_parsing
 	std::vector<std::string>    cgi_bin;
 
 	int                         nb_server; 
-}   t_parsing;
+} ; */
+
+//////////// STRUCTURE POUR CHAQUE LOCATION(parsing) //////////
+struct s_location
+{
+	std::string							req_client;
+    std::string							root;
+    std::string							path_index;
+	std::string							dir_listing;
+    std::string							methods;
+	std::map<std::string, std::string> 	redir;
+	std::map<std::string, std::string> 	cgi;
+
+};
+
+//////////// STRUCTURE PRINCIPALE(parsing) /////////////
+struct s_parsing
+{
+    std::string							my_port;
+    std::string							my_ip;
+    std::string							name_server;
+	int									size;
+	int									nbr_serv;
+	std::map<std::string, std::string> 	error;
+	std::vector<s_location>      		location;
+
+	std::vector<std::string>      		locations; // aide pour parsing (ne pas utiliser).
+};
 
 // std::string	test_Sec_Fetch_Dest;
 // t_server	firefox;
@@ -130,5 +161,28 @@ std::string ft_parsing_form(std::string temp, t_client *datas);
 int 		ft_test_request_exist(t_client *datas, std::string &path_request);
 std::string ft_created_body_reponse(t_client *datas);
 void		ft_init_content_type(void);
+
+//////////////////// PARSING_1 ///////////////////
+std::string			ft_read_file2(std::string file_path);
+int 				number_server(std::string &file, std::vector<int> &tab_len);
+void    			cut_server(std::string &file, std::vector<int> &tab_len,     std::vector<std::string> &servers);
+
+//////////////////// PARSING_2 ///////////////////
+int		create_struct(std::vector<s_parsing> &parsing, int nb_serv);
+void    find_ip(std::vector<std::string> servers, std::vector<s_parsing> &parsing, int nb_serv);
+void    find_port(std::vector<std::string> servers, std::vector<s_parsing> &parsing, int nb_serv);
+void    find_name(std::vector<std::string> servers, std::vector<s_parsing> &parsing, int nb_serv);
+void    find_size(std::vector<std::string> servers, std::vector<s_parsing> &parsing, int nb_serv);
+void    find_error(std::vector<std::string> servers, std::vector<s_parsing> &parsing, int nb_serv);
+
+//////////////////// PARSING_3 ///////////////////
+void number_server(std::vector<std::string> servers, std::vector<s_parsing> &parsing);
+void    find_req_client(std::vector<s_parsing> &parsing);
+void    find_root(std::vector<s_parsing> &parsing);
+void    find_index(std::vector<s_parsing> &parsing);
+void    find_dir_listing(std::vector<s_parsing> &parsing);
+void    find_methods(std::vector<s_parsing> &parsing);
+void    find_redir(std::vector<s_parsing> &parsing);
+void    find_cgi(std::vector<s_parsing> &parsing);
 
 #endif

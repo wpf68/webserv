@@ -6,7 +6,7 @@
 /*   By: pwolff <pwolff@student.42mulhouse.fr>>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 11:28:18 by pwolff            #+#    #+#             */
-/*   Updated: 2022/10/23 11:28:18 by pwolff           ###   ########.fr       */
+/*   Updated: 2022/11/22 21:14:36 by wilhelmfermey    ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,10 @@ void	ft_adresse_IP(struct sockaddr_in &their_addr)
 			<< NONE << std::endl;
 }
 
-t_client	ft_init_firefox(int i, t_parsing *parsing)
+t_client	ft_init_firefox(int i)
 {
 	int			result;
 	t_client	datas;
-
-	(void)parsing;
 
 	datas.client_get_post = "";
 	datas.client_path = "";
@@ -114,17 +112,100 @@ static void	ft_exit(int var)
 	exit (0);
 }
 
-static void	ft_parsing(t_parsing *parsing, std::string *conf)
+void	ft_read_struct(std::vector<s_parsing> parsing)
 {
-	(void)conf;
+	for (int i = 0; i < parsing.size(); i++)
+	{
+		std::cout << "////////////////////// Server " << i + 1 << " //////////////////////" << std::endl;
+		std::cout << "IP : " << parsing[i].my_ip <<std::endl;
+		std::cout << "Port : " << parsing[i].my_port <<std::endl;
+		std::cout << "Name : " << parsing[i].name_server <<std::endl;
+		std::cout << "Size : " << parsing[i].size <<std::endl;
+		std::cout << "Errors:" <<std::endl;
+		std::map<std::string, std::string>::iterator it = parsing[i].error.begin();
+		for (; it != parsing[i].error.end(); it++ )
+			std::cout << it->first << ' ' << it->second << std::endl;
+		std::cout <<std::endl;
 
-	parsing->nb_server = 3;
+		for (int j = 0; j < parsing[i].location.size(); j++)
+		{
+			std::cout << "//// Location " << j + 1 << " ////" << std::endl;
+			std::cout << "Requête client : " << parsing[i].location[j].req_client <<std::endl;
+			std::cout << "Root : " << parsing[i].location[j].root <<std::endl;
+			std::cout << "Chemin vers Index : " << parsing[i].location[j].path_index <<std::endl;
+			std::cout << "Directory listing : " << parsing[i].location[j].dir_listing <<std::endl;
+			std::cout << "Méthode : " << parsing[i].location[j].methods <<std::endl;
+			std::cout << "Redirections :" <<std::endl;
+
+			std::map<std::string, std::string>::iterator it = parsing[i].location[j].redir.begin();
+			for (; it != parsing[i].location[j].redir.end(); it++ )
+					std::cout << it->first << ' ' << it->second << std::endl;
+			std::cout << "Cgi :" <<std::endl;
+			std::map<std::string, std::string>::iterator it2 = parsing[i].location[j].cgi.begin();
+			for (; it2 != parsing[i].location[j].cgi.end(); it2++ )
+				std::cout << it2->first << ' ' << it2->second << std::endl;
+			std::cout << std::endl;
+		}
+
+		std::cout <<std::endl;
+	}
 }
 
-int main(int argc, char **argv)
+int	ft_parsing(std::vector<s_parsing> &parsing)
+{
+	std::string 				file;
+	int							nb_serv;
+	std::vector<int>			tab_len;
+	std::vector<std::string>    servers; // .conf cut par server
+
+	file = ft_read_file2("./src/file.conf");
+	nb_serv = number_server(file, tab_len);
+	cut_server(file, tab_len, servers);
+	if (create_struct(parsing, nb_serv))
+		return (1);
+	find_ip(servers, parsing, nb_serv);
+	find_port(servers, parsing, nb_serv);
+	find_name(servers, parsing, nb_serv);
+	find_size(servers, parsing, nb_serv);
+	find_error(servers, parsing, nb_serv);
+	number_server(servers, parsing);
+	find_req_client(parsing);
+	find_root(parsing);
+	find_index(parsing);
+	find_dir_listing(parsing);
+	find_methods(parsing);
+	find_redir(parsing);
+	find_cgi(parsing);
+
+	ft_read_struct(parsing);
+
+	return (nb_serv);
+}
+
+static void	ft_copy_file(std::string source, std::string copy)
+{
+	int			pid = 0;
+	t_client*	datas;
+
+	pid = fork();
+	if (pid < 0)
+		ft_error("Error fork", datas);
+	if (pid == 0)
+	{
+		execlp("cp", "cp", source.c_str(), copy.c_str(), NULL);
+	}
+	else
+	{
+		std::cout << "********  end fork *************" << std::endl;
+		waitpid(pid, NULL, 0);
+	}
+}
+
+int main(int argc, char **argv, char **env)
 {
 	(void)argc;
 	(void)argv;
+	(void)env;
 
 	std::string	dot[4] = {".  ", ".. ", "...", "...."};
 	int			n_anim = 0;
@@ -133,6 +214,12 @@ int main(int argc, char **argv)
 	int			bytes_sent;
 	struct timeval		timeout;
 	fd_set 				readfds;
+	std::vector<s_parsing>      parsing;
+
+	// init page test delete
+	ft_copy_file("./HTML/site_3_form/Wilhelm.html", "./HTML/site_3_form/Wilhelm_test_delete.html");
+
+	firefox.nb_server = ft_parsing(parsing);
 
 	test_Sec_Fetch_Dest = "audio-audioworklet-document-embed-empty-font-frame-iframe-image-";
 	test_Sec_Fetch_Dest += "manifest-object-paintworklet-report-script-serviceworker-";
@@ -140,8 +227,8 @@ int main(int argc, char **argv)
 	ft_init_content_type();
 
 	// Verify values
-	for (std::map<std::string, std::string>::iterator itt = var_content_type.begin(); itt != var_content_type.end(); itt++)
-		std::cout << GREEN << itt->first << " : " YELLOW << itt->second << NONE << std::endl;
+	// for (std::map<std::string, std::string>::iterator itt = var_content_type.begin(); itt != var_content_type.end(); itt++)
+	// 	std::cout << GREEN << itt->first << " : " YELLOW << itt->second << NONE << std::endl;
 	std::cout << GREEN "\ntest_Sec_Fetch_Dest : " YELLOW << test_Sec_Fetch_Dest << "\n" NONE << std::endl;
 
 	// std::map<std::string, std::string>::iterator	itt;
@@ -149,15 +236,9 @@ int main(int argc, char **argv)
 	// std::cout << "3gp = " << itt->second << std::endl;	
 	//-------------------
 
-	std::string	conf = "default.conf";  // pour test, à get de argv
 	
-	t_parsing	parsing;
-
-	ft_parsing(&parsing, &conf);
-	firefox.nb_server = parsing.nb_server;
-
 	for (int i = 0; i < firefox.nb_server; i++)
-		firefox.clients.push_back(ft_init_firefox(i, &parsing));
+		firefox.clients.push_back(ft_init_firefox(i));
 	std::cout << GREEN "\nNb de clients dans firefox : " \
 			<< firefox.clients.size() << NONE << std::endl;
 	
