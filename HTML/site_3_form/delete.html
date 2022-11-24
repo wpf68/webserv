@@ -5,31 +5,50 @@
         <link rel="icon" href="./favicon.ico" />
         <!-- <meta charset="utf-8"> -->
         <title>werbserv 42 form delete</title>
-        <!-- <link rel="stylesheet" href="style.css"> -->
+        <style>
+            form.form-example {
+                display: table;
+            }
 
+            div.form-example {
+                display: table-row;
+            }
+            p,
+            label {
+                font: 1rem 'Fira Sans', sans-serif;
+            }
+
+            input {
+                margin: .4rem;
+            }
+
+
+        </style>
     </head>
 
     <body>
-        <!-- <a href="./index.html">"<-- Aller à la page d'accueil" </a> <br> <br>
-        <form action="" method="delete" class="form-example">
-        <form where="query-string" method="FOO"> (GET/DELETE methods imply "query-string")
-          <div class="form-example">
-            <label for="prenom">Enter your first name: </label>
-            <input type="text" name="prenom" id="prenom" required>
+      <a href="./index.html">"<-- Aller à la page d'accueil" </a> <br> <br>
+      <form action="" method="post" class="form-example">
+        <fieldset>
+          <legend>Delete file ?</legend>
+      
+          <div>
+            <input type="radio" id="YES" name="DELETE_file_for_delete" value="YES"
+                   checked>
+            <label for="YES">YES</label>
           </div>
-          <div class="form-example">
-            <label for="Nom">Enter your name: </label>
-            <input type="text" name="Nom" id="Nom" required>
+      
+          <div>
+            <input type="radio" id="NO" name="DELETE_file_for_delete" value="NO">
+            <label for="NO">NO</label>
           </div>
-          <div class="form-example">
-            <input type="submit" value="Subscribe!"><br>
-            <a href="./__repertory__.html">  "Go to repertory" </a>
+          <div>
+            <button type="submit">Submit</button>
           </div>
-        </form> -->
-        <form action="" method="delete" if-match="*">
-            <input name="hat-size" type="text" value="" />
-            <input type="submit" />
-          </form>	
-
+      
+       </fieldset>
+      
+      </form>
 
     </body>
+</html>

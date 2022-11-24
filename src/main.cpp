@@ -217,7 +217,7 @@ int main(int argc, char **argv, char **env)
 	std::vector<s_parsing>      parsing;
 
 	// init page test delete
-	ft_copy_file("./HTML/site_3_form/Wilhelm.html", "./HTML/site_3_form/Wilhelm_test_delete.html");
+	ft_copy_file("./HTML/site_3_form/Wilhelm.html", "./HTML/site_3_form/test_delete.html");
 
 	firefox.nb_server = ft_parsing(parsing);
 
@@ -286,7 +286,7 @@ int main(int argc, char **argv, char **env)
 					
 					iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
 					firefox.clients[i].buffer = std::string(buffer1);
-					std::cout << CYANE << firefox.clients[i].buffer << NONE << std::endl;
+				//	std::cout << CYANE << firefox.clients[i].buffer << NONE << std::endl;
 					if (!firefox.clients[i].buffer.empty())
 					{
 						firefox.clients[i].create_send = ft_created_reponse(&firefox.clients[i]);							

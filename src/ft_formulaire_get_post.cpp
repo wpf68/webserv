@@ -80,13 +80,38 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 {
 	std::string file;
 	std::string temp;
+	std::string first_line;
 
 	file = "";
 	if (datas.find("POST") != std::string::npos)
 	{
-		std::cout << "Formulaire POST" << std::endl;
-	  //  temp = "\n\n";
 		temp = get_reponse(datas, "\r\n\r\n", "\0");
+		if (temp.find("DELETE_file_for_delete") != std::string::npos)
+		{
+			file = "";
+			if (temp.find("NO") != std::string::npos)
+			{
+				temp.clear();			
+				datas_client->path_request = "/repertory.html";
+				datas_client->status = "205 demand success";
+				temp = get_reponse(datas, "", "\r\n\r\n");
+				first_line = get_reponse(datas_client->buffer, "", "\n");
+				temp.erase(0, first_line.size());
+				temp = "GET /delete.html HTTP/1.1" + temp + "\n";
+				return (file);
+			}
+			temp = get_reponse(datas, "", "\r\n\r\n");
+			first_line = get_reponse(datas_client->buffer, "", "\n");
+			temp.erase(0, first_line.size());
+			temp = "DELETE /test_delete.html HTTP/1.1" + temp + "\n";
+			datas_client->buffer = temp;
+			datas_client->client_path = "HTML/site_3_form/successful.html";
+			file = ft_read_file(datas_client);
+			ft_delete("HTML/site_3_form/test_delete.html", datas_client);
+			return (file);
+		}
+		std::cout << "Formulaire POST" << std::endl;
+		
 	}
 	else if (datas.find("GET") != std::string::npos)
 	{
@@ -98,11 +123,14 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 		std::cout << RED "********  Prb Formulaire POST GET" NONE << std::endl;
 	}
 
-	std::cout << GREEN "formulaire : " NONE << temp << std::endl;
-	file = ft_parsing_form(temp, datas_client);
-	temp.clear();
-	datas_client->path_request = "/repertory.html";
-	datas_client->status = "205 demand success";
-	return (file);
+
+		std::cout << GREEN "formulaire : " NONE << temp << std::endl;
+		file = ft_parsing_form(temp, datas_client);
+		temp.clear();
+		datas_client->path_request = "/repertory.html";
+		datas_client->status = "205 demand success";
+		return (file);
+
+	
 }
 

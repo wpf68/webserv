@@ -18,7 +18,8 @@ SRCS		= 	src/main.cpp src/request.cpp src/reponse.cpp \
 				src/ft_formulaire_get_post.cpp \
 				src/created_body_reponse.cpp \
 				src/init_content_type.cpp \
-				src/parsing1.cpp src/parsing2.cpp src/parsing3.cpp
+				src/parsing1.cpp src/parsing2.cpp src/parsing3.cpp \
+				src/delete.cpp
 	
 OBJS				= $(SRCS:.cpp=.o)
 OBJS_DIR			= objs/

@@ -169,6 +169,7 @@ std::string ft_created_reponse(t_client *datas)
 	create_send += datas->content_type;
 	create_send += ft_date() + "\r\n";
 	create_send += "Server: " + datas->name_server + "\r\n\n";
+	std::cout << CYANE << datas->buffer << NONE << std::endl;
 	std::cout << YELLOW << create_send << NONE << std::endl;
 	create_send += body_reponse + "\r\n";
 	

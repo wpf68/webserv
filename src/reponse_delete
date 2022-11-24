@@ -1,0 +1,5 @@
+DELETE /Wilhelm_test_delete.html HTTP/1.1
+User-Agent: Mozilla
+Host: localhost
+Accept-Language: en-US
+Connection: Keep-Alive

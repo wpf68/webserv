@@ -1,0 +1,5 @@
+PUT, PATCH et DELETE sont utilisés pour enregistrer, modifier ou supprimer des 
+fichiers sur le serveur. Dans la programmation normale d’un site Web, ces méthodes 
+ne jouent pratiquement aucun rôle, car elles sont bloquées par les serveurs pour 
+des raisons de sécurité. Ils trouvent leur application dans le contexte de WebDAV et 
+en relation avec REST-API.
