@@ -182,30 +182,97 @@ int	ft_parsing(std::vector<s_parsing> &parsing)
 	return (nb_serv);
 }
 
+// static void	ft_copy_file(std::string source, std::string copy)
+// {
+// 	int			pid = 0;
+// 	t_client*	datas;
+
+// 	pid = fork();
+// 	if (pid < 0)
+// 		ft_error("Error fork", datas);
+// 	if (pid == 0)
+// 	{
+// 		execlp("cp", "cp", source.c_str(), copy.c_str(), NULL);
+// 	}
+// 	else
+// 	{
+// 		std::cout << "********  end fork *************" << std::endl;
+// 		waitpid(pid, NULL, 0);
+// 	}
+// }
+
 static void	ft_copy_file(std::string source, std::string copy)
 {
-	int			pid = 0;
-	t_client*	datas;
+	std::string	file;
+	char		c;
 
-	pid = fork();
-	if (pid < 0)
-		ft_error("Error fork", datas);
-	if (pid == 0)
+	file = "";
+	std::ifstream my_flux(source);
+	if (!my_flux)
 	{
-		execlp("cp", "cp", source.c_str(), copy.c_str(), NULL);
+		std::cout << RED "file no found !!!" NONE << std::endl;
+		exit (1);
 	}
-	else
+	while (my_flux.get(c))
+		file += c;
+	my_flux.close();
+	std::ofstream	ofs(copy, std::ios::out | std::ios::app);
+	if (!ofs)
 	{
-		std::cout << "********  end fork *************" << std::endl;
-		waitpid(pid, NULL, 0);
+		std::cout << "Error file out" << std::endl;
+		exit(0);
 	}
+	ofs << file << std::endl;
+	ofs.close();
 }
+
+
+//----------------------  test directory
+std::string	auto_index(const std::string dir_name, const std::string target)
+{
+	DIR				*dir;
+	struct dirent	*fic;
+	std::string		value;
+
+	dir = opendir(dir_name.c_str());
+	if (!dir)
+		return "";
+	value.assign("<html>\n<head>\n<meta charset=\"utf-8\">\n"
+			"<title>Directory Listing</title>\n</head>\n<body>\n<h1>"
+			+ dir_name + "</h1>\n<ul>");
+	while ((fic = readdir(dir)) != NULL)
+	{
+		value.append("<li><a href=\"");
+		value.append(target);
+		if (value[value.size() - 1] != '/')
+			value.append("/");
+		value.append(fic->d_name);
+		if(fic->d_type == DT_DIR)
+			value.append("/");
+		value.append("\"> ");
+		value.append(fic->d_name);
+		if(fic->d_type == DT_DIR)
+			value.append("/");
+		value.append("</a></li>\n");
+	}
+	value.append("</ul></body></html>");
+	closedir(dir);
+	return value;
+}
+
 
 int main(int argc, char **argv, char **env)
 {
 	(void)argc;
 	(void)argv;
 	(void)env;
+
+
+	//test directory
+	//std::string	directory;
+	//directory = auto_index("../", "------test--------");
+
+
 
 	std::string	dot[4] = {".  ", ".. ", "...", "...."};
 	int			n_anim = 0;
@@ -214,6 +281,8 @@ int main(int argc, char **argv, char **env)
 	int			bytes_sent;
 	struct timeval		timeout;
 	fd_set 				readfds;
+	fd_set				writefds;    /// ---- à test
+
 	std::vector<s_parsing>      parsing;
 
 	// init page test delete
@@ -236,6 +305,8 @@ int main(int argc, char **argv, char **env)
 	// std::cout << "3gp = " << itt->second << std::endl;	
 	//-------------------
 
+
+	//std::cout << "test director" << auto_index("../", "------test--------") << std::endl;
 	
 	for (int i = 0; i < firefox.nb_server; i++)
 		firefox.clients.push_back(ft_init_firefox(i));
@@ -263,12 +334,14 @@ int main(int argc, char **argv, char **env)
 		timeout.tv_sec = 1;   //  3h 					
 		timeout.tv_usec = 0;
 		FD_ZERO(&readfds);
+		FD_ZERO(&writefds);
 		for (int i = 0; i < firefox.nb_server; i++)
 			FD_SET(firefox.clients[i].fd_socket, &readfds);  // multi clients
+			
 		std::cout << "\rWaiting on a connection " << dot[n_anim++] << std::flush;
 		if (n_anim == 4)
 			n_anim = 0;
-		result = select(firefox.nb_server + 3, &readfds, NULL, NULL, &timeout);
+		result = select(firefox.nb_server + 3, &readfds, &writefds, NULL, &timeout);
 
 		if (result)
 		{

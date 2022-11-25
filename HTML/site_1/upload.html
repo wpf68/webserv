@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>upload</title>
+</head>
+<body>
+    <a href="./index.html">"Aller à la page d'accueil" </a><br><br>
+    <label for="avatar">Choose a profile picture:</label>
+
+    <input type="file"
+        id="avatar" name="avatar"
+        accept="image/png, image/jpeg"> <br><br>
+
+        <form method="post" enctype="multipart/form-data">
+            <div>
+              <label for="file">Sélectionner le fichier à envoyer</label>
+              <input type="file" id="file" name="file" multiple>
+            </div>
+            <div>
+              <button>Envoyer</button>
+            </div>
+        </form>
+           
+
+
+</body>
+</html>

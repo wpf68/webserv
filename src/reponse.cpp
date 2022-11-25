@@ -158,7 +158,14 @@ std::string ft_created_reponse(t_client *datas)
 	std::string	body_reponse;
 	std::string content_type;
 
+	body_reponse = "";
+
+//	if (datas->buffer.find("Sec-Fetch-Mode: navigate") != std::string::npos 
+//			&& datas->buffer.find("Sec-Fetch-Dest: document") != std::string::npos)
 	body_reponse = ft_created_body_reponse(datas);
+	if (datas->buffer.find("GET /redirection.html HTTP/1.1") != std::string::npos)
+		datas->status = "301 redirection site";
+		
 	create_send = "HTTP/1.1 " + datas->status + "\r\n";
 	create_send += "Content-Length: " + std::to_string(body_reponse.size()) + "\r\n";
 	create_send += "Content-Location: " + datas->path_request +"\r\n";

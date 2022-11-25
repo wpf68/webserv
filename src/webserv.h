@@ -54,6 +54,8 @@
 #include <sys/select.h>
 #include <vector>
 #include <sstream>
+#include <sys/types.h>
+#include <dirent.h>
 
 
 #define MY_PORT 8003
@@ -162,6 +164,7 @@ int 		ft_test_request_exist(t_client *datas, std::string &path_request);
 std::string ft_created_body_reponse(t_client *datas);
 void		ft_init_content_type(void);
 void		ft_delete(std::string path, t_client *datas);
+std::string	auto_index(const std::string dir_name, const std::string target);
 
 
 

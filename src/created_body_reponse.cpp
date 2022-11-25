@@ -79,6 +79,11 @@ std::string ft_read_file(t_client *datas)
 	std::ifstream my_flux(datas->client_path);
 	if (!my_flux)
 	{
+		if (datas->client_path.find("Directory.html") != std::string::npos)
+		{
+			file = auto_index("../", "------test--------");
+			return (file);
+		}
 		datas->status = "404 webser42_error_page :(";
 		datas->client_path = datas->file_404;
 		datas->list_request_received = "";

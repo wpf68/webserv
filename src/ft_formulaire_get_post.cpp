@@ -76,32 +76,69 @@ std::string  ft_parsing_form(std::string temp, t_client *datas)
 	return (file);
 }
 
+static void	ft_upload(std::string &datas, t_client *datas_client)
+{
+	std::string	corps;
+	std::string	key;
+	std::string	type;
+	std::string	file;
+
+	std::cout << CYANE "datas : \n" << datas_client->buffer << "\n" NONE << std::endl; 
+
+	corps = get_reponse(datas, "\r\n\r\n", "\0");
+	std::cout << CYANE "corps : \n" << corps << "\n" NONE << std::endl; 
+	key = get_reponse(corps, "", "\n");
+	std::cout << CYANE "key : \n" << key << "\n" NONE << std::endl; 
+	type = get_reponse(corps, "Content-Type: ", "\n");
+	type = get_reponse(type, "/", "\n");
+
+	file = get_reponse(corps, "\r\n\r\n", key);
+
+	std::cout << RED "Type : " << type << "\nfile :\n" << file << "\n" NONE << std::endl; 
+
+
+}
+
 std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 {
 	std::string file;
 	std::string temp;
 	std::string first_line;
 
+
 	file = "";
 	if (datas.find("POST") != std::string::npos)
 	{
+		if (datas.find("Content-Type:") != std::string::npos)
+		{
+			ft_upload(datas, datas_client);
+			return(file);
+		}
 		temp = get_reponse(datas, "\r\n\r\n", "\0");
 		if (temp.find("DELETE_file_for_delete") != std::string::npos)
 		{
-			file = "";
+			first_line = get_reponse(datas_client->buffer, "", "\n");
 			if (temp.find("NO") != std::string::npos)
 			{
+
+		//		std::cout << "----------- datas : \n" << datas << std::endl;
+
 				temp.clear();			
-				datas_client->path_request = "/repertory.html";
-				datas_client->status = "205 demand success";
+			//	datas_client->path_request = "/index.html";
+			//	datas_client->status = "307 demand success redirection ";
+				datas_client->status = "204 demand success";
+
 				temp = get_reponse(datas, "", "\r\n\r\n");
-				first_line = get_reponse(datas_client->buffer, "", "\n");
 				temp.erase(0, first_line.size());
-				temp = "GET /delete.html HTTP/1.1" + temp + "\n";
+				temp = "GET /" + get_reponse(first_line, " /", " ") + " HTTP/1.1" + temp + "\n";
+				datas_client->buffer = temp;
+			//	datas_client->client_path = "HTML/site_3_form/index.html";
+			//	file = ft_read_file(datas_client);
+		//		std::cout << RED "--- ---  BYE ----- \n" NONE << std::endl;
+
 				return (file);
 			}
 			temp = get_reponse(datas, "", "\r\n\r\n");
-			first_line = get_reponse(datas_client->buffer, "", "\n");
 			temp.erase(0, first_line.size());
 			temp = "DELETE /test_delete.html HTTP/1.1" + temp + "\n";
 			datas_client->buffer = temp;
