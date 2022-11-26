@@ -76,13 +76,51 @@ std::string ft_read_file(t_client *datas)
 
 	}
 	std::cout << "--- datas->client_path : " << datas->client_path << std::endl;
-	std::ifstream my_flux(datas->client_path);
+	// -- test chemin valide
+	std::string	test_path_valide = datas->client_path;
+//	std::ifstream my_flux(datas->client_path);
+	if (test_path_valide.rfind("/") + 1 == test_path_valide.size())
+		test_path_valide = test_path_valide.substr(0, test_path_valide.size() - 1);
+	std::cout << "test open ? : " << test_path_valide << std::endl;	
+	std::ifstream my_flux(test_path_valide);
+
 	if (!my_flux)
 	{
+		std::cout << CYANE "buffer bis ------- \n"<< datas->buffer << NONE << std::endl;   /// test
 		if (datas->client_path.find("Directory.html") != std::string::npos)
 		{
-			file = auto_index("../", "------test--------");
+			file = auto_index("./", "./");
+	//		file = auto_index("./", "------_test_Directory_--------");
 			return (file);
+		}
+		std::cout << "*** pos de / : " << datas->client_path.rfind("/")  << "size = " << datas->client_path.size() << std::endl;  // test
+		if (datas->client_path.rfind("/") + 1 == datas->client_path.size() && datas->client_path.size() != 1)
+		{
+			std::cout << CYANE "======= MATCH ===========" << std::endl; //------------------
+	//		std::string	path = get_reponse(datas->client_path, "_test_Directory_--------/", " ");
+	//		std::string	path = get_reponse(datas->client_path, "HTML/site_1/", " ");
+			
+
+			// traitement de la requete
+			std::string	trequete = get_reponse(datas->path_request, "/", "/");
+			std::cout << "trequete = " << trequete << std::endl;
+			if (datas->path_request.find(trequete, trequete.size()) != std::string::npos)
+				trequete = get_reponse(datas->path_request, trequete, "\0");
+			else
+				trequete = datas->path_request;
+			std::cout << "trequete = " << trequete << std::endl;
+			std::cout << "***** data client request = " << datas->path_request << "  trequete = " << trequete << std::endl;
+			std::cout << "***** data client = " << datas->client_path << "  trequete = " << trequete << std::endl;
+		//	datas->client_path = "/" + path;
+
+			datas->path_request = trequete;
+			trequete = "./" + trequete + "/";
+			
+			std::cout << "***** data client = " << datas->client_path << "  trquete = " << trequete << std::endl;
+			file = auto_index(trequete, datas->path_request);
+		//	datas->path_request = "";
+			if (file.size() != 0)
+				return (file);
 		}
 		datas->status = "404 webser42_error_page :(";
 		datas->client_path = datas->file_404;

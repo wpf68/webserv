@@ -67,6 +67,8 @@ static void ft_type_content_type(t_client *datas)
  
 	// mieux :: (https://www.youtube.com/watch?v=KiB0vRi2wlc&t=3s)  unordered_map  peu être plus rapide ...
 	std::string&	secound = var_content_type[type_image];
+	if (secound == "")
+		secound = "text/html; charset=UTF-8";
 	datas->content_type = "Content-Type: " + secound + "\r\n";
 //	std::cout << GREEN "--- Map --- : " << type_image << " :: " << secound << NONE << std::endl;	
 	
