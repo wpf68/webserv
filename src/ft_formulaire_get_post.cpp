@@ -47,7 +47,8 @@ std::string  ft_parsing_form(std::string temp, t_client *datas)
 	}
 	j = 0;
 
-	datas->client_path = datas->root + datas->location + "/repertory_part1.html";
+	datas->client_path = datas->root + "/repertory_part1.html";
+	std::cout << datas->client_path << " *********" << std::endl; ////
 	file = ft_read_file(datas);
 
 	
@@ -72,7 +73,7 @@ std::string  ft_parsing_form(std::string temp, t_client *datas)
 	file += " </body> </html>";
 	std::cout << std::endl;
 	temp.clear();
- //   std::cout << file << std::endl;  ///---------------
+ 	std::cout << file << std::endl;  ///---------------
 	return (file);
 }
 
@@ -167,7 +168,5 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 		datas_client->path_request = "/repertory.html";
 		datas_client->status = "205 demand success";
 		return (file);
-
-	
 }
 

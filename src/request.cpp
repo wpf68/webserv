@@ -25,7 +25,7 @@ std::string get_reponse(std::string &buffer, std::string request, std::string en
 		len_end = buffer.find(endl, len_begin + request.size());
 	reponse.assign(buffer, len_begin + request.size(), len_end - len_begin - request.size());
 	std::cout << GREEN << "begin get_reponse: " << len_begin << " end : " \
-	<< len_end << " fin : " << len_end - len_begin - request.size() << NONE << std::endl;
+	<< len_end << " find : " << len_end - len_begin - request.size() << NONE << std::endl;
 
 	return (reponse);
 }

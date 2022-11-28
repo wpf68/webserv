@@ -32,7 +32,7 @@ int ft_test_request_exist(t_client *datas, std::string &path_request)
 	{
 		if (datas->list_request_received == path_request) 
 		{
-			datas->status = "204 webserv_42_already sent :)";
+			datas->status = "204 " + datas->name_server + " already sent :)";
 			status = 1;
 		}
 		else
@@ -50,7 +50,7 @@ static void ft_type_content_type(t_client *datas)
 
 //	type_image = ".";
 //	datas->client_path;
-	std::cout << "\nSearch extension image de : " << datas->client_path << std::endl;
+	std::cout << "\nSearch extension image to : " << datas->client_path << std::endl;
 //	type_image = get_reponse_image_end_line(datas->client_path, type_image);
 	type_image = get_reponse(datas->client_path, ".", "\0");
 
@@ -181,7 +181,6 @@ std::string ft_created_reponse(t_client *datas)
 	std::cout << CYANE << datas->buffer << NONE << std::endl;
 	std::cout << YELLOW << create_send << NONE << std::endl;
 	create_send += body_reponse + "\r\n";
-	
 	return (create_send);
 }
 

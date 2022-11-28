@@ -7,7 +7,7 @@ std::string ft_read_file2(std::string file_path)
 
 	std::ifstream content(file_path);
 	if (!content)
-		std::cout << "error_page" << std::endl;
+		ft_error(".conf no valid !!", NULL);
 	while (content.get(c))
 		file += c;
 	content.close();

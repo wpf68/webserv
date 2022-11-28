@@ -64,41 +64,9 @@
 #define NB_CONNECT 10
 #define SIZE_RECV  104424
 
-typedef struct s_client
-{
-	// client
-	std::string client_get_post;
-	std::string client_path;
-	std::string sec_fetch_dest;
-	std::string buffer;
-	std::string path_request;
-
-	// serveur
-	std::string status;
-	std::string content_type;
-	std::string file_500;
-	std::string name_server;
-	std::string list_request_received;
-	std::string	root;
-	std::string location;
-	std::vector<std::string>	repertory;
-	int			nb_cookie;
-
-	int			fd_socket;
-	std::string	create_send;
-
-	// parsing
-	std::string 		file_404;
-	struct sockaddr_in  server;
 
 
-}   t_client;
 
-typedef struct s_server
-{
-	std::vector<t_client>	clients;
-	int 					nb_server;
-}   t_server;
 /*
 typedef struct s_parsing
 {
@@ -144,6 +112,45 @@ struct s_parsing
 	std::vector<std::string>      		locations; // aide pour parsing (ne pas utiliser).
 };
 
+typedef struct s_client
+{
+	// client
+	std::string client_get_post;
+	std::string client_path;
+	std::string sec_fetch_dest;
+	std::string buffer;
+	std::string path_request;
+
+	// serveur
+	std::string 				status;
+	std::string					content_type;
+	std::string 				file_500;
+	std::string 				file_500_bis;
+	std::string 				name_server;
+	int							size;
+	std::string 				list_request_received;
+	std::string					root;
+	std::vector<std::string>	repertory;
+	int							nb_cookie;
+	std::string 				location;
+//	std::vector<s_location>		location;
+
+	int			fd_socket;
+	std::string	create_send;
+
+	// parsing
+	std::string 		file_404;
+	struct sockaddr_in  server;
+
+
+}   t_client;
+
+typedef struct s_server
+{
+	std::vector<t_client>	clients;
+	int 					nb_server;
+}   t_server;
+
 // std::string	test_Sec_Fetch_Dest;
 // t_server	firefox;
 
@@ -165,6 +172,7 @@ std::string ft_created_body_reponse(t_client *datas);
 void		ft_init_content_type(void);
 void		ft_delete(std::string path, t_client *datas);
 std::string	auto_index(const std::string dir_name, const std::string target);
+void  		ft_error(std::string msg, t_client *datas);
 
 
 

@@ -34,10 +34,12 @@ void	ft_adresse_IP(struct sockaddr_in &their_addr)
 			<< NONE << std::endl;
 }
 
-t_client	ft_init_firefox(int i)
+t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 {
 	int			result;
 	t_client	datas;
+
+	std::cout << CYANE << "SERVER N_" << WHITE << i << NONE << std::endl;
 
 	datas.client_get_post = "";
 	datas.client_path = "";
@@ -45,8 +47,8 @@ t_client	ft_init_firefox(int i)
 	datas.buffer = "";
 	datas.path_request = "";
 	datas.content_type = "";
-	datas.status = "200 webser42_OK :)";
-	datas.file_500 = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\">This page is temporarily unavailable - 500 - </h1>\n</body>\n</html>";
+	
+	datas.file_500_bis = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\">This page is temporarily unavailable - 500 - </h1>\n</body>\n</html>";
 	datas.list_request_received = "";
 	datas.server.sin_family = AF_INET;
 	bzero(&(datas.server.sin_zero), 8);
@@ -62,21 +64,38 @@ t_client	ft_init_firefox(int i)
 // ****************************************************************************
 //              Variables récupéraient du parsing t_parsing	parsing;
 // ****************************************************************************
-	datas.file_404 = "HTML/404.html";  //  parsing.at(i)->file_404;
-	datas.server.sin_port = htons(MY_PORT + i);  // parsing.at(i)->my_port;
-	datas.server.sin_addr.s_addr = INADDR_ANY;   // parsing.at(i)->my_ip;  (127.0.0.1)
-	datas.name_server = "webserv/42"; // parsing.at(i)->name_server;
-		//  test
-		if (i == 1)
-			datas.name_server = "webserv/4242424242";
-	datas.root = "HTML"; // parsing.at(i)->root;
-	datas.location = "/site_1"; // parsing.at(i)->location;
-		//  test
-		if (i == 1)
-			datas.location = "/site_3_form";
-// ****************************************************************************
-// ****************************************************************************
+	datas.file_404 = parsing[i].error["404"];  //							error 404
+	std::ifstream test_file_404(datas.file_404);
+	if (!test_file_404)
+	{
+		std::cout << RED "Path file 404 no valid -- file 404 by default !!" NONE << std::endl;
+		datas.file_404 = "HTML/404.html";
+	}	
+	else
+		test_file_404.close();
 
+	datas.file_500 = parsing[i].error["500"];
+	std::ifstream test_file_500(datas.file_500);
+	if (!test_file_500)
+		std::cout << RED "Path file 500 no valid -- file 500 by default !!" NONE << std::endl;
+	else
+		test_file_500.close();
+	datas.server.sin_port = htons(stoi(parsing[i].my_port));  // 			port
+//	datas.server.sin_addr.s_addr = parsing[i].my_ip.c_str();   //							addresse
+//	inet_aton("127.0.0.1", &datas.server.sin_addr.s_addr);
+//	datas.server.sin_addr.s_addr = INADDR_ANY;   //							addresse
+	datas.server.sin_addr.s_addr = inet_addr(parsing[i].my_ip.c_str());   //							addresse
+
+	datas.name_server = parsing[i].name_server; // 							name serveur
+	datas.size = parsing[i].size; //										size
+	datas.root = parsing[i].location[0].root; // 							root
+//	if (datas.root == "")
+//		datas.root = parsing[i].location[0].root;
+	datas.location = "";
+	//datas.location = parsing[i].location[0].root; //								location
+// ****************************************************************************
+// ****************************************************************************
+	datas.status = "200 " + datas.name_server + "_OK :)";
 	std::cout << GREEN "Port : " WHITE << ntohs(datas.server.sin_port) \
 			<< NONE << std::endl;  // test
 	result = bind(datas.fd_socket, (struct sockaddr *)&(datas.server), \
@@ -86,9 +105,9 @@ t_client	ft_init_firefox(int i)
 	result = listen(datas.fd_socket, SOMAXCONN); 
 	if (result == -1)
 		ft_error("Error : listen", &datas);
-	std::cout << YELLOW "Server demarre sur le port " WHITE \
+	std::cout << YELLOW << datas.name_server << " go to port : " WHITE \
 			<< ntohs(datas.server.sin_port) << NONE << std::endl;
-
+	std::cout << CYANE "========================================\n" << std::endl;
 	return (datas);
 }
 
@@ -104,7 +123,7 @@ static void	ft_exit(int var)
 		if (result == -1)
 			ft_error("Error : close socket", &firefox.clients.at(i));
 		std::cout << GREEN "Close fd_socket : " 
-			<< firefox.clients.at(i).fd_socket << NONE << std::endl;
+			<< firefox.clients.at(i).fd_socket << YELLOW " - SERVER : " << firefox.clients.at(i).name_server << NONE << std::endl;
 	}
 	std::cout << "\b\b  " << std::endl;
 	std::cout << RED << "Exit to CTRL-C" << NONE << std::endl;
@@ -151,14 +170,19 @@ void	ft_read_struct(std::vector<s_parsing> parsing)
 	}
 }
 
-int	ft_parsing(std::vector<s_parsing> &parsing)
+int	ft_parsing(std::vector<s_parsing> &parsing, char *conf)
 {
 	std::string 				file;
 	int							nb_serv;
 	std::vector<int>			tab_len;
 	std::vector<std::string>    servers; // .conf cut par server
+	std::string					config;
 
-	file = ft_read_file2("./src/file.conf");
+	config = "./conf/";
+	config.append(conf);
+	file = ft_read_file2(config);
+
+	//file = ft_read_file2("./src/file.conf");
 	nb_serv = number_server(file, tab_len);
 	cut_server(file, tab_len, servers);
 	if (create_struct(parsing, nb_serv))
@@ -177,10 +201,11 @@ int	ft_parsing(std::vector<s_parsing> &parsing)
 	find_redir(parsing);
 	find_cgi(parsing);
 
-	ft_read_struct(parsing);
+//	ft_read_struct(parsing);
 
 	return (nb_serv);
 }
+
 
 // static void	ft_copy_file(std::string source, std::string copy)
 // {
@@ -263,9 +288,12 @@ std::string	auto_index(const std::string dir_name, const std::string target)
 
 int main(int argc, char **argv, char **env)
 {
-	(void)argc;
-	(void)argv;
+	argc;
+	argv;
 	(void)env;
+
+	if (argc != 2)
+		ft_error("Error nb argc !!\n", NULL);
 
 
 	//test directory
@@ -288,7 +316,8 @@ int main(int argc, char **argv, char **env)
 	// init page test delete
 	ft_copy_file("./HTML/site_3_form/Wilhelm.html", "./HTML/site_3_form/test_delete.html");
 
-	firefox.nb_server = ft_parsing(parsing);
+	firefox.nb_server = ft_parsing(parsing, argv[1]);
+	ft_read_struct(parsing);
 
 	test_Sec_Fetch_Dest = "audio-audioworklet-document-embed-empty-font-frame-iframe-image-";
 	test_Sec_Fetch_Dest += "manifest-object-paintworklet-report-script-serviceworker-";
@@ -298,7 +327,7 @@ int main(int argc, char **argv, char **env)
 	// Verify values
 	// for (std::map<std::string, std::string>::iterator itt = var_content_type.begin(); itt != var_content_type.end(); itt++)
 	// 	std::cout << GREEN << itt->first << " : " YELLOW << itt->second << NONE << std::endl;
-	std::cout << GREEN "\ntest_Sec_Fetch_Dest : " YELLOW << test_Sec_Fetch_Dest << "\n" NONE << std::endl;
+	//std::cout << GREEN "\ntest_Sec_Fetch_Dest : " YELLOW << test_Sec_Fetch_Dest << "\n" NONE << std::endl;
 
 	// std::map<std::string, std::string>::iterator	itt;
 	// itt = var_content_type.find("3gp");
@@ -309,7 +338,7 @@ int main(int argc, char **argv, char **env)
 	//std::cout << "test director" << auto_index("../", "------test--------") << std::endl;
 	
 	for (int i = 0; i < firefox.nb_server; i++)
-		firefox.clients.push_back(ft_init_firefox(i));
+		firefox.clients.push_back(ft_init_firefox(i, parsing));
 	std::cout << GREEN "\nNb de clients dans firefox : " \
 			<< firefox.clients.size() << NONE << std::endl;
 	
@@ -369,7 +398,7 @@ int main(int argc, char **argv, char **env)
 							ft_error("Error : shutdown", &firefox.clients[i]);
 					}
 					
-					firefox.clients[i].status = "200 webser42_OK :)";
+					firefox.clients[i].status = "200 " + firefox.clients[i].name_server + "_OK :)";
 					if (bytes_sent == -1)
 						ft_error("Error : send", &firefox.clients[i]);
 					

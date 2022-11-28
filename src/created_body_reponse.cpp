@@ -34,7 +34,7 @@ std::string ft_created_body_reponse(t_client *datas)
 	if (temp.find("__repertory__.html") != std::string::npos)
 	{
 		datas->path_request = "/repertory.html";
-    	datas->status = "200 server form";
+    	datas->status = "200 " + datas->name_server + " form";
 		ft_test_request_exist(datas, datas->path_request);
 		return (ft_parsing_form("", datas));
 	}
@@ -43,7 +43,7 @@ std::string ft_created_body_reponse(t_client *datas)
 	std::cout << RED "PATH Request Client : " YELLOW << datas->path_request \
 			<< NONE "\n" << std::endl;
 	
-	datas->client_path = datas->root + datas->location;
+	datas->client_path = datas->root;
 	if (datas->path_request == "/")
 		datas->client_path += "/index.html";  // ----------------------------- Variable du parsing path by default
 	else                                      // voir à tester si le path est autorisé par le .conf
@@ -67,13 +67,22 @@ std::string ft_read_file(t_client *datas)
 
 	file = "";
 
-	// ---  test pour page 500
-	if (datas->client_path == datas->root + datas->location + "/500.html")
+	//---  test pour page 500
+	if (datas->client_path.find("/500.html") != std::string::npos)
 	{
 		datas->list_request_received = "";
-		datas->status = "500 webser42_error_server :(";
-			return (datas->file_500);
-
+		datas->status = "500 " + datas->name_server + "_error_server :(";
+		datas->client_path = datas->file_500;
+		std::ifstream test_file(datas->file_500);
+		if (!test_file)
+			return (datas->file_500_bis);
+		else
+			test_file.close();
+		std::ifstream my_flux2(datas->client_path);
+		while (my_flux2.get(c))
+		file += c;
+		my_flux2.close();
+		return (file);
 	}
 	std::cout << "--- datas->client_path : " << datas->client_path << std::endl;
 	// -- test chemin valide
@@ -122,13 +131,19 @@ std::string ft_read_file(t_client *datas)
 			if (file.size() != 0)
 				return (file);
 		}
-		datas->status = "404 webser42_error_page :(";
+		datas->status = "404 " + datas->name_server + " error_page :(";
 		datas->client_path = datas->file_404;
 		datas->list_request_received = "";
 		std::ifstream my_flux2(datas->client_path);
 		if (!my_flux2)
 		{
-			datas->status = "500 webser42_error_server :(";
+			datas->status = "500  " + datas->name_server + "_error_server :(";
+			datas->client_path = datas->file_500;
+			std::ifstream test_file(datas->file_500);
+			if (!test_file)
+				datas->client_path = datas->file_500_bis;
+			else
+				test_file.close();
 			return (datas->file_500);
 		}
 		while (my_flux2.get(c))
@@ -139,5 +154,8 @@ std::string ft_read_file(t_client *datas)
 	while (my_flux.get(c))
 		file += c;
 	my_flux.close();
+	// std::cout << "file =\n" << file << std::endl;
+	// exit (1); //-------------
+
 	return (file);
 }
