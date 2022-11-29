@@ -45,9 +45,13 @@ std::string ft_created_body_reponse(t_client *datas)
 	
 	datas->client_path = datas->root;
 	if (datas->path_request == "/")
-		datas->client_path += "/index.html";  // ----------------------------- Variable du parsing path by default
+		datas->client_path += datas->root_path;
+		//datas->client_path += datas->root_path;
+		//datas->client_path += "/index.html";  // ----------------------------- Variable du parsing path by default
 	else                                      // voir à tester si le path est autorisé par le .conf
 		datas->client_path += datas->path_request;
+	std::cout << RED "**datas.root : " << datas->root << "--  datas.root_path : " << datas->root_path << "--" << NONE << std::endl;
+
 	std::cout << RED "PATH Reponse Server : " YELLOW << datas->client_path \
 			<< NONE "\n" << std::endl;
 	if (ft_test_request_exist(datas, datas->client_path))

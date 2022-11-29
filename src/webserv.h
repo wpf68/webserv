@@ -130,6 +130,7 @@ typedef struct s_client
 	int							size;
 	std::string 				list_request_received;
 	std::string					root;
+	std::string					root_path;
 	std::vector<std::string>	repertory;
 	int							nb_cookie;
 //	std::string 				location;

@@ -16,6 +16,7 @@ t_server							firefox;
 std::string							test_Sec_Fetch_Dest;
 std::map<std::string, std::string>	var_content_type;
 
+
 void    ft_error(std::string msg, t_client *datas)
 {
 	(void) datas;
@@ -38,6 +39,8 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 {
 	int			result;
 	t_client	datas;
+	int			test_location;
+	std::string	temp;
 
 	std::cout << CYANE << "SERVER N_" << WHITE << i << NONE << std::endl;
 
@@ -47,6 +50,7 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 	datas.buffer = "";
 	datas.path_request = "";
 	datas.content_type = "";
+	datas.root_path = "";
 	
 	datas.file_500_bis = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\">This page is temporarily unavailable - 500 - </h1>\n</body>\n</html>";
 	datas.list_request_received = "";
@@ -91,7 +95,76 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 
 	datas.name_server = parsing[i].name_server; // 							name serveur
 	datas.size = parsing[i].size; //										size
-	datas.root = parsing[i].location[0].root; // 							root
+	test_location = 0;
+	for (; test_location < parsing[i].location.size(); test_location++)
+	{
+		if (parsing[i].location[test_location].req_client == "/")
+		{
+			datas.root = parsing[i].location[test_location].root;
+			break;;
+		}
+	}
+	if (test_location == parsing[i].location.size())
+		ft_error("Error location /", NULL);
+
+
+
+	temp = "";
+	std::string::iterator itt = datas.root.begin();
+	for (; itt < datas.root.end() && *itt != '/'; itt++)
+	{
+		temp += *itt;
+	}
+	if (itt == datas.root.end())
+		ft_error("Error path1 /", NULL);
+	temp += "/";
+	itt++;
+	for (; itt < datas.root.end() && *itt != '/'; itt++)	
+	{
+		temp += *itt;
+	}
+	if (itt == datas.root.end())
+		datas.root_path.append("/index.html");
+	else
+	{
+		for (; itt < datas.root.end(); itt++)
+			datas.root_path += *itt;
+		datas.root = temp;
+
+	}
+
+	// test_location = 0;
+	// temp = "";
+	// for (; test_location < datas.root.size() && datas.root[test_location] != '/'; test_location++)
+	// {
+	// 	temp += datas.root[test_location];
+	// }
+	// if (test_location == datas.root.size())
+	// 	ft_error("Error path1 /", NULL);
+	// temp += "/";
+	// test_location++;
+	// for (; test_location < datas.root.size() && datas.root[test_location] != '/'; test_location++)
+	// {
+	// 	temp += datas.root[test_location];
+	// }
+	// if (test_location == datas.root.size())
+	// {
+	// 	datas.root_path = "/index.html";
+	// }
+	// else
+	// {
+
+	// 	for (; test_location < datas.root.size(); test_location++)
+	// 	{
+	// 		datas.root_path.append(datas.root[test_location]);
+	// 	//	datas.root_path += datas.root[test_location];
+	// 	}
+	// 	datas.root = temp;
+	// }
+
+	std::cout << CYANE "datas.root : " << datas.root << "--  datas.root_path : " << datas.root_path << "--" << NONE << std::endl;
+	
+	 // 							root
 //	if (datas.root == "")
 //		datas.root = parsing[i].location[0].root;
 //	datas.location = "";
