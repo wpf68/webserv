@@ -77,7 +77,10 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 	datas.file_500 = parsing[i].error["500"];
 	std::ifstream test_file_500(datas.file_500);
 	if (!test_file_500)
+	{
+		datas.file_500 = "HTML/500.html";
 		std::cout << RED "Path file 500 no valid -- file 500 by default !!" NONE << std::endl;
+	}
 	else
 		test_file_500.close();
 	datas.server.sin_port = htons(stoi(parsing[i].my_port));  // 			port
@@ -91,8 +94,30 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 	datas.root = parsing[i].location[0].root; // 							root
 //	if (datas.root == "")
 //		datas.root = parsing[i].location[0].root;
-	datas.location = "";
+//	datas.location = "";
 	//datas.location = parsing[i].location[0].root; //								location
+
+	datas.location = parsing[i].location;
+	// for (int j = 0; j < parsing[i].location.size(); j++)
+	// 	{
+	// 		std::string val1 = parsing[i].location[j].req_client;
+	// 		datas.location[j].req_client.push_back(parsing[i].location[j].req_client);
+	// 		datas.location[j].root = parsing[i].location[j].root;
+	// 		datas.location[j].path_index = parsing[i].location[j].path_index;
+	// 		datas.location[j].dir_listing = parsing[i].location[j].dir_listing;
+	// 		datas.location[j].methods = parsing[i].location[j].methods;
+
+	// 		// std::map<std::string, std::string>::iterator it = parsing[i].location[j].redir.begin();
+	// 		// for (; it != parsing[i].location[j].redir.end(); it++ )
+	// 		// 		std::cout << it->first << ' ' << it->second << std::endl;
+	// 		// std::cout << "Cgi :" <<std::endl;
+	// 		// std::map<std::string, std::string>::iterator it2 = parsing[i].location[j].cgi.begin();
+	// 		// for (; it2 != parsing[i].location[j].cgi.end(); it2++ )
+	// 		// 	std::cout << it2->first << ' ' << it2->second << std::endl;
+	// 		// std::cout << std::endl;
+	// 	}
+
+
 // ****************************************************************************
 // ****************************************************************************
 	datas.status = "200 " + datas.name_server + "_OK :)";
@@ -107,7 +132,41 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 		ft_error("Error : listen", &datas);
 	std::cout << YELLOW << datas.name_server << " go to port : " WHITE \
 			<< ntohs(datas.server.sin_port) << NONE << std::endl;
+
+
+	std::cout << RED "========== Verification des valeurs du serveur : " YELLOW << i << std::endl;
+	std::cout << CYANE "datas.file_404 : " YELLOW << datas.file_404 << NONE << std::endl;
+	std::cout << CYANE "datas.file_500 : " YELLOW << datas.file_500 << NONE << std::endl;
+	std::cout << CYANE "datas.server.sin_port : " YELLOW << datas.server.sin_port << NONE << std::endl;
+	std::cout << CYANE "datas.server.sin_addr.s_addr : " YELLOW << datas.server.sin_addr.s_addr << NONE << std::endl;
+	std::cout << CYANE "datas.name_server : " YELLOW << datas.name_server << NONE << std::endl;
+	std::cout << CYANE "datas.size : " YELLOW << datas.size << NONE << std::endl;
+	std::cout << CYANE "datas.root : " YELLOW << datas.root << NONE << std::endl;
+	for (int j = 0; j < datas.location.size(); j++)
+		{
+			std::cout << "//// Location " << j + 1 << " ////" << std::endl;
+			std::cout << "Requête client : " << datas.location[j].req_client <<std::endl;
+			std::cout << "Root : " << datas.location[j].root <<std::endl;
+			std::cout << "Chemin vers Index : " << datas.location[j].path_index <<std::endl;
+			std::cout << "Directory listing : " << datas.location[j].dir_listing <<std::endl;
+			std::cout << "Méthode : " <<datas.location[j].methods <<std::endl;
+			std::cout << "Redirections :" <<std::endl;
+
+			// std::map<std::string, std::string>::iterator it = parsing[i].location[j].redir.begin();
+			// for (; it != datas.location[j].redir.end(); it++ )
+			// 		std::cout << it->first << ' ' << it->second << std::endl;
+			// std::cout << "Cgi :" <<std::endl;
+			// std::map<std::string, std::string>::iterator it2 = parsing[i].location[j].cgi.begin();
+			// for (; it2 != datas.location[j].cgi.end(); it2++ )
+			// 	std::cout << it2->first << ' ' << it2->second << std::endl;
+			// std::cout << std::endl;
+		}
+
+
 	std::cout << CYANE "========================================\n" << std::endl;
+	std::cout << std::endl;
+
+
 	return (datas);
 }
 

@@ -82,7 +82,7 @@ fclean: clean
 re: fclean all
 
 test:	re
-	./${NAME}
+	./${NAME} file.conf
 
 linux:	all
 	valgrind ./${NAME}

@@ -96,6 +96,8 @@ std::string ft_read_file(t_client *datas)
 	if (!my_flux)
 	{
 		std::cout << CYANE "buffer bis ------- \n"<< datas->buffer << NONE << std::endl;   /// test
+
+
 		if (datas->client_path.find("Directory.html") != std::string::npos)
 		{
 			file = auto_index("./", "./");
@@ -151,6 +153,19 @@ std::string ft_read_file(t_client *datas)
 		my_flux2.close();
 		return (file);
 	}
+	for (int i = 0; i < datas->location.size(); i++)
+	{
+		if (datas->location[i].dir_listing == "on" && test_path_valide.find(datas->location[i].root) != std::string::npos)
+		{
+			file = auto_index("./", "./");
+			//		file = auto_index("./", "------_test_Directory_--------");
+			return (file);
+		}
+
+	}
+		
+		
+
 	while (my_flux.get(c))
 		file += c;
 	my_flux.close();

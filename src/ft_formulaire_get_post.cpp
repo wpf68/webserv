@@ -110,11 +110,11 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 	file = "";
 	if (datas.find("POST") != std::string::npos)
 	{
-		if (datas.find("Content-Type:") != std::string::npos)
-		{
-			ft_upload(datas, datas_client);
-			return(file);
-		}
+		// if (datas.find("Content-Type:") != std::string::npos)
+		// {
+		// 	ft_upload(datas, datas_client);
+		// 	return(file);
+		// }
 		temp = get_reponse(datas, "\r\n\r\n", "\0");
 		if (temp.find("DELETE_file_for_delete") != std::string::npos)
 		{

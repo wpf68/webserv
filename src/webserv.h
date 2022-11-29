@@ -132,8 +132,8 @@ typedef struct s_client
 	std::string					root;
 	std::vector<std::string>	repertory;
 	int							nb_cookie;
-	std::string 				location;
-//	std::vector<s_location>		location;
+//	std::string 				location;
+	std::vector<s_location>		location;
 
 	int			fd_socket;
 	std::string	create_send;
