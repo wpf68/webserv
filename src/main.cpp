@@ -108,7 +108,11 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 		ft_error("Error location /", NULL);
 
 
-
+// découpe du root en deux parties
+	// test validité du root
+	if (datas.root.rfind("/") + 1 == datas.root.size())
+		datas.root = datas.root.substr(0, datas.root.rfind("/"));
+//	std::cout << "pos / + 1 : " << datas.root.rfind("/") + 1 << " size : " << datas.root.size() << std::endl;
 	temp = "";
 	std::string::iterator itt = datas.root.begin();
 	for (; itt < datas.root.end() && *itt != '/'; itt++)
@@ -133,42 +137,7 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 
 	}
 
-	// test_location = 0;
-	// temp = "";
-	// for (; test_location < datas.root.size() && datas.root[test_location] != '/'; test_location++)
-	// {
-	// 	temp += datas.root[test_location];
-	// }
-	// if (test_location == datas.root.size())
-	// 	ft_error("Error path1 /", NULL);
-	// temp += "/";
-	// test_location++;
-	// for (; test_location < datas.root.size() && datas.root[test_location] != '/'; test_location++)
-	// {
-	// 	temp += datas.root[test_location];
-	// }
-	// if (test_location == datas.root.size())
-	// {
-	// 	datas.root_path = "/index.html";
-	// }
-	// else
-	// {
-
-	// 	for (; test_location < datas.root.size(); test_location++)
-	// 	{
-	// 		datas.root_path.append(datas.root[test_location]);
-	// 	//	datas.root_path += datas.root[test_location];
-	// 	}
-	// 	datas.root = temp;
-	// }
-
 	std::cout << CYANE "datas.root : " << datas.root << "--  datas.root_path : " << datas.root_path << "--" << NONE << std::endl;
-	
-	 // 							root
-//	if (datas.root == "")
-//		datas.root = parsing[i].location[0].root;
-//	datas.location = "";
-	//datas.location = parsing[i].location[0].root; //								location
 
 	datas.location = parsing[i].location;
 	// for (int j = 0; j < parsing[i].location.size(); j++)

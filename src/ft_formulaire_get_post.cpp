@@ -118,6 +118,12 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 		temp = get_reponse(datas, "\r\n\r\n", "\0");
 		if (temp.find("DELETE_file_for_delete") != std::string::npos)
 		{
+			if (datas_client->location[0].methods.find("DELETE") == std::string::npos)  //----------------- test une seule location
+			{
+				datas_client->status = "403 demand prohibited";
+				datas_client->client_path = "HTML/403_DELETE_prohibited.html";
+				return (ft_read_file(datas_client));
+			}
 			first_line = get_reponse(datas_client->buffer, "", "\n");
 			if (temp.find("NO") != std::string::npos)
 			{
@@ -147,6 +153,12 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 			file = ft_read_file(datas_client);
 			ft_delete("HTML/site_3_form/test_delete.html", datas_client);
 			return (file);
+		}
+		if (datas_client->location[0].methods.find("POST") == std::string::npos)  //----------------- test une seule location
+		{
+			datas_client->status = "403 demand prohibited";
+			datas_client->client_path = "HTML/403_POST_prohibited.html";
+			return (ft_read_file(datas_client));
 		}
 		std::cout << "Formulaire POST" << std::endl;
 		

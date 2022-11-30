@@ -21,6 +21,12 @@ std::string ft_created_body_reponse(t_client *datas)
 	std::cout << RED "---- first line : " << temp << std::endl;
 	if (temp.find("?") != std::string::npos) 		
 	{
+	if (datas->location[0].methods.find("GET") == std::string::npos)  //----------------- test une seule location
+	{
+		datas->status = "403 demand prohibited";
+		datas->client_path = "HTML/403_GET_prohibited.html";
+		return (ft_read_file(datas));
+	}
 		std::cout << RED "Message GET recu" NONE << std::endl;
 		return (ft_formulaire_get_post(temp, datas));
 	}
@@ -39,6 +45,12 @@ std::string ft_created_body_reponse(t_client *datas)
 		return (ft_parsing_form("", datas));
 	}
 
+	if (datas->location[0].methods.find("GET") == std::string::npos)  //----------------- test une seule location
+	{
+		datas->status = "403 demand prohibited";
+		datas->client_path = "HTML/403_GET_prohibited.html";
+		return (ft_read_file(datas));
+	}
 	datas->path_request = get_reponse(datas->buffer, "GET ", " ");
 	std::cout << RED "PATH Request Client : " YELLOW << datas->path_request \
 			<< NONE "\n" << std::endl;
@@ -161,7 +173,10 @@ std::string ft_read_file(t_client *datas)
 	{
 		if (datas->location[i].dir_listing == "on" && test_path_valide.find(datas->location[i].root) != std::string::npos)
 		{
-			file = auto_index("./", "./");
+			//file = auto_index("./", "./");
+			std::cout << "on : " << datas->root << std::endl;
+			file = auto_index(datas->root, datas->root);
+
 			//		file = auto_index("./", "------_test_Directory_--------");
 			return (file);
 		}
