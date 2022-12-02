@@ -6,7 +6,7 @@
 /*   By: pwolff <pwolff@student.42mulhouse.fr>>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 10:43:40 by pwolff            #+#    #+#             */
-/*   Updated: 2022/11/24 12:25:45 by pwolff           ###   ########.fr       */
+/*   Updated: 2022/12/02 15:21:35 by pwolff           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	ft_delete(std::string path, t_client *datas)
 {
 	int	test;
 	std::ifstream file(path);
+
+//	std::cout << "Delete : " << path << std::endl;
 	if (file.good())
 	{
 		test = remove(path.c_str());
@@ -26,4 +28,5 @@ void	ft_delete(std::string path, t_client *datas)
 	}
 	else
 		datas->status = "204 No Content file no found";
+	datas->list_request_received.erase();
 }

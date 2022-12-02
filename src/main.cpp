@@ -389,8 +389,8 @@ std::string	auto_index(const std::string dir_name, const std::string target)
 
 int main(int argc, char **argv, char **env)
 {
-	argc;
-	argv;
+//	argc;
+//	argv;
 	(void)env;
 
 	if (argc != 2)
@@ -416,6 +416,7 @@ int main(int argc, char **argv, char **env)
 
 	// init page test delete
 	ft_copy_file("./HTML/site_3_form/Wilhelm.html", "./HTML/site_3_form/test_delete.html");
+	ft_copy_file("./HTML/site_3_form/Wilhelm.html", "./HTML/site_1/test_delete.html");
 
 	firefox.nb_server = ft_parsing(parsing, argv[1]);
 	ft_read_struct(parsing);
@@ -469,7 +470,7 @@ int main(int argc, char **argv, char **env)
 			FD_SET(firefox.clients[i].fd_socket, &readfds);  // multi clients
 			
 		std::cout << "\rWaiting on a connection " << dot[n_anim++] << std::flush;
-		if (n_anim == 4)
+		if (n_anim == 3)
 			n_anim = 0;
 		result = select(firefox.nb_server + 3, &readfds, &writefds, NULL, &timeout);
 
@@ -479,7 +480,7 @@ int main(int argc, char **argv, char **env)
 			{
 				if (FD_ISSET(firefox.clients[i].fd_socket, &readfds)) 
 				{
-					std::cout << GREEN "Port select : " WHITE << ntohs(firefox.clients[i].server.sin_port) << NONE << std::endl;  // test
+					std::cout << GREEN "\nPort select : " WHITE << ntohs(firefox.clients[i].server.sin_port) << NONE << std::endl;  // test
 					new_fd = accept(firefox.clients[i].fd_socket, (struct sockaddr *)&their_addr, &sin_size);
 					if (new_fd == -1)
 						ft_error("Error : accept", &firefox.clients[i]);
@@ -503,11 +504,11 @@ int main(int argc, char **argv, char **env)
 					if (bytes_sent == -1)
 						ft_error("Error : send", &firefox.clients[i]);
 					
-					std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
+				//	std::cout << GREEN "Shutdown new_fd" NONE << std::endl;
 					result = close(new_fd);
 					if (result == -1)
 						ft_error("Error : close new_fd", &firefox.clients[i]);
-					std::cout << GREEN "Close new_fd" NONE << std::endl;
+				//	std::cout << GREEN "Close new_fd" NONE << std::endl;
 				}
 			}
 		}

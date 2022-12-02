@@ -40,15 +40,15 @@ std::string  ft_parsing_form(std::string temp, t_client *datas)
 		int nbTabl = ft_split(VecStr, temp, '&');
 		for(int i = 0; i < nbTabl; ++i)
 		{
-			std::cout << i << " : '" << VecStr[i] << "'" << std::endl;
+		//	std::cout << i << " : '" << VecStr[i] << "'" << std::endl;
 			ft_split(datas->repertory, VecStr[i], '=');
 		}
-		std::cout << std::endl;
+	//	std::cout << std::endl;
 	}
 	j = 0;
 
 	datas->client_path = datas->root + "/repertory_part1.html";
-	std::cout << datas->client_path << " *********" << std::endl; ////
+//	std::cout << datas->client_path << " *********" << std::endl; ////
 	file = ft_read_file(datas);
 
 	
@@ -57,7 +57,7 @@ std::string  ft_parsing_form(std::string temp, t_client *datas)
 	{
 		if (j % 2)
 		{
-			std::cout << *itt << " - ";
+		//	std::cout << *itt << " - ";
 			file += "<p style=\"color: rgb(0, 0, 0); text-align: center; background-color: darksalmon;\"><span>" + *itt + "</span>";
 			if ((itt + 1) != datas->repertory.end())
 			{
@@ -71,9 +71,9 @@ std::string  ft_parsing_form(std::string temp, t_client *datas)
 		j++;
 	}
 	file += " </body> </html>";
-	std::cout << std::endl;
+//	std::cout << std::endl;
 	temp.clear();
- 	std::cout << file << std::endl;  ///---------------
+// 	std::cout << file << std::endl;  ///---------------
 	return (file);
 }
 
@@ -96,8 +96,6 @@ static void	ft_upload(std::string &datas, t_client *datas_client)
 	file = get_reponse(corps, "\r\n\r\n", key);
 
 	std::cout << RED "Type : " << type << "\nfile :\n" << file << "\n" NONE << std::endl; 
-
-
 }
 
 std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
@@ -122,6 +120,7 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 			{
 				datas_client->status = "403 demand prohibited";
 				datas_client->client_path = "HTML/403_DELETE_prohibited.html";
+				datas_client->list_request_received.erase();
 				return (ft_read_file(datas_client));
 			}
 			first_line = get_reponse(datas_client->buffer, "", "\n");
@@ -158,14 +157,15 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 		{
 			datas_client->status = "403 demand prohibited";
 			datas_client->client_path = "HTML/403_POST_prohibited.html";
+			datas_client->list_request_received.erase();
 			return (ft_read_file(datas_client));
 		}
-		std::cout << "Formulaire POST" << std::endl;
+	//	std::cout << "Formulaire POST" << std::endl;
 		
 	}
 	else if (datas.find("GET") != std::string::npos)
 	{
-		std::cout << "Formulaire GET" << std::endl;
+	//	std::cout << "Formulaire GET" << std::endl;
 		temp = get_reponse(datas, "?", " ");
 	}
 	else
@@ -174,7 +174,7 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 	}
 
 
-		std::cout << GREEN "formulaire : " NONE << temp << std::endl;
+	//	std::cout << GREEN "formulaire : " NONE << temp << std::endl;
 		file = ft_parsing_form(temp, datas_client);
 		temp.clear();
 		datas_client->path_request = "/repertory.html";

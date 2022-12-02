@@ -22,15 +22,15 @@ int ft_test_request_exist(t_client *datas, std::string &path_request)
 	int			status;
 
 	status = 0;	
-	std::cout << WHITE "*******  TEST REQUEST EXIST *******" NONE << std::endl;
-	std::cout << "New request : " << path_request << std::endl;
-	std::cout << "List request already : " << datas->list_request_received \
+	// std::cout << WHITE "*******  TEST REQUEST EXIST *******" NONE << std::endl;
+	// std::cout << "New request : " << path_request << std::endl;
+	// std::cout << "List request already : " << datas->list_request_received \
 			<< std::endl;
 	type = get_reponse(datas->client_path, ".", "\0");
-	std::cout << RED "type : " YELLOW << type << NONE "\n" << std::endl;
+//	std::cout << RED "type : " YELLOW << type << NONE "\n" << std::endl;
 	if (type == "html")
 	{
-		if (datas->list_request_received == path_request) 
+		if (datas->list_request_received == path_request)
 		{
 			datas->status = "204 " + datas->name_server + " already sent :)";
 			status = 1;
@@ -38,9 +38,9 @@ int ft_test_request_exist(t_client *datas, std::string &path_request)
 		else
 			datas->list_request_received = path_request;
 	}
-	std::cout << "Status : " << datas->status << std::endl;
-	std::cout << "New list request : " << datas->list_request_received << std::endl;
-	std::cout << WHITE "************************************" NONE << std::endl;
+	// std::cout << "Status : " << datas->status << std::endl;
+	// std::cout << "New list request : " << datas->list_request_received << std::endl;
+	// std::cout << WHITE "************************************" NONE << std::endl;
 	return (status);
 }
 
@@ -50,7 +50,7 @@ static void ft_type_content_type(t_client *datas)
 
 //	type_image = ".";
 //	datas->client_path;
-	std::cout << "\nSearch extension image to : " << datas->client_path << std::endl;
+//	std::cout << "\nSearch extension image to : " << datas->client_path << std::endl;
 //	type_image = get_reponse_image_end_line(datas->client_path, type_image);
 	type_image = get_reponse(datas->client_path, ".", "\0");
 
@@ -58,42 +58,11 @@ static void ft_type_content_type(t_client *datas)
 
 //----------------  trouver la pair  ---------------------------
 
-	std::cout << RED "type_image : " YELLOW << type_image << NONE "\n" << std::endl;
-
-	// chercher dans une Map :
-	// std::map<std::string, std::string>::iterator	itt;
-	// itt = var_content_type.find(type_image);
-	// std::cout << GREEN << type_image << " :: " << itt->second << NONE << std::endl;	
- 
-	// mieux :: (https://www.youtube.com/watch?v=KiB0vRi2wlc&t=3s)  unordered_map  peu être plus rapide ...
+//	std::cout << RED "type_image : " YELLOW << type_image << NONE "\n" << std::endl;
 	std::string&	secound = var_content_type[type_image];
 	if (secound == "")
 		secound = "text/html; charset=UTF-8";
 	datas->content_type = "Content-Type: " + secound + "\r\n";
-//	std::cout << GREEN "--- Map --- : " << type_image << " :: " << secound << NONE << std::endl;	
-	
-
-
-
-// 	std::cout << RED "type_image : " YELLOW << type_image << NONE "\n" << std::endl;
-// 	if (type_image == "jpg" || type_image == "jpeg")
-// 		datas->content_type = "Content-Type: image/jpeg\r\n";
-// 	else if (type_image == "png")
-// 		datas->content_type = "Content-Type: image/png\r\n";
-// 	else if (type_image == "pdf")
-// 		datas->content_type = "Content-Type: application/pdf\r\n";
-// 	else if (type_image == "mp4")
-// 		datas->content_type = "Content-Type: video/mp4\r\n";
-// 	else if (type_image == "ico")
-// 		datas->content_type = "Content-Type: image/x-icon\r\n";
-// 	else if (type_image == "gif")
-// 		datas->content_type = "Content-Type: image/gif\r\n";
-// 	else if (type_image == "css")
-// 		datas->content_type = "Content-Type: text/css\r\n";
-// 	else if (type_image == "html" || type_image == "htm")
-// 		datas->content_type = "Content-Type: text/html; charset=UTF-8\r\n";
-// 	else
-// 		datas->content_type = "Content-Type: \r\n";
 }
 
 static void ft_test_content_type(t_client *datas)
@@ -104,12 +73,12 @@ static void ft_test_content_type(t_client *datas)
 	temp = datas->sec_fetch_dest + "-";
 	if (test_Sec_Fetch_Dest.find(temp) != std::string::npos)
 	{
-		std::cout << GREEN "Request " << datas->sec_fetch_dest << " accepted" NONE << std::endl;
+	//	std::cout << GREEN "Request " << datas->sec_fetch_dest << " accepted" NONE << std::endl;
 		ft_type_content_type(datas);
 	}
 	else
 	{
-		std::cout << RED "Request " << datas->sec_fetch_dest << " no Protocol !!!" NONE << std::endl;
+	//	std::cout << RED "Request " << datas->sec_fetch_dest << " no Protocol !!!" NONE << std::endl;
 		datas->content_type = "Content-Type: \r\n";
 	}
 		
@@ -121,7 +90,7 @@ static void  ft_get_content_type (t_client *datas)
 //	datas->sec_fetch_dest = get_reponse_end_line(datas->buffer, datas->content_type);
 	datas->sec_fetch_dest = get_reponse(datas->buffer, datas->content_type, "\r");
 
-	std::cout << RED "Sec-Fetch-Dest Client : " YELLOW << datas->sec_fetch_dest \
+//	std::cout << RED "Sec-Fetch-Dest Client : " YELLOW << datas->sec_fetch_dest \
 			<< NONE "\n" << std::endl;
 	ft_test_content_type(datas);
 }
