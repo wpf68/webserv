@@ -227,3 +227,37 @@ void	find_cgi(std::vector<s_parsing> &parsing)
 		}
 	}
 }
+
+int	ft_check_parsing(std::vector<s_parsing> parsing)
+{
+	for (int i = 0; i < parsing.size(); i++)
+	{
+		struct sockaddr_in sa;
+	    int result = inet_pton(AF_INET, parsing[i].my_ip.c_str(), &(sa.sin_addr));
+    	if (result == 0)
+		{
+			std::cout << "IP parsing error" << std::endl;
+			return (1);
+		}
+
+		for (int j = 0; j < parsing[i].my_port.size(); j++)
+		{
+			if (isalpha(parsing[i].my_port[j]))
+			{
+				std::cout << "Port parsing error" << std::endl;
+				return (1);
+			}
+		}
+
+		for (int j = 0; j < parsing[i].my_port.size(); j++)
+		{
+			if (stoi(parsing[i].my_port) < 0 || stoi(parsing[i].my_port) > 65353)
+			{
+				std::cout << "Port parsing error" << std::endl;
+				return (1);
+			}
+		}
+	}
+
+	return (0);
+}
