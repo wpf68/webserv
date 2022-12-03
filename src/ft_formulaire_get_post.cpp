@@ -118,8 +118,8 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 		{
 			if (datas_client->location[0].methods.find("DELETE") == std::string::npos)  //----------------- test une seule location
 			{
-				datas_client->status = "403 demand prohibited";
-				datas_client->client_path = "HTML/403_DELETE_prohibited.html";
+				datas_client->status = "405 demand prohibited";
+				datas_client->client_path = "HTML/405_DELETE_prohibited.html";
 				datas_client->list_request_received.erase();
 				return (ft_read_file(datas_client));
 			}
@@ -155,8 +155,8 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 		}
 		if (datas_client->location[0].methods.find("POST") == std::string::npos)  //----------------- test une seule location
 		{
-			datas_client->status = "403 demand prohibited";
-			datas_client->client_path = "HTML/403_POST_prohibited.html";
+			datas_client->status = "405 demand prohibited";
+			datas_client->client_path = "HTML/405_POST_prohibited.html";
 			datas_client->list_request_received.erase();
 			return (ft_read_file(datas_client));
 		}

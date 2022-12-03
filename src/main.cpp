@@ -449,6 +449,12 @@ int main(int argc, char **argv, char **env)
 	int					new_fd;
 	struct sockaddr_in	their_addr = {0};
 
+//	FD_ZERO(&readfds);
+//	FD_ZERO(&writefds);
+//	for (int i = 0; i < firefox.nb_server; i++)
+//		FD_SET(firefox.clients[i].fd_socket, &readfds);  // multi clients
+
+
 	for (;;)
 	{
 		socklen_t	sin_size;

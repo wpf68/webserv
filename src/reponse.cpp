@@ -131,6 +131,9 @@ std::string ft_created_reponse(t_client *datas)
 
 	body_reponse = "";
 
+
+
+
 //	if (datas->buffer.find("Sec-Fetch-Mode: navigate") != std::string::npos 
 //			&& datas->buffer.find("Sec-Fetch-Dest: document") != std::string::npos)
 	body_reponse = ft_created_body_reponse(datas);

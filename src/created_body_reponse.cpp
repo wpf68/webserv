@@ -19,15 +19,34 @@ std::string ft_created_body_reponse(t_client *datas)
 	std::string path;
 
 	file = "";
-	temp = get_reponse(datas->buffer, "", "\n");
+//	temp = get_reponse(datas->buffer, "", "\n");
 //	std::cout << RED "---- first line : " << temp << std::endl;
+	if (datas->buffer.find("Content-Length:") != std::string::npos)
+	{
+		temp = get_reponse(datas->buffer, "Content-Length: ", "\n");
+		std::stringstream	ss;
+		int					size_body;
 
+	//	std::cout << RED "** Size : " << get_reponse(datas->buffer, "Content-Length: ", "\n") << std::endl;
+		ss << temp;
+		ss >> size_body;
+		std::cout << RED "size int - " << size_body << NONE << std::endl;
+		if (size_body > datas->size && datas->buffer.find("DELETE_file_for_delete") == std::string::npos)
+		{
+			datas->status = "403 Size prohibited";
+			datas->client_path = "HTML/403_size.html";
+			datas->list_request_received.erase();
+			return (ft_read_file(datas));
+		}
+		
+	}
+	temp = get_reponse(datas->buffer, "", "\n");
 	if (temp.find("?") != std::string::npos) 		
 	{
 		if (datas->location[0].methods.find("GET") == std::string::npos)  //----------------- test une seule location
 		{
-			datas->status = "403 demand prohibited";
-			datas->client_path = "HTML/403_GET_prohibited.html";
+			datas->status = "405 demand prohibited";
+			datas->client_path = "HTML/405_GET_prohibited.html";
 			datas->list_request_received.erase();
 			return (ft_read_file(datas));
 		}
@@ -41,8 +60,8 @@ std::string ft_created_body_reponse(t_client *datas)
 			<< NONE "\n" << std::endl;
 		if (datas->path_request != "/test_delete.html")
 		{
-			datas->status = "403 demand DELETE prohibited !!!!";
-			datas->client_path = "HTML/403_DELETE_prohibited.html";
+			datas->status = "405 demand DELETE prohibited !!!!";
+			datas->client_path = "HTML/405_DELETE_prohibited.html";
 			datas->list_request_received.erase();
 			return(ft_read_file(datas));
 
@@ -69,8 +88,8 @@ std::string ft_created_body_reponse(t_client *datas)
 
 	if (datas->location[0].methods.find("GET") == std::string::npos)  //----------------- test une seule location
 	{
-		datas->status = "403 demand prohibited";
-		datas->client_path = "HTML/403_GET_prohibited.html";
+		datas->status = "405 demand prohibited";
+		datas->client_path = "HTML/405_GET_prohibited.html";
 		datas->list_request_received.erase();
 		return (ft_read_file(datas));
 	}
