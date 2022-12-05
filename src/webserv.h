@@ -64,27 +64,6 @@
 #define NB_CONNECT 10
 #define SIZE_RECV  104424
 
-
-
-
-/*
-typedef struct s_parsing
-{
-	std::vector<std::string>	file_404;
-	std::vector<int>            my_port;
-	std::vector<std::string>    my_ip;
-	std::vector<std::string>    name_server;
-	std::vector<std::string>    root;
-	std::vector<std::string>    location;
-	
-	
-	std::vector<std::string>    methods;
-	std::vector<std::string>    cgi_extension;
-	std::vector<std::string>    cgi_bin;
-
-	int                         nb_server; 
-} ; */
-
 //////////// STRUCTURE POUR CHAQUE LOCATION(parsing) //////////
 struct s_location
 {
@@ -133,15 +112,13 @@ typedef struct s_client
 	std::string					root_path;
 	std::vector<std::string>	repertory;
 	int							nb_cookie;
-//	std::string 				location;
 	std::vector<s_location>		location;
-
-	int			fd_socket;
-	std::string	create_send;
+	int							fd_socket;
+	std::string					create_send;
 
 	// parsing
-	std::string 		file_404;
-	struct sockaddr_in  server;
+	std::string 				file_404;
+	struct sockaddr_in 			server;
 
 
 }   t_client;
@@ -152,16 +129,8 @@ typedef struct s_server
 	int 					nb_server;
 }   t_server;
 
-// std::string	test_Sec_Fetch_Dest;
-// t_server	firefox;
-
-void	ft_adresse_IP(struct sockaddr_in &their_addr);
-void    ft_error(std::string msg, t_client *datas);
-
-// std::string get_reponse_space(std::string &buffer, std::string &request);
-// std::string get_reponse_end_line(std::string &buffer, std::string &request);
-// std::string get_reponse_image_end_line(std::string &buffer, std::string request);
-
+void		ft_adresse_IP(struct sockaddr_in &their_addr);
+void  		ft_error(std::string msg, t_client *datas);
 
 std::string get_reponse(std::string &buffer, std::string request, std::string endl);
 std::string ft_created_reponse(t_client *datas);
@@ -174,13 +143,14 @@ void		ft_init_content_type(void);
 void		ft_delete(std::string path, t_client *datas);
 std::string	auto_index(const std::string dir_name, const std::string target);
 void  		ft_error(std::string msg, t_client *datas);
-
-
+std::string	ft_redir(std::string redir, t_client *datas);
+std::string	ft_code_HTTP(std::string code, std::string message, t_client *datas);
+void 		ft_init_code_type(void);
 
 //////////////////// PARSING_1 ///////////////////
-std::string			ft_read_file2(std::string file_path);
-int 				number_server(std::string &file, std::vector<int> &tab_len);
-void    			cut_server(std::string &file, std::vector<int> &tab_len,     std::vector<std::string> &servers);
+std::string	ft_read_file2(std::string file_path);
+int 		number_server(std::string &file, std::vector<int> &tab_len);
+void    	cut_server(std::string &file, std::vector<int> &tab_len,     std::vector<std::string> &servers);
 
 //////////////////// PARSING_2 ///////////////////
 int		create_struct(std::vector<s_parsing> &parsing, int nb_serv);
@@ -191,7 +161,7 @@ void    find_size(std::vector<std::string> servers, std::vector<s_parsing> &pars
 void    find_error(std::vector<std::string> servers, std::vector<s_parsing> &parsing, int nb_serv);
 
 //////////////////// PARSING_3 ///////////////////
-void number_server(std::vector<std::string> servers, std::vector<s_parsing> &parsing);
+void 	number_server(std::vector<std::string> servers, std::vector<s_parsing> &parsing);
 void    find_req_client(std::vector<s_parsing> &parsing);
 void    find_root(std::vector<s_parsing> &parsing);
 void    find_index(std::vector<s_parsing> &parsing);

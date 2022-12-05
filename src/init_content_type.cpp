@@ -712,7 +712,6 @@ void    ft_init_content_type(void)
 	var_content_type["zaz"] = "application/vnd.zzazz.deck+xml";
 
     // std::cout << "Init  : var_content_type " << std::endl;
-
     // for (std::map<std::string, std::string>::iterator itt = var_content_type.begin(); itt != var_content_type.end(); itt++)
 	// 	std::cout << GREEN << itt->first << " : " YELLOW << itt->second << NONE << std::endl;
 }

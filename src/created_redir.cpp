@@ -1,29 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   request.c                                          :+:      :+:    :+:   */
+/*   created_redir.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pwolff <pwolff@student.42mulhouse.fr>>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/03 09:46:00 by pwolff            #+#    #+#             */
-/*   Updated: 2022/11/03 09:46:00 by pwolff           ###   ########.fr       */
+/*   Created: 2022/12/04 18:29:31 by pwolff            #+#    #+#             */
+/*   Updated: 2022/12/04 18:29:31 by pwolff           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webserv.h"
 
-std::string get_reponse(std::string &buffer, std::string request, std::string endl)
+std::string    ft_redir(std::string redir, t_client *datas)
 {
-	std::string		reponse;
-	std::size_t		len_begin;
-	std::size_t		len_end;
-	
-	len_begin = buffer.find(request);
-	if (endl == "\0")
-		len_end = buffer.size();
-	else
-		len_end = buffer.find(endl, len_begin + request.size());
-	reponse.assign(buffer, len_begin + request.size(), len_end - len_begin - request.size());
+    std::string file;
 
-	return (reponse);
+    file = "<!DOCTYPE html> <html> <head> <meta http-equiv=\"Refresh\" content=\"3; url=//";
+    file += redir + "\" /> </head> <body> <p>Redirection in 3 seconds</p> </body> </html>";
+
+    return (file);
 }

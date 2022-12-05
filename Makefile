@@ -19,7 +19,9 @@ SRCS		= 	src/main.cpp src/request.cpp src/reponse.cpp \
 				src/created_body_reponse.cpp \
 				src/init_content_type.cpp \
 				src/parsing1.cpp src/parsing2.cpp src/parsing3.cpp \
-				src/delete.cpp
+				src/delete.cpp src/created_redir.cpp \
+				src/created_page_code_HTML.cpp \
+				src/init_code_HTTP.cpp
 	
 OBJS				= $(SRCS:.cpp=.o)
 OBJS_DIR			= objs/
