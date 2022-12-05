@@ -30,7 +30,7 @@ std::string ft_created_body_reponse(t_client *datas)
 			if (it->second != "")
 			{
 				std::cout << RED "redirect : " << it->second << std::endl;
-				datas->status = it->first + " redirect";
+				datas->status = it->first + " " + var_content_code[it->first] + " " + datas->name_server;
 				datas->client_path = "redir.html";
 				datas->path_request = it->second;
 				return (ft_redir(it->second, datas));
