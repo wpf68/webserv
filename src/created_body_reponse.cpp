@@ -45,7 +45,7 @@ std::string ft_created_body_reponse(t_client *datas)
 
 		ss << temp;
 		ss >> size_body;
-		std::cout << RED "size int - " << size_body << NONE << std::endl;
+	//	std::cout << RED "size int - " << size_body << NONE << std::endl;
 		if (size_body > datas->size && datas->buffer.find("DELETE_file_for_delete") == std::string::npos)
 		{
 			datas->status = "403 " + var_content_code["403"] + " " + datas->name_server;
@@ -99,11 +99,19 @@ std::string ft_created_body_reponse(t_client *datas)
 	datas->path_request = get_reponse(datas->buffer, "GET ", " ");
 	datas->client_path = datas->root;
 	if (datas->path_request == "/")
-		datas->client_path += datas->root_path;
+	{
+		//	datas->client_path += datas->root_path;
+		if (datas->index != "")
+			datas->client_path = datas->root + datas->index; 
+		else
+			datas->client_path = datas->root + "/index.html";	
+	}
+	
 	else 
 		datas->client_path += datas->path_request;
 	if (ft_test_request_exist(datas, datas->client_path))
 		return ("");
+	std::cout << RED "*********client_path = " << datas->client_path << "--" NONE << std::endl;
 	file = ft_read_file(datas);
 	return (file);
 }
@@ -156,6 +164,31 @@ std::string ft_read_file(t_client *datas)
 			if (file.size() != 0)
 				return (file);
 		}
+		// ------------  test ---------
+		// if (datas->client_path.find("Directory.html") != std::string::npos)
+		// {
+		// 	std::ifstream my_flux2(datas->path_request.erase(0,1));
+		// 	datas->status = "200 " + var_content_code["200"] + " " + datas->name_server;
+		// 	while (my_flux2.get(c))
+		// 		file += c;
+		// 	my_flux2.close();
+		// 	return (file);
+		// }
+		for (int i = 0; i < datas->location.size(); i++)
+		{
+			if (datas->location[i].dir_listing == "on" && test_path_valide.find(datas->location[i].root) != std::string::npos)
+			{
+				std::ifstream my_flux2(datas->path_request.erase(0,1));
+				datas->status = "200 " + var_content_code["200"] + " " + datas->name_server;
+				while (my_flux2.get(c))
+					file += c;
+				my_flux2.close();
+				// std::cout << "*******  on  **********" << std::endl;
+				// std::cout << datas->path_request << "\n" << file << std::endl;
+				return (file);
+			}
+		}
+		// ---------------------------------------
 
 		datas->status = "404 " + var_content_code["404"] + " " + datas->name_server;
 		datas->client_path = datas->file_404;
@@ -182,7 +215,7 @@ std::string ft_read_file(t_client *datas)
 	{
 		if (datas->location[i].dir_listing == "on" && test_path_valide.find(datas->location[i].root) != std::string::npos)
 		{
-			file = auto_index(datas->root, datas->root);
+			file = auto_index(datas->root + datas->index, datas->root + datas->index);
 			return (file);
 		}
 	}

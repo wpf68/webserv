@@ -101,7 +101,8 @@ void	find_index(std::vector<s_parsing> &parsing)
 					end++; // avance juqu'a la fin de res
 				res = parsing[i].locations[j].substr(start, end - start); // prend res
 				start = end;
-				parsing[i].location[j].path_index = parsing[i].location[j].root + '/' +res;
+			//	parsing[i].location[j].path_index = parsing[i].location[j].root + '/' +res;
+				parsing[i].location[j].path_index = res;
 			}
 		}
 	}

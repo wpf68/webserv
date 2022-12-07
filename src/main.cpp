@@ -91,11 +91,53 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 	datas.name_server = parsing[i].name_server;
 	datas.size = parsing[i].size;
 	test_location = 0;
+	// for (; test_location < parsing[i].location.size(); test_location++)
+	// {
+	// 	if (parsing[i].location[test_location].req_client == "/")
+	// 	{
+	// 		datas.root = parsing[i].location[test_location].root;
+	// 		datas.index = parsing[i].location[test_location].path_index;
+
+	// 		if (datas.root.rfind("/") + 1 == datas.root.size())
+	// 			datas.root = datas.root.substr(0, datas.root.rfind("/"));
+	// 		if (datas.index == "")
+	// 			datas.root_path = datas.root + "/index.html";
+	// 		else
+	// 		{
+	// 			if (datas.index.at(0) == '/')
+	// 				datas.root_path = datas.root + datas.index;
+	// 			else
+	// 				datas.root_path = datas.root + "/" + datas.index;
+	// 		}
+	// 		// if (datas.index != "" && datas.index.at(0) == '/');
+	// 		// {
+	// 		// 	std::cout << "****** index = " << datas.index << std::endl;
+	// 		// 	// std::string temp = datas.index.substr(1);
+	// 		// 	// datas.index = temp;
+	// 		// }
+	// 		datas.root = datas.root_path;
+	// 		std::cout << RED "datas.root : " << datas.root << "--  datas.root_path : " << datas.root_path << "--" << NONE << std::endl;
+	// 		std::cout << RED "datas.index : " << datas.index << "-- "<< NONE << std::endl;
+	// 		break;
+	// 	}
+	// }
 	for (; test_location < parsing[i].location.size(); test_location++)
 	{
 		if (parsing[i].location[test_location].req_client == "/")
 		{
 			datas.root = parsing[i].location[test_location].root;
+			if (datas.root.size() && datas.root.at(0) == '/')
+					datas.root.erase(0, 1);
+			datas.index = parsing[i].location[test_location].path_index;
+			if (datas.index.size())
+			{
+				if (datas.index.at(0) != '/')
+					datas.index.insert(0, "/");
+				if (datas.index.at(datas.index.size() - 1 ) == '/')
+					datas.index.erase(datas.index.size() - 1);
+			}
+			
+			std::cout << RED "** index :" << datas.index << "--" NONE << std::endl;
 			break;;
 		}
 	}
@@ -126,7 +168,38 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 	}
 	datas.location = parsing[i].location;
 
-//	std::cout << CYANE "datas.root : " << datas.root << "--  datas.root_path : " << datas.root_path << "--" << NONE << std::endl;
+
+
+
+
+// // découpe du root en deux parties
+// 	if (datas.root.rfind("/") + 1 == datas.root.size())
+// 		datas.root = datas.root.substr(0, datas.root.rfind("/"));
+// 	temp = "";
+// 	std::string::iterator itt = datas.root.begin();
+// 	for (; itt < datas.root.end() && *itt != '/'; itt++)
+// 		temp += *itt;
+// 	if (itt == datas.root.end())
+// 		ft_error("Error path1 /", NULL);
+// 	temp += "/";
+// 	itt++;
+// 	for (; itt < datas.root.end() && *itt != '/'; itt++)	
+// 		temp += *itt;
+// //	if (itt == datas.root.end() && datas.index == "")
+// 	if (itt == datas.root.end())
+// 		datas.root_path.append("/index.html");
+// 	else
+// 	{
+// 		for (; itt < datas.root.end(); itt++)
+// 			datas.root_path += *itt;
+// 		datas.root = temp;
+// 	}
+// 	if (datas.index != "")
+// 		datas.root = "/" + datas.index;
+// 	datas.location = parsing[i].location;
+
+	std::cout << CYANE "datas.root : " << datas.root << "--  datas.root_path : " << datas.root_path << "--" << NONE << std::endl;
+	std::cout << CYANE "datas.index : " << datas.index << "-- "<< NONE << std::endl;
 // ****************************************************************************
 // ****************************************************************************
 	datas.status = "200 " + var_content_code["200"] + " " + datas.name_server;
@@ -148,7 +221,7 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 	std::cout << CYANE "datas.server.sin_addr.s_addr : " YELLOW << datas.server.sin_addr.s_addr << NONE << std::endl;
 	std::cout << CYANE "datas.name_server : " YELLOW << datas.name_server << NONE << std::endl;
 	std::cout << CYANE "datas.size : " YELLOW << datas.size << NONE << std::endl;
-	std::cout << CYANE "datas.root : " YELLOW << datas.root << NONE << std::endl;
+	std::cout << CYANE "datas.root_path : " YELLOW << datas.root_path << NONE << std::endl;
 	for (int j = 0; j < datas.location.size(); j++)
 		{
 			std::cout << "//// Location " << j + 1 << " ////" << std::endl;
@@ -397,7 +470,7 @@ int main(int argc, char **argv)
 					if (iLastRecievedBufferLen == -1)
 						FD_CLR(firefox.clients[i].fd_socket, &readfds);
 					else if (iLastRecievedBufferLen == 0)
-						std::cout << RED "recv failed" NONE << std::endl;
+						std::cout << GREEN "recv attend" NONE << std::endl;
 					firefox.clients[i].buffer = std::string(buffer1);
 					if (!firefox.clients[i].buffer.empty())
 					{
@@ -406,10 +479,10 @@ int main(int argc, char **argv)
 						if (bytes_sent == -1)
 							FD_CLR(firefox.clients[i].fd_socket, &readfds);
 						if (bytes_sent == 0)
-							std::cout << RED "send empty" NONE << std::endl;
+							std::cout << GREEN "send empty" NONE << std::endl;
 						close (new_fd);
 					}
-					firefox.clients[i].status = "200 " + firefox.clients[i].name_server + "_OK :)";
+					firefox.clients[i].status = "200 " + var_content_code["200"] + firefox.clients[i].name_server;
 					close(new_fd);
 				}
 			}

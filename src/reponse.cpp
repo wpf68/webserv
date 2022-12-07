@@ -28,8 +28,9 @@ int ft_test_request_exist(t_client *datas, std::string &path_request)
 	{
 		if (datas->list_request_received == path_request)
 		{
-			datas->status = "204 " + var_content_code["204"] + " " + datas->name_server;
+			// datas->status = "204 " + var_content_code["204"] + " " + datas->name_server;
 			status = 1;
+			datas->status = "304 " + var_content_code["304"] + " " + datas->name_server;
 		}
 		else
 			datas->list_request_received = path_request;
@@ -78,6 +79,18 @@ static std::string	ft_date(void)
 	return (std::string(buffer));
 }
 
+static std::string	ft_Last_Modified(void)
+{
+	time_t rawtime;
+  	struct tm * timeinfo;
+  	char buffer [80];
+
+	time (&rawtime);
+	timeinfo = gmtime (&rawtime);
+	strftime (buffer,80,"Last-Modified: %a, %d %b %Y 00:42:42 %Z",timeinfo);
+	return (std::string(buffer));
+}
+
 static void	ft_get_cookie(t_client *datas)
 {
 	std::string	val;
@@ -105,11 +118,20 @@ std::string ft_created_reponse(t_client *datas)
 		datas->status = "301 " + var_content_code["301"] + " " + datas->name_server;
 	create_send = "HTTP/1.1 " + datas->status + "\r\n";
 	create_send += "Content-Length: " + std::to_string(body_reponse.size()) + "\r\n";
-	create_send += "Content-Location: " + datas->path_request +"\r\n";
+	if (datas->status.find("301 ") != std::string::npos)
+		create_send += "Location: http://" + datas->path_request +"\r\n";
+	else
+		create_send += "Content-Location: " + datas->path_request +"\r\n";
+	if (datas->status.find("500 ") != std::string::npos)
+		create_send += "Retry-After: Fri, 25 Dec 2042 00:42:42 GMT \r\n";
+	
+	create_send += "Cache-Control: max-age=10\r\n";
+	create_send += "Content-Language: en-US,fr-FR \r\n";
 	ft_get_cookie(datas);
 	create_send += "Set-Cookie: Welcome to " + std::to_string(datas->nb_cookie) + " visite(s)\r\n";
 	ft_get_content_type(datas);
 	create_send += datas->content_type;
+	create_send += ft_Last_Modified() + "\r\n";
 	create_send += ft_date() + "\r\n";
 	create_send += "Server: " + datas->name_server + "\r\n\n";
 	std::cout << CYANE << datas->buffer << NONE << std::endl;

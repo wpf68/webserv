@@ -109,7 +109,8 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 			if (temp.find("NO") != std::string::npos)
 			{
 				temp.clear();			
-				datas_client->status = "204 " + var_content_code["204"] + " " + datas_client->name_server;
+			//	datas_client->status = "204 " + var_content_code["204"] + " " + datas_client->name_server;
+				datas_client->status = "200 " + var_content_code["200"] + " " + datas_client->name_server;
 
 				temp = get_reponse(datas, "", "\r\n\r\n");
 				temp.erase(0, first_line.size());

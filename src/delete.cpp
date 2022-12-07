@@ -6,7 +6,7 @@
 /*   By: pwolff <pwolff@student.42mulhouse.fr>>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 10:43:40 by pwolff            #+#    #+#             */
-/*   Updated: 2022/12/05 12:55:33 by pwolff           ###   ########.fr       */
+/*   Updated: 2022/12/07 13:14:11 by pwolff           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	ft_delete(std::string path, t_client *datas)
 			datas->status = "202 " + var_content_code["202"] + " " + datas->name_server;
 	}
 	else
-		datas->status = "204 " + var_content_code["204"] + " " + datas->name_server;
+		datas->status = "200 " + var_content_code["200"] + " " + datas->name_server;
+	//	datas->status = "204 " + var_content_code["204"] + " " + datas->name_server;
 	datas->list_request_received.erase();
 }
