@@ -147,6 +147,7 @@ void  		ft_error(std::string msg, t_client *datas);
 std::string	ft_redir(std::string redir, t_client *datas);
 std::string	ft_code_HTTP(std::string code, std::string message, t_client *datas);
 void 		ft_init_code_type(void);
+bool		ft_upload_to_server(std::string temp, t_client *datas_client);
 
 //////////////////// PARSING_1 ///////////////////
 std::string	ft_read_file2(std::string file_path);

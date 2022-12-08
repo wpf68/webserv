@@ -109,8 +109,8 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 			if (temp.find("NO") != std::string::npos)
 			{
 				temp.clear();			
-			//	datas_client->status = "204 " + var_content_code["204"] + " " + datas_client->name_server;
-				datas_client->status = "200 " + var_content_code["200"] + " " + datas_client->name_server;
+				datas_client->status = "204 " + var_content_code["204"] + " " + datas_client->name_server;
+			//	datas_client->status = "200 " + var_content_code["200"] + " " + datas_client->name_server;
 
 				temp = get_reponse(datas, "", "\r\n\r\n");
 				temp.erase(0, first_line.size());
@@ -122,9 +122,10 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 			temp.erase(0, first_line.size());
 			temp = "DELETE /test_delete.html HTTP/1.1" + temp + "\n";
 			datas_client->buffer = temp;
-			datas_client->client_path = "HTML/site_3_form/successful.html";
+			datas_client->client_path = "HTML/site_3_form/delete.html";
 			file = ft_read_file(datas_client);
 			ft_delete("HTML/site_3_form/test_delete.html", datas_client);
+		//	datas_client->path_request = "/successful.html";
 			return (file);
 		}
 		if (datas_client->location[0].methods.find("POST") == std::string::npos)
@@ -139,6 +140,65 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 		temp = get_reponse(datas, "?", " ");
 	else
 		std::cout << RED "********  Prb Formulaire POST GET" NONE << std::endl;
+
+
+	// std::cout << GREEN "temp : \n" << temp << std::endl;  //  ----------------------
+	if (datas_client->buffer.find("boundary") != std::string::npos)
+	{
+		if (!ft_upload_to_server(temp, datas_client))
+		{
+			datas_client->status = "500 " + var_content_code["500"] + " " + datas_client->name_server;
+			datas_client->client_path = "HTML/500.html";
+			datas_client->list_request_received.erase();
+			return (ft_read_file(datas_client));
+
+		}
+		file = "<!DOCTYPE html><html lang=\"en\"><head>";
+		file += "<meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">";
+		file += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Upload</title></head>";
+		file += "<body><a href=\"./index.html\">\"Go to the home page\" </a><h1 style=\"color: red;\">Upload to server in File_Upload successful</h1>";
+		file += "</body></html>";
+		return(file);
+	}
+	if (temp.find("file_to_path_server=") != std::string::npos)
+	{
+		// datas_client->status = "200 " + var_content_code["200"] + " " + datas_client->name_server;
+		// datas_client->client_path = "HTML/200.html";
+		// datas_client->list_request_received.erase();
+		std::string	path = datas_client->root + "/File_Upload/" + get_reponse(temp, "file_to_path_server=", "\0");
+	//	std::cout << RED "temp : \n" << temp << "-- path : --" << path << "--" << std::endl;  //  ----------------------
+		std::ifstream my_flux(path);
+		if (!my_flux)
+		{
+			// std::cout << RED "file no found !!!" NONE << std::endl;
+			// datas_client->status = "404 " + var_content_code["404"] + " " + datas_client->name_server;
+			// datas_client->client_path = "HTML/404.html";
+			// datas_client->list_request_received.erase();
+			// return (ft_read_file(datas_client));
+		file = "<!DOCTYPE html><html lang=\"en\"><head>";
+		file += "<meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">";
+		file += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Download</title></head>";
+		file += "<body><a href=\"./index.html\">\"Go to the home page\" </a><h1 style=\"color: red;\">Download to server no accepted</h1>";
+		file += "<h1 style=\"color: red;\">File no valid</h1>";
+		file += "</body></html>";
+		return (file);
+
+		}
+		my_flux.close();
+		file = "<!DOCTYPE html><html lang=\"en\"><head>";
+		file += "<meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">";
+		file += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Download</title></head>";
+		file += "<body><a href=\"./index.html\">\"Go to the home page\" </a><h1 style=\"color: red;\">Download to server accepted</h1>";
+		file += "<p><a type=\"application/octet-stream\" href=\"File_Upload/";
+	//	file += "<p><a href=\"File_Upload/";
+		file += get_reponse(temp, "file_to_path_server=", "\0");
+		file += "\"download> Confirm to Download ";
+		file += get_reponse(temp, "file_to_path_server=", "\0");
+		file += "</a></p>";
+		file += "</body></html>";
+		return (file);
+	}
+
 	file = ft_parsing_form(temp, datas_client);
 	temp.clear();
 	datas_client->path_request = "/repertory.html";

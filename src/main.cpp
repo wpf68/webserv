@@ -467,6 +467,7 @@ int main(int argc, char **argv)
 						std::cout << YELLOW "accept :: new_fd = " WHITE << new_fd << NONE << std::endl;
 					ft_adresse_IP(their_addr);			
 					iLastRecievedBufferLen = recv(new_fd, buffer1, SIZE_RECV - 1, 0);
+			//		std::cout << RED << buffer1 << NONE << std::endl;  //---------------------------------- test upload
 					if (iLastRecievedBufferLen == -1)
 						FD_CLR(firefox.clients[i].fd_socket, &readfds);
 					else if (iLastRecievedBufferLen == 0)

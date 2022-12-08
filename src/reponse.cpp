@@ -31,6 +31,7 @@ int ft_test_request_exist(t_client *datas, std::string &path_request)
 			// datas->status = "204 " + var_content_code["204"] + " " + datas->name_server;
 			status = 1;
 			datas->status = "304 " + var_content_code["304"] + " " + datas->name_server;
+			datas->list_request_received = "";
 		}
 		else
 			datas->list_request_received = path_request;

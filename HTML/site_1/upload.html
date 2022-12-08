@@ -5,22 +5,18 @@
     <title>upload</title>
 </head>
 <body>
-    <a href="./index.html">"Aller à la page d'accueil" </a><br><br>
-    <label for="avatar">Choose a profile picture:</label>
+    <a href="./index.html">"Go to the home page" </a><br><br>
 
-    <input type="file"
-        id="avatar" name="avatar"
-        accept="image/png, image/jpeg"> <br><br>
-
-        <form method="post" enctype="multipart/form-data">
-            <div>
-              <label for="file">Sélectionner le fichier à envoyer</label>
-              <input type="file" id="file" name="file" multiple>
-            </div>
-            <div>
-              <button>Envoyer</button>
-            </div>
-        </form>
+    <form method="post" enctype="multipart/form-data">
+      <div>
+        <label for="profile_pic">Choose the file to put on the server</label>
+        <input type="file" id="profile_pic" name="profile_pic"
+              accept=".cpp, .c, .h, .hpp, html, .txt">
+      </div>
+      <div>
+        <button>Soumettre</button>
+      </div>
+    </form>
            
 
 

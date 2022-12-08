@@ -29,7 +29,7 @@ std::string ft_created_body_reponse(t_client *datas)
 		{
 			if (it->second != "")
 			{
-				std::cout << RED "redirect : " << it->second << std::endl;
+				//std::cout << RED "redirect : " << it->second << std::endl;
 				datas->status = it->first + " " + var_content_code[it->first] + " " + datas->name_server;
 				datas->client_path = "redir.html";
 				datas->path_request = it->second;
@@ -111,7 +111,7 @@ std::string ft_created_body_reponse(t_client *datas)
 		datas->client_path += datas->path_request;
 	if (ft_test_request_exist(datas, datas->client_path))
 		return ("");
-	std::cout << RED "*********client_path = " << datas->client_path << "--" NONE << std::endl;
+//	std::cout << RED "*********client_path = " << datas->client_path << "--" NONE << std::endl;
 	file = ft_read_file(datas);
 	return (file);
 }

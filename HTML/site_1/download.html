@@ -4,7 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
         <link rel="icon" href="./favicon.ico" />
         <!-- <meta charset="utf-8"> -->
-        <title>werbserv 42 form get</title>
+        <title>werbserv 42 form post</title>
         <!-- <link rel="stylesheet" href="style.css"> -->
         <style>
             form.form-example {
@@ -27,23 +27,17 @@
         </style>
     </head>
 
-<body>
-  <a href="./index.html">"<-- Go to the home page" </a> <br> <br>
-  <form action="" method="get" class="form-example">
-    <div class="form-example">
-      <label for="prenom">Enter your first name: </label>
-      <input type="text" name="prenom" id="prenom" required>
-    </div>
-    <div class="form-example">
-      <label for="Nom">Enter your name: </label>
-      <input type="text" name="Nom" id="Nom" required>
-    </div>
-    <div class="form-example">
-      <input type="submit" value="Subscribe!"><br>
-      <a href="./__repertory__.html">  "Go to repertory" </a>
-      
-    </div>
-  </form>
+    <body>
+      <a href="./index.html">"<-- Go to the home page" </a> <br> <br>
+      <form action="" method="post" class="form-example">
+        <div class="form-example">
+          <label for="file">Enter name file to File_Upload/ : </label>
+          <input type="text" name="file_to_path_server" id="file" maxlength="100" size="100" required>
+        </div>
+        <div class="form-example">
+          <input type="submit" value="Subscribe!"><br>
+        </div>
+      </form>
 
-</body>
+    </body>
 </html>

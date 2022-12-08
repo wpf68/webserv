@@ -7,7 +7,11 @@ std::string ft_read_file2(std::string file_path)
 
 	std::ifstream content(file_path);
 	if (!content)
-		ft_error(".conf no valid !!", NULL);
+	{
+		ft_error(".conf no valid !!  bye :)", NULL);
+		exit (0);
+	}
+		
 	while (content.get(c))
 		file += c;
 	content.close();
