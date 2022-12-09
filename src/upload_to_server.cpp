@@ -22,7 +22,7 @@ bool ft_upload_to_server(std::string temp, t_client *datas_client)
 //	size_t		nb;
 	
 	filename = get_reponse(temp, "filename=\"", "\"");
-	filename = "HTML/site_1/File_Upload/" + filename;
+	filename = "HTML/site_1/" + datas_client->dir_stock + "/" + filename;
 	begin_end_flag = get_reponse(temp, "", "\r\n");
 	file_copy = get_reponse(temp, "\n\r\n", "\n" + begin_end_flag);
 	//nb = file_copy.find("--------");

@@ -219,6 +219,10 @@ std::string ft_read_file(t_client *datas)
 			return (file);
 		}
 	}
+	// --------------- CGI  ------------------------------
+	if (test_path_valide.find(".py") != std::string::npos)
+		return (ft_CGI_py(test_path_valide, datas));
+	// ---------------------------------------------
 	while (my_flux.get(c))
 		file += c;
 	my_flux.close();

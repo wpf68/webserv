@@ -35,7 +35,7 @@ void	ft_adresse_IP(struct sockaddr_in &their_addr)
 			<< NONE << std::endl;
 }
 
-t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
+t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing, char **env)
 {
 	int			result;
 	t_client	datas;
@@ -51,6 +51,7 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 	datas.path_request = "";
 	datas.content_type = "";
 	datas.root_path = "";
+	datas.env = env;
 	
 	datas.file_500_bis = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>500</title>\n</head>\n<body>\n    <a href=\"/index.html\">\"Aller à la page d'accueil\" </a>\n    <h1 style=\"color: red;\">This page is temporarily unavailable - 500 - </h1>\n</body>\n</html>";
 	datas.list_request_received = "";
@@ -125,6 +126,9 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 	{
 		if (parsing[i].location[test_location].req_client == "/")
 		{
+			datas.dir_stock = parsing[i].location[test_location].dir_stock;
+			if (datas.dir_stock == "")
+				datas.dir_stock = "File_Upload";
 			datas.root = parsing[i].location[test_location].root;
 			if (datas.root.size() && datas.root.at(0) == '/')
 					datas.root.erase(0, 1);
@@ -197,6 +201,12 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 // 	if (datas.index != "")
 // 		datas.root = "/" + datas.index;
 // 	datas.location = parsing[i].location;
+	std::string	path_stock = datas.root + "/" + datas.dir_stock;
+	// size_t	size_path = path_stock.size() + 1;
+	// char * buffer_stock = new char[size_path];
+	// strncpy(buffer_stock, path_stock.c_str)
+	if (mkdir(path_stock.c_str(), 0755))
+		std::cout << GREEN << "Stockage Download Upload Created : " << path_stock << std::endl;
 
 	std::cout << CYANE "datas.root : " << datas.root << "--  datas.root_path : " << datas.root_path << "--" << NONE << std::endl;
 	std::cout << CYANE "datas.index : " << datas.index << "-- "<< NONE << std::endl;
@@ -229,6 +239,7 @@ t_client	ft_init_firefox(int i, std::vector<s_parsing> parsing)
 			std::cout << "Root : " << datas.location[j].root <<std::endl;
 			std::cout << "Chemin vers Index : " << datas.location[j].path_index <<std::endl;
 			std::cout << "Directory listing : " << datas.location[j].dir_listing <<std::endl;
+			std::cout << "Directory stock : " << datas.location[j].dir_stock <<std::endl;
 			std::cout << "Méthode : " <<datas.location[j].methods <<std::endl;
 			
 			std::cout << "Redirections :" <<std::endl;
@@ -290,6 +301,7 @@ void	ft_read_struct(std::vector<s_parsing> parsing)
 			std::cout << "Root : " << parsing[i].location[j].root <<std::endl;
 			std::cout << "Chemin vers Index : " << parsing[i].location[j].path_index <<std::endl;
 			std::cout << "Directory listing : " << parsing[i].location[j].dir_listing <<std::endl;
+			std::cout << "Directory stock : " << parsing[i].location[j].dir_stock <<std::endl;
 			std::cout << "Méthode : " << parsing[i].location[j].methods <<std::endl;
 			std::cout << "Redirections :" <<std::endl;
 
@@ -331,6 +343,7 @@ int	ft_parsing(std::vector<s_parsing> &parsing, char *conf)
 	find_root(parsing);
 	find_index(parsing);
 	find_dir_listing(parsing);
+	find_dir_stock(parsing);
 	find_methods(parsing);
 	find_redir(parsing);
 	find_cgi(parsing);
@@ -395,7 +408,7 @@ std::string	auto_index(const std::string dir_name, const std::string target)
 	return value;
 }
 
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **env)
 {
 	if (argc != 2)
 		ft_error("Error nb argc !!\n", NULL);
@@ -420,7 +433,7 @@ int main(int argc, char **argv)
 	ft_init_content_type();
 	ft_init_code_type();
 	for (int i = 0; i < firefox.nb_server; i++)
-		firefox.clients.push_back(ft_init_firefox(i, parsing));
+		firefox.clients.push_back(ft_init_firefox(i, parsing, env));
 	std::cout << GREEN "\nNb de clients dans firefox : " \
 			<< firefox.clients.size() << NONE << std::endl;
 	

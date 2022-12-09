@@ -46,6 +46,7 @@
 #include <ctime>
 #include <map>
 #include <algorithm>
+#include <sys/stat.h>
 #include <sys/wait.h>
 
 
@@ -70,6 +71,7 @@ struct s_location
 	std::string							req_client;
     std::string							root;
     std::string							path_index;
+	std::string							dir_stock;
 	std::string							dir_listing;
     std::string							methods;
 	std::map<std::string, std::string> 	redir;
@@ -120,7 +122,9 @@ typedef struct s_client
 	// parsing
 	std::string 				file_404;
 	struct sockaddr_in 			server;
+	std::string					dir_stock;
 
+	char						**env;
 
 }   t_client;
 
@@ -148,6 +152,7 @@ std::string	ft_redir(std::string redir, t_client *datas);
 std::string	ft_code_HTTP(std::string code, std::string message, t_client *datas);
 void 		ft_init_code_type(void);
 bool		ft_upload_to_server(std::string temp, t_client *datas_client);
+std::string	ft_CGI_py(std::string test_path_valide, t_client *datas);
 
 //////////////////// PARSING_1 ///////////////////
 std::string	ft_read_file2(std::string file_path);
@@ -168,6 +173,7 @@ void    find_req_client(std::vector<s_parsing> &parsing);
 void    find_root(std::vector<s_parsing> &parsing);
 void    find_index(std::vector<s_parsing> &parsing);
 void    find_dir_listing(std::vector<s_parsing> &parsing);
+void	find_dir_stock(std::vector<s_parsing> &parsing);
 void    find_methods(std::vector<s_parsing> &parsing);
 void    find_redir(std::vector<s_parsing> &parsing);
 void    find_cgi(std::vector<s_parsing> &parsing);

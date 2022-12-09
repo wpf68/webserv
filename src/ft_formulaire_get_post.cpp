@@ -156,7 +156,8 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 		file = "<!DOCTYPE html><html lang=\"en\"><head>";
 		file += "<meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">";
 		file += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Upload</title></head>";
-		file += "<body><a href=\"./index.html\">\"Go to the home page\" </a><h1 style=\"color: red;\">Upload to server in File_Upload successful</h1>";
+		file += "<body><a href=\"./index.html\">\"Go to the home page\" </a><h1 style=\"color: red;\">Upload to server in ";
+		file += datas_client->dir_stock + " successful</h1>";
 		file += "</body></html>";
 		return(file);
 	}
@@ -165,8 +166,8 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 		// datas_client->status = "200 " + var_content_code["200"] + " " + datas_client->name_server;
 		// datas_client->client_path = "HTML/200.html";
 		// datas_client->list_request_received.erase();
-		std::string	path = datas_client->root + "/File_Upload/" + get_reponse(temp, "file_to_path_server=", "\0");
-	//	std::cout << RED "temp : \n" << temp << "-- path : --" << path << "--" << std::endl;  //  ----------------------
+		std::string	path = datas_client->root + "/" + datas_client->dir_stock + "/" + get_reponse(temp, "file_to_path_server=", "\0");
+		std::cout << RED "temp : \n" << temp << "-- path : --" << path << "--" << std::endl;  //  ----------------------
 		std::ifstream my_flux(path);
 		if (!my_flux)
 		{
@@ -189,7 +190,7 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 		file += "<meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">";
 		file += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Download</title></head>";
 		file += "<body><a href=\"./index.html\">\"Go to the home page\" </a><h1 style=\"color: red;\">Download to server accepted</h1>";
-		file += "<p><a type=\"application/octet-stream\" href=\"File_Upload/";
+		file += "<p><a type=\"application/octet-stream\" href=\"" + datas_client->dir_stock + "/";
 	//	file += "<p><a href=\"File_Upload/";
 		file += get_reponse(temp, "file_to_path_server=", "\0");
 		file += "\"download> Confirm to Download ";

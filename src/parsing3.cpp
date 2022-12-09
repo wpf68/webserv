@@ -134,6 +134,32 @@ void	find_dir_listing(std::vector<s_parsing> &parsing)
 	}
 }
 
+void	find_dir_stock(std::vector<s_parsing> &parsing)
+{
+	for (int i = 0; i < parsing.size(); i++)
+	{
+		for (int j = 0; j < parsing[i].location.size(); j++)
+		{
+			int				start = 0;
+			int				end = 0;
+			std::string		target = "directory_stock";
+			std::string		res;
+
+			while ((start = parsing[i].locations[j].find(target, start)) != std::string::npos)
+			{
+				start = start + target.length(); // avance la taille de target
+				while (parsing[i].locations[j][start] == '	' or parsing[i].locations[j][start] == ' ')
+					start++; // avance
+				end = start;
+				while (parsing[i].locations[j][end] != ';' && parsing[i].locations[j][end] != ' ')
+					end++; // avance juqu'a la fin de res
+				res = parsing[i].locations[j].substr(start, end - start); // prend res
+				parsing[i].location[j].dir_stock = res;
+			}
+		}
+	}
+}
+
 void	find_methods(std::vector<s_parsing> &parsing)
 {
 	for (int i = 0; i < parsing.size(); i++)
