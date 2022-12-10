@@ -155,6 +155,9 @@ void 		ft_init_code_type(void);
 bool		ft_upload_to_server(std::string temp, t_client *datas_client);
 std::string	ft_CGI_py(std::string test_path_valide, t_client *datas);
 int 		exist_path(std::string path, t_client *datas);
+std::string CGI_py(std::string test_path_valide, t_client *datas);
+std::string CGI_c(std::string test_path_valide, t_client *datas);
+
 
 //////////////////// PARSING_1 ///////////////////
 std::string	ft_read_file2(std::string file_path);

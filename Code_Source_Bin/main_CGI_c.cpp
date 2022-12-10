@@ -26,9 +26,10 @@ int main(int argc, char **argv)
 
     // création du scipt.sh
     file = "#!/bin/bash\n\n";
-    file += "exec python3 " + test_path_valide + " > temp.html\n\n";
+    file += "gcc " + test_path_valide + " -o sh_c\n";
+    file += "exec ./sh_c > temp.html\n\n";
 
-    std::ofstream	ofs("script_cgi_py.sh", std::ios::out | std::ios::trunc);
+    std::ofstream	ofs("script_cgi_c.sh", std::ios::out | std::ios::trunc);
 	if (!ofs)
     {
         std::cout << RED "Error file out" NONE << std::endl;
@@ -39,7 +40,7 @@ int main(int argc, char **argv)
 	ofs.close();
 
 
-    system("./script_cgi_py.sh");
+   system("./script_cgi_c.sh");
 
     // file = "";
     // std::ifstream my_flux("temp.html");
