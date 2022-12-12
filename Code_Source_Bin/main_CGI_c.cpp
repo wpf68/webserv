@@ -16,12 +16,12 @@
 #include <cstring>
 #include <iostream>
 #include <fstream>
+#include <stdlib.h>  
 
 int main(int argc, char **argv)
 {
+    (void)argc;
     std::string file;
-    char		c;
-
     std::string test_path_valide = argv[1];
 
     // création du scipt.sh
@@ -39,8 +39,8 @@ int main(int argc, char **argv)
 	ofs << file << std::endl;
 	ofs.close();
 
-
-   system("./script_cgi_c.sh");
+    system("chmod 777 script_cgi_c.sh");
+    system("./script_cgi_c.sh");
 
     // file = "";
     // std::ifstream my_flux("temp.html");

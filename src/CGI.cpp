@@ -71,7 +71,11 @@ std::string CGI_py(std::string test_path_valide, t_client *datas)
 		file = "";
 		std::ifstream my_flux("temp.html");
 		if (!my_flux)
-			std::cout << RED "file no found !!!" NONE << std::endl;
+        {
+            std::cout << RED "file no found !!!" NONE << std::endl;
+            return (datas->file_500_bis);
+        }
+			
 		while (my_flux.get(c))
 			file += c;
 		my_flux.close();
@@ -136,7 +140,10 @@ std::string CGI_c(std::string test_path_valide, t_client *datas)
     file = "";
     std::ifstream my_flux("temp.html");
     if (!my_flux)
+    {
         std::cout << RED "file no found !!!" NONE << std::endl;
+        return (datas->file_500_bis);
+    }
     while (my_flux.get(c))
         file += c;
     my_flux.close();

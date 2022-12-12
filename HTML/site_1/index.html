@@ -17,6 +17,10 @@
                 text-decoration: underline;
                 text-align: center;
             }
+            h3{
+                color: rgb(249, 250, 248); 
+                text-align: center;
+            }
             li{
                 color:blue;
                 /* line-height:80px; */
@@ -54,6 +58,71 @@
                 <img src="./images/Wilhelm.jpg" alt="Photo Pascal">
                 <img src="./images/Pascal.jpg" alt="Photo Pascal">
             </p>
+            <h3> <br> *****************************    TESTS    ******************************** <br></h3>
+            <h3> - launch the installation of siege with homebrew : to see further : siege -b http://localhost:8020/ </h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">siege -b http://localhost:8020/</h3>
+
+            <h3> - Explain the basics of an HTTP server. : </h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">The client (Firefox) makes a request to the server with the HTTP protocol, the server checks that it can execute it and sends the client the response respecting the HTTP protocol</h3>
+            <h3> - Ask which function they used for I/O Multiplexing.</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">We used the select function</h3>
+            <h3> - Ask to get an explanation of how select (or equivalent) is working.</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">The "select" function listens to the read and write from the different sockets which are stored in "read" and "write" for a determined time so as not to overload the CPU, as soon as it receives a response the program continues and tests with " FD_ISSED" which socket answered and the "accept". We use the "recv" function to retrieve the request from the client, process it and send the response back to the client with "send"</h3>
+            <h3> - Ask if they use only one select (or equivalent) and how they've managed the server accept and the clientread/write.</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">We use a single "select" which manages the acceptance of reads/writes from the client thanks to the FD_SET, FD_CLR, FD_ISSET and FD_ZERO.</h3>
+            <h3>- There should be only one read or one write per client per select (or equivalent). Ask to show you the code that goesfrom the select (or equivalent) to the read and write of a client.</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">"select" is at line 466 of main.cpp, reading "recv" is at line 482, and writing "send" at line 492.</h3>
+            <h3> - Search for all read/recv/write/send on a socket and check that if an error returned the client is removed   </h3>
+            <h3> - Search for all read/recv/write/send and check if the returned value is well checked. (checking only -1 or 0 is notgood you should check both)</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">In case of error the client is deleted on line 485 or 494 from main.cpp and -1 and 0 is checked.</h3>
+            <h3> - If a check of errno is done after read/recv/write/send. Please stop the evaluation and put a mark to 0</h3>
+            <h3> - Writing or reading ANY file descriptor without going through the select (or equivalent) is strictly FORBIDDEN</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">"errno" is not used in the project. "select" is the mandatory waypoint to read from and write to the client.</h3>
+            <h3>In the configuration file check if you can do the following and test the result:</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">tests on .conf and test : curl http://localhost:8020 --resolve http://localhost:8022</h3>
+            <h3> - setup default error page (try to change the error 404)</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">Changing the default 404 page at the root of the HTML folder</h3>
+            <h3> - limit the client body (use curl -X POST -H "Content-Type: plain/text" --data "BODY IS HERE write something shorteror longer than body limit")</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">curl http://localhost:8021  -X POST -H "Content-Type: plain/text" --data "BODY IS HERE wri" or with POSTMAN</h3>
+            <h3> - setup a list of method accepted for a certain route (ex: try to delete something with and without permission)</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">Do the tests with Postman, for DELETE you are allowed to delete the test_delete.html file if you have the rights in .conf for security reasons.</h3>
+            <h3>Using telnet, curl, prepared files demonstrates that the following features work properly: <br>
+                - GET requests -> should work <br>
+                - POST requests -> should work <br>
+                - DELETE requests -> should work <br>
+                - UNKNOWN requests -> should not produce any crash <br>
+                - For every test the status code must be good <br>
+                - upload some file to the server and get it back</h3>           
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">To do all these tests you can use the site "site_3_form" which will allow you to test the GET, POST, DELETE and site_1 for Upload and Download files of your choice (port 8042).</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">You can upload the files of your choice to the server and retrieve them, they will be stored on the server in the server's storage/ folder, for security reasons only the files in this location can be retrieved by the client. (example: port 8020)</h3>
+
+            <h3>- Use the reference browser of the team, open the network part of it and try to connect to the server with it <br>
+                - Look at the request header and response header <br>
+                - It should be compatible to serve a fully static website <br>
+                - Try a wrong URL on the server <br>
+                - Try to list a directory <br>
+                - Try a redirected URL <br>
+                - Try things</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">To do all these tests you can use: <br>
+                Port 8020 for a fully static site. <br>
+                Port 8022 to list directories. <br>
+                Port 8013 for a redirect to ww.google. <br>
+                ...</h3>
+            <h3>- Use Siege to run some stress tests. <br>
+                - Availability should be above 99.5% for a simple get on an empty page with a siege -b on that page <br>
+                - Check if there is no memory leak (monitor the process memory usage it should not go up indefinitely) <br>
+                - Check if there is no hanging connection <br>
+                - You should be able to use siege indefinitely without restarting the server (look at siege -b)</h3>
+            
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">ex : siege -b http://localhost:8020/</h3>
+            <h3>Cookies and session <br>
+                There's a working session and cookies system on the webserver.</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">There is a management of cookies by counting the number of visits by customers and web pages visited.</h3>
+            <h3>CGI <br>
+                There's more than one CGI system.</h3>
+            <h3 style="margin: 0 0px; padding: 0px 250px; color: rgb(116, 202, 241);">There are several CGIs supported for .py and .c files tests with Postman by calling the .py and .c files they are interpreted by the CGI and then transformed into an HTML page.</h3>
+
+            <h3> <br> ************************************************************************** <br> <br> <br></h3>
             <h4>Test video .mp4</h4>
         <p style="text-align: center;"><iframe width="500" height="320" src="./videos/FR3_Grand_EST_19-20_ALSACE_221024.mp4" alt="video .mkv"> </iframe></p>
             <!-- <ul>
@@ -71,7 +140,7 @@
             <p><a href="./Maxime.html/qsdqsd">Test Code 404 (or put a wrong path in the search bar) </a> </p>
             <p><a href="./500.html">Test Code 500 </a> </p>  
             <!-- <p><a href="./">Test Code 304 (ou rafraichir la page)</a> </p>    -->
-            <p><a href="./redirection.html">Visit to Paris </a> </p>
+            <p><a href="./redirection.html">Visit to 42 </a> </p>
 
             <!-- <p><a type="application/octet-stream" href="images/webserv-FR.pdf">save me (subject webserv.pdf)</a></p>
             <p><a type="application/octet-stream" href="index.html" download>save me (index.html)</a></p> -->

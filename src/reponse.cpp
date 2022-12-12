@@ -119,10 +119,9 @@ std::string ft_created_reponse(t_client *datas)
 		datas->status = "301 " + var_content_code["301"] + " " + datas->name_server;
 	create_send = "HTTP/1.1 " + datas->status + "\r\n";
 	create_send += "Content-Length: " + std::to_string(body_reponse.size()) + "\r\n";
-	if (datas->status.find("301 ") != std::string::npos)
+	if (datas->status.find("301 ") != std::string::npos && datas->path_request.find("www.") != std::string::npos)
 		create_send += "Location: http://" + datas->path_request +"\r\n";
-	else
-		create_send += "Content-Location: " + datas->path_request +"\r\n";
+	create_send += "Content-Location: " + datas->path_request +"\r\n";
 	if (datas->status.find("500 ") != std::string::npos)
 		create_send += "Retry-After: Fri, 25 Dec 2042 00:42:42 GMT \r\n";
 	

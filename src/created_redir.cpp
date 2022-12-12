@@ -16,8 +16,8 @@ std::string    ft_redir(std::string redir, t_client *datas)
 {
     std::string file;
 
-    file = "<!DOCTYPE html> <html> <head> <meta http-equiv=\"Refresh\" content=\"3; url=//";
-    file += redir + "\" /> </head> <body> <p>Redirection in 3 seconds</p> </body> </html>";
+    file = "<!DOCTYPE html> <html> <head> <meta http-equiv=\"Refresh\" content=\"0; url=//";
+    file += redir + "\" /> </head> <body> <p>Redirection in 0 seconds</p> </body> </html>";
 
     return (file);
 }

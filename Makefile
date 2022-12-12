@@ -23,10 +23,15 @@ SRCS		= 	src/main.cpp src/request.cpp src/reponse.cpp \
 				src/created_page_code_HTML.cpp \
 				src/init_code_HTTP.cpp src/upload_to_server.cpp \
 				src/CGI.cpp src/utils.cpp
-	
-OBJS				= $(SRCS:.cpp=.o)
-OBJS_DIR			= objs/
-OBJECTS_PREFIXED 	= $(addprefix $(OBJS_DIR), $(OBJS))
+				
+
+SRCS_BIN	=	Code_Source_Bin/main_CGI_c.cpp Code_Source_Bin/main_CGI_py.cpp
+
+OBJS					= $(SRCS:.cpp=.o)
+OBJS_BIN				= $(SRCS_BIN:.cpp=.o)
+OBJS_DIR				= objs/
+OBJECTS_PREFIXED 		= $(addprefix $(OBJS_DIR), $(OBJS))
+#OBJECTS_PREFIXED_BIN 	= $(addprefix $(OBJS_DIR), $(OBJS_BIN))
 
 CC		= g++
 #CC		= clang++
@@ -68,8 +73,10 @@ all: $(NAME)
 present:
 	clear
 	
-$(NAME): $(SRCS) $(OBJECTS_PREFIXED)
+$(NAME): $(SRCS) $(SRCS_BIN) $(OBJECTS_PREFIXED)
 	@$(CC) -o $(NAME) $(OBJECTS_PREFIXED) $(FLAGS)
+	@$(CC) -o bin_c Code_Source_Bin/main_CGI_c.cpp $(FLAGS)
+	@$(CC) -o bin_py Code_Source_Bin/main_CGI_py.cpp $(FLAGS)
 
 clean:
 	@echo "\033[0m"
@@ -81,6 +88,8 @@ clean:
 fclean: clean
 	@echo "\033[0;31mDeleting executable..."
 	@rm -rf $(NAME)
+	@rm -rf bin_py
+	@rm -rf bin_c
 
 re: fclean all
 
@@ -88,6 +97,6 @@ test:	re
 	./${NAME} file.conf
 
 linux:	all
-	valgrind ./${NAME}
+	valgrind ./${NAME} file.conf
 
 .PHONY:		all clean fclean re test present linux

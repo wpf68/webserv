@@ -16,14 +16,14 @@
 #include <cstring>
 #include <iostream>
 #include <fstream>
+#include <stdlib.h>
 
 int main(int argc, char **argv)
 {
     std::string file;
-    char		c;
-
     std::string test_path_valide = argv[1];
 
+    (void)argc;
     // création du scipt.sh
     file = "#!/bin/bash\n\n";
     file += "exec python3 " + test_path_valide + " > temp.html\n\n";
@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 	ofs << file << std::endl;
 	ofs.close();
 
-
+    system("chmod 777 script_cgi_py.sh");
     system("./script_cgi_py.sh");
 
     // file = "";

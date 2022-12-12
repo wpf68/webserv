@@ -411,7 +411,11 @@ std::string	auto_index(const std::string dir_name, const std::string target)
 int main(int argc, char **argv, char **env)
 {
 	if (argc != 2)
+	{
 		ft_error("Error nb argc !!\n", NULL);
+		exit (1);
+	}
+		
 
 	std::string				dot[4] = {".  ", ".. ", "...", "...."};
 	int						n_anim = 0;

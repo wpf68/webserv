@@ -86,7 +86,7 @@ std::string ft_created_body_reponse(t_client *datas)
 	{
 		datas->path_request = "/repertory.html";
     	datas->status = "200 " + var_content_code["200"] + " " + datas->name_server;
-		ft_test_request_exist(datas, datas->path_request);
+		//ft_test_request_exist(datas, datas->path_request);
 		return (ft_parsing_form("", datas));
 	}
 	if (datas->location[0].methods.find("GET") == std::string::npos)
@@ -109,8 +109,8 @@ std::string ft_created_body_reponse(t_client *datas)
 	
 	else 
 		datas->client_path += datas->path_request;
-	if (ft_test_request_exist(datas, datas->client_path))
-		return ("");
+	// if (ft_test_request_exist(datas, datas->client_path))
+	// 	return ("");
 //	std::cout << RED "*********client_path = " << datas->client_path << "--" NONE << std::endl;
 	file = ft_read_file(datas);
 	return (file);
@@ -287,7 +287,7 @@ std::string ft_read_file(t_client *datas)
 	// 	return (file);
 	// }
 
-	if (test_path_valide.find(".c") != std::string::npos)
+	if (test_path_valide.find(".c") != std::string::npos && test_path_valide.find(".c") == test_path_valide.size() - 2)
 		return(CGI_c(test_path_valide, datas));
 	// {	
 	// 	int			pid = 0;
