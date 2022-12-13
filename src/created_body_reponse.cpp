@@ -78,6 +78,14 @@ std::string ft_created_body_reponse(t_client *datas)
 		}
 		path = datas->root + datas->path_request;
 		ft_delete(path, datas);
+		if (datas->status.find("200 ") != std::string::npos)
+		{
+			// std::cout << "++++++  delete  +++++++++" << std::endl;
+			// datas->path_request = "/successful.html";
+			// datas->client_path = "HTML/successful.html";
+			// return (ft_read_file(datas));
+
+		}		
 		return (file);
 	}
 	else if (temp.find("POST") != std::string::npos)

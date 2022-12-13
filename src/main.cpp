@@ -318,6 +318,30 @@ void	ft_read_struct(std::vector<s_parsing> parsing)
 	}
 }
 
+static void	ft_test_struct(std::vector<s_parsing> parsing)
+{
+	std::string	my_port_test;
+	int			nb;
+
+
+	for (int i = 0; i < parsing.size(); i++)
+	{
+		my_port_test = parsing[i].my_port;
+		nb = 0;
+		for (int j = 0; j < parsing.size(); j++)
+		{
+			if (my_port_test == parsing[j].my_port)
+				nb++;
+		}
+		if (nb != 1)
+		{
+			std::cout << RED "** Error :: Configuration of the same Port with more recovered. " NONE << std::endl;
+			exit(1);
+		}
+	}
+
+}
+
 int	ft_parsing(std::vector<s_parsing> &parsing, char *conf)
 {
 	std::string 				file;
@@ -431,6 +455,7 @@ int main(int argc, char **argv, char **env)
 	ft_copy_file("./HTML/site_3_form/Wilhelm.html", "./HTML/site_1/test_delete.html");
 	firefox.nb_server = ft_parsing(parsing, argv[1]);
 	ft_read_struct(parsing);
+	ft_test_struct(parsing); 
 	test_Sec_Fetch_Dest = "audio-audioworklet-document-embed-empty-font-frame-iframe-image-";
 	test_Sec_Fetch_Dest += "manifest-object-paintworklet-report-script-serviceworker-";
 	test_Sec_Fetch_Dest += "sharedworker-style-track-video-worker-xslt";
