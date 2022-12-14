@@ -84,7 +84,8 @@ void    ft_init_content_type(void)
 	var_content_type["bz"] = "application/x-bzip";
 	var_content_type["bz2"] = "application/x-bzip2";
 	var_content_type["csh"] = "application/x-csh";
-	var_content_type["c"] = "text/x-c";
+	var_content_type["c"] = "text/html; charset=UTF-8";
+//	var_content_type["c"] = "text/x-c";
 	var_content_type["cdxml"] = "application/vnd.chemdraw+xml";
 	var_content_type["css"] = "text/css";
 	var_content_type["cdx"] = "chemical/x-cdx";
@@ -431,6 +432,7 @@ void    ft_init_content_type(void)
 	var_content_type["m21"] = "application/mp21";
 	var_content_type["mp4a"] = "audio/mp4";
 	var_content_type["mp4"] = "video/mp4";
+	
 	//var_content_type["mp4"] = "application/mp4";
 	var_content_type["m3u8"] = "application/vnd.apple.mpegurl";
 	var_content_type["mus"] = "application/vnd.musician";
