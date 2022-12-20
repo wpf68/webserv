@@ -6,7 +6,7 @@
 /*   By: pwolff <pwolff@student.42mulhouse.fr>>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 11:28:18 by pwolff            #+#    #+#             */
-/*   Updated: 2022/11/22 21:14:36 by wilhelmfermey    ###   ########.fr       */
+/*   Updated: 2022/12/19 13:14:41 by wfermey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -339,7 +339,6 @@ static void	ft_test_struct(std::vector<s_parsing> parsing)
 			exit(1);
 		}
 	}
-
 }
 
 int	ft_parsing(std::vector<s_parsing> &parsing, char *conf)
@@ -354,9 +353,11 @@ int	ft_parsing(std::vector<s_parsing> &parsing, char *conf)
 	config.append(conf);
 	file = ft_read_file2(config);
 	nb_serv = number_server(file, tab_len);
+	if (nb_serv == 0)
+		return (-1);
 	cut_server(file, tab_len, servers);
 	if (create_struct(parsing, nb_serv))
-		return (1);
+		return (-1);
 	find_ip(servers, parsing, nb_serv);
 	find_port(servers, parsing, nb_serv);
 	find_name(servers, parsing, nb_serv);
@@ -432,6 +433,8 @@ std::string	auto_index(const std::string dir_name, const std::string target)
 	return value;
 }
 
+
+
 int main(int argc, char **argv, char **env)
 {
 	if (argc != 2)
@@ -454,6 +457,11 @@ int main(int argc, char **argv, char **env)
 	ft_copy_file("./HTML/site_3_form/Wilhelm.html", "./HTML/site_3_form/test_delete.html");
 	ft_copy_file("./HTML/site_3_form/Wilhelm.html", "./HTML/site_1/test_delete.html");
 	firefox.nb_server = ft_parsing(parsing, argv[1]);
+	if (firefox.nb_server == -1)
+	{
+		std::cout << RED "\nError server in file.conf " << std::endl;
+	   	return (1);	
+	}
 	ft_read_struct(parsing);
 	ft_test_struct(parsing); 
 	test_Sec_Fetch_Dest = "audio-audioworklet-document-embed-empty-font-frame-iframe-image-";

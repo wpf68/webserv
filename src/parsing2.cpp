@@ -23,11 +23,13 @@ void	find_ip(std::vector<std::string> servers, std::vector<s_parsing> &parsing, 
 		std::string		res;
 
 		start = servers[i].find("listen", start); //trouve target
+		if (start == -1)
+			exit(0);
 		start = start + target.length(); // avance la taille de target
 		while (servers[i][start] == ' ' or servers[i][start] == '	')
 			start++; // avance les espaces et tabs
 		end = start;
-		while (servers[i][end] != ':')
+		while (servers[i][end] != ':' )
 			end++; // avance juqu'a la fin de res
 		res = servers[i].substr(start, end - start); // prend res
 		parsing[i].my_ip = res; // met res dans la struct
@@ -44,6 +46,8 @@ void	find_port(std::vector<std::string> servers, std::vector<s_parsing> &parsing
 		std::string		res;
 
 		start = servers[i].find("listen", start); //trouve target
+		if (start == -1)
+			exit(0);
 		start = start + target.length(); // avance la taille de target
 		while (servers[i][start] != ':')
 			start++; // avance
@@ -66,6 +70,8 @@ void	find_name(std::vector<std::string> servers, std::vector<s_parsing> &parsing
 		std::string		res;
 
 		start = servers[i].find(target, start); //trouve target
+		if (start == -1)
+			exit(0);
 		start = start + target.length(); // avance la taille de target
 		while (servers[i][start] == ' ' or servers[i][start] == '	')
 			start++; // avance
@@ -88,6 +94,8 @@ void	find_size(std::vector<std::string> servers, std::vector<s_parsing> &parsing
 		std::string		res;
 
 		start = servers[i].find(target, start); //trouve target
+		if (start == -1)
+			exit(0);
 		start = start + target.length(); // avance la taille de target
 		while (servers[i][start] == ' ' or servers[i][start] == '	')
 			start++; // avance
