@@ -204,7 +204,7 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 	std::string	curl;
 	curl = get_reponse(datas_client->buffer, "User-Agent:", "\n");
 	std::cout << RED "User-Agent: " << curl << NONE << std::endl;
-	if (curl.find("curl/") == std::string::npos)
+	if (curl.find("curl/") == std::string::npos && curl.find("Postman") == std::string::npos)
 		file = ft_parsing_form(temp, datas_client);
 	temp.clear();
 	datas_client->path_request = "/repertory.html";
