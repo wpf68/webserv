@@ -200,7 +200,12 @@ std::string ft_formulaire_get_post(std::string &datas, t_client *datas_client)
 		return (file);
 	}
 
-	file = ft_parsing_form(temp, datas_client);
+	// test curl 
+	std::string	curl;
+	curl = get_reponse(datas_client->buffer, "User-Agent:", "\n");
+	std::cout << RED "User-Agent: " << curl << NONE << std::endl;
+	if (curl.find("curl/") == std::string::npos)
+		file = ft_parsing_form(temp, datas_client);
 	temp.clear();
 	datas_client->path_request = "/repertory.html";
 	datas_client->status = "205 " + var_content_code["205"] + " " + datas_client->name_server;
