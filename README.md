@@ -1,6 +1,9 @@
 # webserv
 Team : Wilhelm - Maxime - Pascal
 
+125% le 04-01-2023
+
+
 vidéos :
 https://www.youtube.com/watch?v=je9iCRcdJnc
 https://www.youtube.com/watch?v=lh3MGxP3Rl8
@@ -70,4 +73,4 @@ https://developer.mozilla.org/fr/docs/Web/HTTP
 Lancer les projets dans un navigateur avec localhost:8000  ou autre port ou 127.0.0.1 vérifier les .conf de chaque projets
 
 
-en cours :) ....
+
